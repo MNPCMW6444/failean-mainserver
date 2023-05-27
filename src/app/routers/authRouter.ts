@@ -9,8 +9,6 @@ import RequestForPassChange from "../models/auth/requestForPassChangeModal";
 import zxcvbn from "zxcvbn";
 import { sendEmail } from "../external-api-s/email";
 import { v4 as keyv4 } from "uuid";
-import speakeasy from "speakeasy";
-import qrcode from "qrcode";
 
 const router = express.Router();
 const MIN_PASSWORD_STRENGTH = 3;
@@ -175,59 +173,6 @@ router.post("/signin", async (req, res) => {
     res
       .status(500)
       .json({ serverError: "Unexpected error occurred in the server" });
-  }
-});
-
-router.post("/2fa-setup", async (req, res) => {
-  try {
-    const token = req.cookies.jwt;
-    const validatedUser = jwt.verify(token, process.env.JWT_SECRET as string);
-    const userId = (validatedUser as JwtPayload).id;
-    const user = await User.findById(userId);
-
-    if (!user) res.status(401).json({ clientError: "Unauthorized" });
-    else {
-      const secret = speakeasy.generateSecret({ length: 20 });
-      user.twoFactorSecret = secret.base32;
-      user.isTwoFactorEnabled = false; // Do not enable until verified
-      await user.save();
-
-      const dataUrl = await qrcode.toDataURL(secret.otpauth_url || "");
-      res.json({ dataUrl });
-    }
-  } catch (err) {
-    // handle error
-  }
-});
-
-router.post("/2fa-verify", async (req, res) => {
-  try {
-    const token = req.cookies.jwt;
-    const { twoFactorCode } = req.body;
-    const validatedUser = jwt.verify(token, process.env.JWT_SECRET as string);
-    const userId = (validatedUser as JwtPayload).id;
-    const user = await User.findById(userId);
-
-    if (!user) res.status(401).json({ clientError: "Unauthorized" });
-    else {
-      const verified = speakeasy.totp.verify({
-        secret: user.twoFactorSecret,
-        encoding: "base32",
-        token: twoFactorCode,
-      });
-
-      if (verified) {
-        user.isTwoFactorEnabled = true; // Enable 2FA
-        await user.save();
-        res.json({ verified: true });
-      } else {
-        res
-          .status(400)
-          .json({ verified: false, clientError: "Invalid 2FA code." });
-      }
-    }
-  } catch (err) {
-    // handle error
   }
 });
 

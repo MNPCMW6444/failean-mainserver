@@ -4,8 +4,6 @@ import dotenv from "dotenv";
 import mongoose, { ConnectOptions } from "mongoose";
 import cookieParser from "cookie-parser";
 import authRouter from "./app/routers/authRouter";
-import apiRouter from "./app/routers/apiRouter";
-import websiteRouter from "./app/routers/websiteRouter";
 import passport from "passport";
 import "./app/util/auth/passport";
 
@@ -54,6 +52,4 @@ app.get("/areyoualive", (_, res) => {
   res.json({ answer: "yes" });
 });
 
-app.use("/api", apiRouter);
-app.use("/website", websiteRouter);
 app.use("/auth", authRouter);
