@@ -4,6 +4,7 @@ import dotenv from "dotenv";
 import mongoose, { ConnectOptions } from "mongoose";
 import cookieParser from "cookie-parser";
 import authRouter from "./app/routers/authRouter";
+import dataRouter from "./app/routers/dataRouter";
 
 dotenv.config();
 
@@ -49,3 +50,4 @@ app.get("/areyoualive", (_, res) => {
 });
 
 app.use("/auth", authRouter);
+app.use("/data", dataRouter);
