@@ -109,7 +109,7 @@ router.post("/signupfin", async (req, res) => {
     );
     const idea = await new Idea({
       owner: savedUser._id,
-      idae: "Enter you first idea here",
+      idea: "Enter you first idea here",
     }).save();
     await new RawIdea({
       parent: idea._id,

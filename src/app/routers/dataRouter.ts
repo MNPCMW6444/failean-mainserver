@@ -55,7 +55,6 @@ router.post("/saveRawIdea", async (req, res) => {
     const token = req.cookies.jwt;
     if (!token) return res.status(401).json({ errorMessage: "Unauthorized." });
     const { rawIdea, parent } = req.body;
-    console.log(rawIdea);
     await new RawIdea({
       parent,
       rawIdea,
