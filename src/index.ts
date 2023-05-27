@@ -6,8 +6,6 @@ import cookieParser from "cookie-parser";
 import authRouter from "./app/routers/authRouter";
 import dataRouter from "./app/routers/dataRouter";
 
-import { version } from "../package.json";
-
 dotenv.config();
 
 const app = express();
@@ -48,7 +46,7 @@ app.use(
 app.listen(port, () => console.log(`Server started on port: ${port}`));
 
 app.get("/areyoualive", (_, res) => {
-  res.json({ answer: "yes", version });
+  res.json({ answer: "yes", version: process.env.npm_package_version });
 });
 
 app.use("/auth", authRouter);
