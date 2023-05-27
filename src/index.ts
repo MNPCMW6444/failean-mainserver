@@ -4,16 +4,12 @@ import dotenv from "dotenv";
 import mongoose, { ConnectOptions } from "mongoose";
 import cookieParser from "cookie-parser";
 import authRouter from "./app/routers/authRouter";
-import passport from "passport";
-import "./app/util/auth/passport";
 
 dotenv.config();
 
 const app = express();
 const port = process.env.PORT || 6555;
 app.use(cookieParser());
-
-app.use(passport.initialize());
 
 let mainDbStatus = false;
 

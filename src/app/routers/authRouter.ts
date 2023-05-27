@@ -1,5 +1,4 @@
 import express from "express";
-import linkedinRouter from "./auth/linkdeinRouter";
 import User from "../models/auth/userModel";
 import bcrypt from "bcrypt";
 import jwt, { JwtPayload } from "jsonwebtoken";
@@ -353,7 +352,5 @@ router.get("/signedin", async (req, res) => {
     return res.status(401).json({ errorMessage: "Unauthorized." });
   }
 });
-
-router.use("/linkedin", linkedinRouter);
 
 export default router;
