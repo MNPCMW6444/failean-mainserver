@@ -39,9 +39,13 @@ router.post("/saveIdea", async (req, res) => {
     if (!token) return res.status(401).json({ errorMessage: "Unauthorized." });
     const validatedUser = jwt.verify(token, process.env.JWT_SECRET as any);
     const { idea } = req.body;
-    await new Idea({
+    const newIdea = await new Idea({
       owner: (validatedUser as any).id,
       idea,
+    }).save();
+    await new RawIdea({
+      parent: newIdea._id,
+      rawIdea: "Enter your new idea here",
     }).save();
     return res.status(200).json({ message: "Idea created" });
   } catch (err) {
