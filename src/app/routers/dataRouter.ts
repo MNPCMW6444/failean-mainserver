@@ -26,7 +26,9 @@ router.post("/rawIdeas", async (req, res) => {
     if (!token) return res.status(401).json({ errorMessage: "Unauthorized." });
     const idea = await Idea.findById(req.body.idea);
     let hisRawIdeas = await RawIdea.find({ parent: idea });
-    return res.status(200).json({ rawIdeas: hisRawIdeas });
+    return res
+      .status(200)
+      .json({ rawIdeas: hisRawIdeas[hisRawIdeas.length - 1] });
   } catch (err) {
     console.log(err);
     return res.status(500).json({ errorMessage: JSON.stringify(err) });
