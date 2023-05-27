@@ -5,7 +5,7 @@ const rawIdeaModal = new mongoose.Schema(
     parent: { type: mongoose.Schema.Types.ObjectId, required: true },
     rawIdea: {
       type: String,
-      required: false,
+      required: true,
     },
   },
   {

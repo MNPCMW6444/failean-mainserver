@@ -9,6 +9,9 @@ import zxcvbn from "zxcvbn";
 import { sendEmail } from "../external-api-s/email";
 import { v4 as keyv4 } from "uuid";
 
+import Idea from "../models/data/ideaModel";
+import RawIdea from "../models/data/rawIdeaModel";
+
 const router = express.Router();
 const MIN_PASSWORD_STRENGTH = 3;
 
@@ -104,6 +107,14 @@ router.post("/signupfin", async (req, res) => {
       },
       process.env.JWT_SECRET as string
     );
+    const idea = await new Idea({
+      owner: savedUser._id,
+      idae: "Enter you first idea here",
+    }).save();
+    await new RawIdea({
+      parent: idea._id,
+      rawIdea: "Enter you first idea here",
+    }).save();
     res
       .cookie("jwt", token, {
         httpOnly: true,
