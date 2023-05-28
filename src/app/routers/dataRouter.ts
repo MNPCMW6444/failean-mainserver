@@ -5,30 +5,21 @@ import RawIdea from "../models/data/rawIdeaModel";
 
 const router = express.Router();
 
-router.get("/ideas", async (req, res) => {
+router.get("/getIdeas", async (req, res) => {
   try {
     const token = req.cookies.jwt;
     if (!token) return res.status(401).json({ errorMessage: "Unauthorized." });
     const validatedUser = jwt.verify(token, process.env.JWT_SECRET as any);
     let hisIdeas = await Idea.find({ owner: (validatedUser as any).id });
-    return res.status(200).json({
-      ideas: hisIdeas,
+    let promises = hisIdeas.map(async (idea) => {
+      let lastRawIdea = await RawIdea.find({ parent: idea._id });
+      return { ...idea, idea: lastRawIdea[lastRawIdea.length - 1].rawIdea };
     });
-  } catch (err) {
-    console.log(err);
-    return res.status(500).json({ errorMessage: JSON.stringify(err) });
-  }
-});
-
-router.post("/lastRawIdea", async (req, res) => {
-  try {
-    const token = req.cookies.jwt;
-    if (!token) return res.status(401).json({ errorMessage: "Unauthorized." });
-    const idea = await Idea.findById(req.body.idea);
-    let hisRawIdeas = await RawIdea.find({ parent: idea });
-    return res
-      .status(200)
-      .json({ rawIdeas: hisRawIdeas[hisRawIdeas.length - 1] });
+    Promise.all(promises).then((updatedIdeas) => {
+      return res.status(200).json({
+        ideas: updatedIdeas,
+      });
+    });
   } catch (err) {
     console.log(err);
     return res.status(500).json({ errorMessage: JSON.stringify(err) });
