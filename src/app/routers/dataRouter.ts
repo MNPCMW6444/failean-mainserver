@@ -20,7 +20,7 @@ router.get("/ideas", async (req, res) => {
   }
 });
 
-router.post("/rawIdeas", async (req, res) => {
+router.post("/lastRawIdea", async (req, res) => {
   try {
     const token = req.cookies.jwt;
     if (!token) return res.status(401).json({ errorMessage: "Unauthorized." });
