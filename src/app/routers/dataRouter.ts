@@ -16,9 +16,12 @@ router.get("/getIdeas", async (req, res) => {
       return { ...idea, idea: lastRawIdea[lastRawIdea.length - 1].rawIdea };
     });
     Promise.all(promises).then((updatedIdeas) => {
-      console.log(updatedIdeas);
       return res.status(200).json({
-        ideas: updatedIdeas,
+        ideas: updatedIdeas
+          .map((idea: any) => idea._doc)
+          .sort(
+            (a: any, b: any) => b.updatedAt.getTime() - a.updatedAt.getTime()
+          ),
       });
     });
   } catch (err) {
