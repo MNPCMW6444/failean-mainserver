@@ -16,8 +16,6 @@ router.get("/getIdeas", async (req, res) => {
       return { ...idea, idea: lastRawIdea[lastRawIdea.length - 1].rawIdea };
     });
     Promise.all(promises).then((updatedIdeas) => {
-      debugger;
-      console.log(updatedIdeas);
       console.log(updatedIdeas);
       return res.status(200).json({
         ideas: updatedIdeas,
