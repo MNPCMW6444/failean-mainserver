@@ -18,15 +18,17 @@ router.post("/validateIdea", async (req, res) => {
       apiKey: process.env.COMPANY_OPENAI_KEY,
     });
     const openai = new OpenAIApi(configuration);
-    const response = await openai.createCompletion({
+
+    const completion = await openai.createChatCompletion({
       model: "gpt-3.5-turbo",
-      prompt,
-      temperature: 0,
-      max_tokens: 7,
+      messages: [
+        { role: "system", content: "You are a helpful assistant." },
+        { role: "user", content: prompt },
+      ],
     });
 
     return res.status(200).json({
-      response,
+      response: completion.data.choices[0].message?.content,
     });
   } catch (err) {
     console.error(err);

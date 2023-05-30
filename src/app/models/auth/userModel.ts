@@ -15,6 +15,7 @@ const UserSchema = new Schema(
     subscription: {
       type: String,
       required: true,
+      default: "free",
     },
   },
   {
