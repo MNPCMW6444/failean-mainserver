@@ -7,13 +7,15 @@ const UserSchema = new Schema(
       required: true,
       unique: true,
     },
+    passwordHash: { type: String, required: true },
     name: {
       type: String,
       required: true,
     },
-    passwordHash: { type: String, required: true },
-    twoFactorSecret: { type: String },
-    isTwoFactorEnabled: { type: Boolean, default: false },
+    subscription: {
+      type: String,
+      required: true,
+    },
   },
   {
     timestamps: true,
