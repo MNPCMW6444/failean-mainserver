@@ -1,5 +1,4 @@
 import express from "express";
-import axios from "axios";
 import Idea from "../models/data/ideaModel";
 import { Configuration, OpenAIApi } from "openai";
 
