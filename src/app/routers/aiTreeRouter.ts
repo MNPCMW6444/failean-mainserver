@@ -4,8 +4,8 @@ import { Configuration, OpenAIApi } from "openai";
 
 const router = express.Router();
 
-router.post("/validateIdea", async (req, res) => {
-  const { ideaId, userId } = req.body;
+router.post("/ini", async (req, res) => {
+  const { ideaId } = req.body;
 
   try {
     const idea = await Idea.findById(ideaId);
