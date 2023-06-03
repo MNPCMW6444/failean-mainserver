@@ -51,12 +51,18 @@ router.post("/runAndGetPromptResult", async (req, res) => {
 
   try {
     const prompt = promptMap[promptName];
-    prompt.forEach((promptPart: PromptPart) => {
-      if (promptPart.type === "variable")
-        const promptRes = await PromptResult.find({
+
+    let promises = prompt.map(
+      async (promptPart: PromptPart) =>
+        promptPart.type === "variable" &&
+        (await PromptResult.find({
           owner: userId,
           promptName: promptName,
-        });
+        }))
+    );
+    Promise.all(promises).then((updatedPropmtResult) => {
+      console.log(updatedPropmtResult);
+      ///???? and false ????  - - --  2  ???
     });
   } catch (e) {
     console.log(e);
