@@ -1,5 +1,5 @@
 import express from "express";
-import jwt from "jsonwebtoken";
+import jsonwebtoken from "jsonwebtoken";
 import Idea from "../models/data/ideaModel";
 import RawIdea from "../models/data/rawIdeaModel";
 
@@ -7,9 +7,12 @@ const router = express.Router();
 
 router.get("/getIdeas", async (req, res) => {
   try {
-    const token = req.cookies.jwt;
+    const token = req.cookies.jsonwebtoken;
     if (!token) return res.status(401).json({ errorMessage: "Unauthorized." });
-    const validatedUser = jwt.verify(token, process.env.JWT_SECRET as any);
+    const validatedUser = jsonwebtoken.verify(
+      token,
+      process.env.jsonwebtoken_SECRET as any
+    );
     let hisIdeas = await Idea.find({ owner: (validatedUser as any).id });
     let promises = hisIdeas.map(async (idea) => {
       let lastRawIdea = await RawIdea.find({ parent: idea._id });
@@ -32,9 +35,12 @@ router.get("/getIdeas", async (req, res) => {
 
 router.post("/saveIdea", async (req, res) => {
   try {
-    const token = req.cookies.jwt;
+    const token = req.cookies.jsonwebtoken;
     if (!token) return res.status(401).json({ errorMessage: "Unauthorized." });
-    const validatedUser = jwt.verify(token, process.env.JWT_SECRET as any);
+    const validatedUser = jsonwebtoken.verify(
+      token,
+      process.env.jsonwebtoken_SECRET as any
+    );
     const { idea } = req.body;
     const newIdea = await new Idea({
       owner: (validatedUser as any).id,
@@ -53,7 +59,7 @@ router.post("/saveIdea", async (req, res) => {
 
 router.post("/saveRawIdea", async (req, res) => {
   try {
-    const token = req.cookies.jwt;
+    const token = req.cookies.jsonwebtoken;
     if (!token) return res.status(401).json({ errorMessage: "Unauthorized." });
     const { rawIdea, parent } = req.body;
     await new RawIdea({

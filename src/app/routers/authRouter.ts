@@ -1,7 +1,7 @@
 import express from "express";
 import User from "../models/auth/userModel";
 import bcrypt from "bcrypt";
-import jwt, { JwtPayload } from "jsonwebtoken";
+import jsonwebtoken, { JwtPayload } from "jsonwebtoken";
 import RequestForAccount from "../models/auth/requestForAccountModal";
 import { passreset, signupreq } from "../../content/email-templates/authEmails";
 import RequestForPassChange from "../models/auth/requestForPassChangeModal";
@@ -101,11 +101,11 @@ router.post("/signupfin", async (req, res) => {
       name: fullname,
       passwordHash,
     }).save();
-    const token = jwt.sign(
+    const token = jsonwebtoken.sign(
       {
         id: savedUser._id,
       },
-      process.env.JWT_SECRET as string
+      process.env.jsonwebtoken_SECRET as string
     );
     const idea = await new Idea({
       owner: savedUser._id,
@@ -116,7 +116,7 @@ router.post("/signupfin", async (req, res) => {
       rawIdea: "Enter you first idea here",
     }).save();
     res
-      .cookie("jwt", token, {
+      .cookie("jsonwebtoken", token, {
         httpOnly: true,
         sameSite:
           process.env.NODE_ENV === "development"
@@ -158,15 +158,15 @@ router.post("/signin", async (req, res) => {
         clientError: "Wrong email or password",
       });
 
-    const token = jwt.sign(
+    const token = jsonwebtoken.sign(
       {
         id: existingUser._id,
       },
-      process.env.JWT_SECRET as string
+      process.env.jsonwebtoken_SECRET as string
     );
 
     res
-      .cookie("jwt", token, {
+      .cookie("jsonwebtoken", token, {
         httpOnly: true,
         sameSite:
           process.env.NODE_ENV === "development"
@@ -188,10 +188,13 @@ router.post("/signin", async (req, res) => {
 
 router.post("/updatename", async (req, res) => {
   try {
-    const token = req.cookies.jwt;
+    const token = req.cookies.jsonwebtoken;
     const { name } = req.body;
     if (!token) return res.status(401).json({ clientMessage: "Unauthorized" });
-    const validatedUser = jwt.verify(token, process.env.JWT_SECRET as string);
+    const validatedUser = jsonwebtoken.verify(
+      token,
+      process.env.jsonwebtoken_SECRET as string
+    );
     const userId = (validatedUser as JwtPayload).id;
     const user = await User.findById(userId);
     if (user) user.name = name;
@@ -204,7 +207,7 @@ router.post("/updatename", async (req, res) => {
 
 router.post("/updatepassword", async (req, res) => {
   try {
-    const token = req.cookies.jwt;
+    const token = req.cookies.jsonwebtoken;
     const { password } = req.body;
     const passwordStrength = zxcvbn(password);
     if (passwordStrength.score < MIN_PASSWORD_STRENGTH)
@@ -213,7 +216,10 @@ router.post("/updatepassword", async (req, res) => {
           "Password isn't strong enough, the value is" + passwordStrength.score,
       });
     if (!token) return res.status(401).json({ clientMessage: "Unauthorized" });
-    const validatedUser = jwt.verify(token, process.env.JWT_SECRET as string);
+    const validatedUser = jsonwebtoken.verify(
+      token,
+      process.env.jsonwebtoken_SECRET as string
+    );
     const userId = (validatedUser as JwtPayload).id;
     const user = await User.findById(userId);
     const salt = await bcrypt.genSalt();
@@ -229,7 +235,7 @@ router.post("/updatepassword", async (req, res) => {
 router.get("/signout", async (req, res) => {
   try {
     res
-      .cookie("jwt", "", {
+      .cookie("jsonwebtoken", "", {
         httpOnly: true,
         sameSite:
           process.env.NODE_ENV === "development"
@@ -337,9 +343,12 @@ router.post("/updaten", async (req, res) => {
         clientError: "At least one of the fields are missing",
       });
 
-    const token = req.cookies.jwt;
+    const token = req.cookies.jsonwebtoken;
     if (!token) return res.status(401).json({ clientMessage: "Unauthorized" });
-    const validatedUser = jwt.verify(token, process.env.JWT_SECRET as string);
+    const validatedUser = jsonwebtoken.verify(
+      token,
+      process.env.jsonwebtoken_SECRET as string
+    );
     const userId = (validatedUser as JwtPayload).id;
     const user = (await User.find({ userId }))[0];
     await user.save();
@@ -354,9 +363,12 @@ router.post("/updaten", async (req, res) => {
 
 router.get("/signedin", async (req, res) => {
   try {
-    const token = req.cookies.jwt;
+    const token = req.cookies.jsonwebtoken;
     if (!token) return res.status(401).json({ clientMessage: "Unauthorized" });
-    const validatedUser = jwt.verify(token, process.env.JWT_SECRET as string);
+    const validatedUser = jsonwebtoken.verify(
+      token,
+      process.env.jsonwebtoken_SECRET as string
+    );
     const userId = (validatedUser as JwtPayload).id;
     res.json(await User.findById(userId));
   } catch (err) {

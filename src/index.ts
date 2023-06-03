@@ -5,7 +5,7 @@ import mongoose, { ConnectOptions } from "mongoose";
 import cookieParser from "cookie-parser";
 import authRouter from "./app/routers/authRouter";
 import dataRouter from "./app/routers/dataRouter";
-import aiTreeRouter from "./app/routers/aiTreeRouter";
+import aiRouter from "./app/routers/aiRouter";
 
 dotenv.config();
 
@@ -52,4 +52,4 @@ app.get("/areyoualive", (_, res) => {
 
 app.use("/auth", authRouter);
 app.use("/data", dataRouter);
-app.use("/aitree", aiTreeRouter);
+app.use("/ai", aiRouter);
