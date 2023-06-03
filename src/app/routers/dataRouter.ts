@@ -11,7 +11,7 @@ router.get("/getIdeas", async (req, res) => {
     if (!token) return res.status(401).json({ errorMessage: "Unauthorized." });
     const validatedUser = jsonwebtoken.verify(
       token,
-      process.env.jsonwebtoken_SECRET as any
+      process.env.JWT_SECRET as any
     );
     let hisIdeas = await Idea.find({ owner: (validatedUser as any).id });
     let promises = hisIdeas.map(async (idea) => {
@@ -39,7 +39,7 @@ router.post("/saveIdea", async (req, res) => {
     if (!token) return res.status(401).json({ errorMessage: "Unauthorized." });
     const validatedUser = jsonwebtoken.verify(
       token,
-      process.env.jsonwebtoken_SECRET as any
+      process.env.JWT_SECRET as any
     );
     const { idea } = req.body;
     const newIdea = await new Idea({

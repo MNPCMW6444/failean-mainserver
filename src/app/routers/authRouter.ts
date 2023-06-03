@@ -105,7 +105,7 @@ router.post("/signupfin", async (req, res) => {
       {
         id: savedUser._id,
       },
-      process.env.jsonwebtoken_SECRET as string
+      process.env.JWT_SECRET as string
     );
     const idea = await new Idea({
       owner: savedUser._id,
@@ -162,7 +162,7 @@ router.post("/signin", async (req, res) => {
       {
         id: existingUser._id,
       },
-      process.env.jsonwebtoken_SECRET as string
+      process.env.JWT_SECRET as string
     );
 
     res
@@ -193,7 +193,7 @@ router.post("/updatename", async (req, res) => {
     if (!token) return res.status(401).json({ clientMessage: "Unauthorized" });
     const validatedUser = jsonwebtoken.verify(
       token,
-      process.env.jsonwebtoken_SECRET as string
+      process.env.JWT_SECRET as string
     );
     const userId = (validatedUser as JwtPayload).id;
     const user = await User.findById(userId);
@@ -218,7 +218,7 @@ router.post("/updatepassword", async (req, res) => {
     if (!token) return res.status(401).json({ clientMessage: "Unauthorized" });
     const validatedUser = jsonwebtoken.verify(
       token,
-      process.env.jsonwebtoken_SECRET as string
+      process.env.JWT_SECRET as string
     );
     const userId = (validatedUser as JwtPayload).id;
     const user = await User.findById(userId);
@@ -347,7 +347,7 @@ router.post("/updaten", async (req, res) => {
     if (!token) return res.status(401).json({ clientMessage: "Unauthorized" });
     const validatedUser = jsonwebtoken.verify(
       token,
-      process.env.jsonwebtoken_SECRET as string
+      process.env.JWT_SECRET as string
     );
     const userId = (validatedUser as JwtPayload).id;
     const user = (await User.find({ userId }))[0];
@@ -367,7 +367,7 @@ router.get("/signedin", async (req, res) => {
     if (!token) return res.status(401).json({ clientMessage: "Unauthorized" });
     const validatedUser = jsonwebtoken.verify(
       token,
-      process.env.jsonwebtoken_SECRET as string
+      process.env.JWT_SECRET as string
     );
     const userId = (validatedUser as JwtPayload).id;
     res.json(await User.findById(userId));
