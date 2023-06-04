@@ -112,6 +112,6 @@ router.post("/runAndGetPromptResult", async (req, res) => {
   }
 });
 
-console.log(dependencyMapper(promptMap));
+console.log((dependencyMapper(promptMap)));
 
 export default router;
