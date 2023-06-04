@@ -6,7 +6,7 @@ import RequestForAccount from "../models/auth/requestForAccountModal";
 import { passreset, signupreq } from "../../content/email-templates/authEmails";
 import RequestForPassChange from "../models/auth/requestForPassChangeModal";
 import zxcvbn from "zxcvbn";
-import { sendEmail } from "../external-api-s/email";
+import { sendEmail } from "../util/emailUtil";
 import { v4 as keyv4 } from "uuid";
 
 import Idea from "../models/data/ideaModel";
