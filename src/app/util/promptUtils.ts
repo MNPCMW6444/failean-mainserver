@@ -1,35 +1,27 @@
-import { Prompt, PromptMap, PromptPart } from "../../content/promptMap";
+import { PromptMap } from "../../content/promptMap";
 
 export const dependencyMapper = (promptMap: PromptMap) => {
-  let dependencyTree: any = {};
+  const dependencyTree: any = {};
 
-  try {
-    Object.keys(promptMap).forEach((promptName: string) => {
-      const prompt: Prompt = promptMap[promptName];
-      dependencyTree[promptName] = {};
-
-      prompt.forEach((promptPart: PromptPart) => {
-        if (promptPart.type === "variable") {
-          const variableName = promptPart.content;
-          if (promptMap[variableName]) {
-            // If the variable is another prompt, recursively map its dependencies
-            dependencyTree[promptName][variableName] = dependencyMapper({
-              [variableName]: promptMap[variableName],
-            });
-          } else {
-            // If the variable is not another prompt, add it as a string
-            dependencyTree[promptName][variableName] = variableName;
-          }
+  for (const promptName in promptMap) {
+    const prompt = promptMap[promptName];
+    for (const part of prompt) {
+      if (part.type === "variable") {
+        if (!dependencyTree[part.content.trim()]) {
+          dependencyTree[part.content.trim()] = {};
         }
-      });
-
-      // If the prompt has no variables, replace it with a string
-      if (Object.keys(dependencyTree[promptName]).length === 0) {
-        dependencyTree[promptName] = promptName;
+        dependencyTree[part.content.trim()][promptName] = true;
       }
-    });
-  } catch (e) {
-    console.log(e);
+    }
+  }
+
+  // Convert dependencies without any dependent prompts to an array
+  for (const promptName in dependencyTree) {
+    if (
+      Object.values(dependencyTree[promptName]).every((value) => value === true)
+    ) {
+      dependencyTree[promptName] = Object.keys(dependencyTree[promptName]);
+    }
   }
 
   return dependencyTree;
