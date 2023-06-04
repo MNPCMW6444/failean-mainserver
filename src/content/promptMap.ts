@@ -16,4 +16,5 @@ const promptMap: PromptMap = {
     { type: "static", content: "\nThank you:)" },
   ],
 };
+
 export default promptMap;
