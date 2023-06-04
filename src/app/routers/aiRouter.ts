@@ -9,6 +9,7 @@ import promptMap, {
 import PromptResult from "../models/data/promptResultModel";
 import jsonwebtoken, { JwtPayload } from "jsonwebtoken";
 import RawIdea from "../models/data/rawIdeaModel";
+import { dependencyMapper } from "../util/promptUtils";
 
 const router = express.Router();
 

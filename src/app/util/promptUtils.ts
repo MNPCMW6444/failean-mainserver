@@ -1,6 +1,6 @@
 import { Prompt, PromptMap, PromptPart } from "../../content/promptMap";
 
-const dependencyMapper = (promptMap: PromptMap) => {
+export const dependencyMapper = (promptMap: PromptMap) => {
   let dependencyTree: any = {};
 
   try {
@@ -12,17 +12,14 @@ const dependencyMapper = (promptMap: PromptMap) => {
         if (promptPart.type === "variable") {
           const variableName = promptPart.content;
           if (promptMap[variableName]) {
-            // Recursive call if the variable is another prompt
             dependencyTree[variableName] = dependencyMapper({
               [variableName]: promptMap[variableName],
             });
           } else {
-            // If the variable is not another prompt, add it as a dependency
             variables.push(variableName);
           }
         }
       });
-
       if (variables.length > 0) {
         dependencyTree[promptName] = {};
         variables.forEach((variable) => {
