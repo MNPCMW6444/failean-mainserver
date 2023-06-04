@@ -6,7 +6,7 @@ export const dependencyMapper = (promptMap: PromptMap) => {
   for (const promptName in promptMap) {
     const prompt = promptMap[promptName];
     for (const part of prompt) {
-      if (part.type === "variable" && promptMap[part.content.trim()]) {
+      if (part.type === "variable") {
         if (!dependencyTree[part.content.trim()]) {
           dependencyTree[part.content.trim()] = {};
         }
