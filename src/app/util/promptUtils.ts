@@ -45,5 +45,5 @@ export const getDependencyOrder = (
   } else {
     Object.keys(dependents).forEach(addDependent);
   }
-  return order;
+  return order.reverse();
 };
