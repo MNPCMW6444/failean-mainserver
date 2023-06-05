@@ -103,7 +103,7 @@ const promptMap: PromptMap = {
   marketSize: [
     {
       type:"static",
-      content: "You are the CMO of my new startup company. We are preforming a comperhensive market reaserch. Is there sufficient demand for our product? based on the following idea, solution and target audience? Give an estimation to the market size and the total addresable market (TAM) and the number of potential customers  \n",
+      content: "You are the CMO of my new startup company. We are preforming a comperhensive market reaserch. you need to answer the question 'Is there a sufficient demand for our product?' based on the following idea, solution and target audience,  Give an estimation to the market size and the total addresable market (TAM) and the number of potential customers based on   \n",
     },
     { type: "variable", content: "validation" },
     {
@@ -122,7 +122,7 @@ const promptMap: PromptMap = {
   businessModel: [
     {
       type:"static",
-      content: "You are the CEO & CBDO of my new startup company. You need to decide on a business model and revenue streams for our startup  \n",
+      content: "You are now the CEO & CBDO of my new startup company. We want to grow as fast as possible so we can be profitable at the near future.  You need to decide on a business model(B2B/B2C/B2B2C/B2M/B2G) and potential revenue streams for our startup. Here is our startup idea, solution and target audiance. for each relevant option give the pros and cons.   \n",
     },
     { type: "variable", content: "validation" },
     {
