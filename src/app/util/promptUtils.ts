@@ -23,30 +23,66 @@ export const dependencyMapper = (promptMap: PromptMap) => {
       dependencyTree[promptName] = Object.keys(dependencyTree[promptName]);
     }
   }
-
-  const countDependents = (dependencyTree: any, promptName: string): number => {
-    let count = 0;
+  const countUniqueDependents = (
+    dependencyTree: any,
+    promptName: string,
+    seen = new Set<string>()
+  ): number => {
     const dependents = dependencyTree[promptName];
     if (!dependents) {
-      return count;
+      return seen.size;
     }
+
+    const addDependent = (dependent: string) => {
+      if (!seen.has(dependent)) {
+        seen.add(dependent);
+        countUniqueDependents(dependencyTree, dependent, seen);
+      }
+    };
 
     if (Array.isArray(dependents)) {
-      dependents.forEach((dependent) => {
-        count += 1 + countDependents(dependencyTree, dependent);
-      });
+      dependents.forEach(addDependent);
     } else {
-      for (const dependent in dependents) {
-        count += 1 + countDependents(dependencyTree, dependent);
-      }
+      Object.keys(dependents).forEach(addDependent);
     }
 
-    return count;
+    return seen.size;
   };
 
-  // Usage example:
-  const numberOfDependents = countDependents(dependencyTree, "problemStatment");
-  console.log(numberOfDependents);
+  const getDependencyOrder = (
+    dependencyTree: any,
+    promptName: string,
+    seen = new Set<string>(),
+    order: any[] = []
+  ): string[] => {
+    const dependents = dependencyTree[promptName];
+    if (!dependents) {
+      return order;
+    }
+
+    const addDependent = (dependent: string) => {
+      if (!seen.has(dependent)) {
+        seen.add(dependent);
+        getDependencyOrder(dependencyTree, dependent, seen, order);
+        order.push(dependent);
+      }
+    };
+
+    if (Array.isArray(dependents)) {
+      dependents.forEach(addDependent);
+    } else {
+      Object.keys(dependents).forEach(addDependent);
+    }
+
+    return order;
+  };
+
+  // Usage examples:
+  const uniqueDependentsCount = countUniqueDependents(dependencyTree, "idea");
+  console.log(uniqueDependentsCount);
+
+  const dependencyOrder = getDependencyOrder(dependencyTree, "idea");
+  console.log(dependencyOrder);
 
   return dependencyTree;
 };
