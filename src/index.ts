@@ -6,6 +6,7 @@ import cookieParser from "cookie-parser";
 import authRouter from "./app/routers/authRouter";
 import dataRouter from "./app/routers/dataRouter";
 import aiRouter from "./app/routers/aiRouter";
+import promptMap from "./content/promptMap";
 
 dotenv.config();
 
@@ -53,3 +54,12 @@ app.get("/areyoualive", (_, res) => {
 app.use("/auth", authRouter);
 app.use("/data", dataRouter);
 app.use("/ai", aiRouter);
+
+/* 
+try{
+  if(process.env.YOAD_FLAG==="dflkgmgj")
+
+ countUniqueDependents(dependencyMapper(promptMap),)
+  console.log("AEDFEWFEWF")
+}
+catch (e){} */
