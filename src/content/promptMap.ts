@@ -71,7 +71,7 @@ const promptMap: PromptMap = {
   targetAudience: [
     {
       type:"static",
-      content: "Give me a detailed description of all my potential target audiences based on my startup idea and problem statment. If needed, devide it to 'customers' if they are only paying and 'users' if they only use it. \n",
+      content: "Give me a detailed description of all my potential target audiences based on my startup idea and problem statment. If needed, devide it to 'customers' if they are only paying and 'users' if they only use it. It shuld include he needs, purchase habits, characteristics, and location of the target market \n",
     },
     { type: "variable", content: "validation" },
     {
@@ -82,6 +82,120 @@ const promptMap: PromptMap = {
 
   ],
   starupName: [
+    {
+      type:"static",
+      content: "Give me 10 apealing available startup names based on the following idea and vision statment and make it appealing too my target audience below. Make sure the domain is not taken and there is no company with the same name \n",
+    },
+    { type: "variable", content: "validation" },
+    {
+      type:"static",
+      content: "\n",
+    },
+    { type: "variable", content: "visionStatment" },
+    {
+      type:"static",
+      content: "\n",
+    },
+    { type: "variable", content: "targetAudience" },
+
+
+  ],
+  marketSize: [
+    {
+      type:"static",
+      content: "You are the CMO of my new startup company. We are preforming a comperhensive market reaserch. Is there sufficient demand for our product? based on the following idea, solution and target audience? Give an estimation to the market size and the total addresable market (TAM) and the number of potential customers  \n",
+    },
+    { type: "variable", content: "validation" },
+    {
+      type:"static",
+      content: "\n",
+    },
+    { type: "variable", content: "solution" },
+    {
+      type:"static",
+      content: "\n",
+    },
+    { type: "variable", content: "targetAudience" },
+
+
+  ],
+  businessModel: [
+    {
+      type:"static",
+      content: "You are the CEO & CBDO of my new startup company. You need to decide on a business model and revenue streams for our startup  \n",
+    },
+    { type: "variable", content: "validation" },
+    {
+      type:"static",
+      content: "\n",
+    },
+    { type: "variable", content: "solution" },
+    {
+      type:"static",
+      content: "\n",
+    },
+    { type: "variable", content: "targetAudience" },
+
+
+  ],
+  marketTrends: [
+    {
+      type:"static",
+      content: "Give me 10 apealing available startup names based on the following idea and vision statment and make it appealing too my target audience below. Make sure the domain is not taken and there is no company with the same name \n",
+    },
+    { type: "variable", content: "validation" },
+    {
+      type:"static",
+      content: "\n",
+    },
+    { type: "variable", content: "visionStatment" },
+    {
+      type:"static",
+      content: "\n",
+    },
+    { type: "variable", content: "targetAudience" },
+
+
+  ],
+  marketGap: [
+    {
+      type:"static",
+      content: "Give me 10 apealing available startup names based on the following idea and vision statment and make it appealing too my target audience below. Make sure the domain is not taken and there is no company with the same name \n",
+    },
+    { type: "variable", content: "validation" },
+    {
+      type:"static",
+      content: "\n",
+    },
+    { type: "variable", content: "visionStatment" },
+    {
+      type:"static",
+      content: "\n",
+    },
+    { type: "variable", content: "targetAudience" },
+
+
+  ],
+  marketSegments: [
+    {
+      type:"static",
+      content: "Give me 10 apealing available startup names based on the following idea and vision statment and make it appealing too my target audience below. Make sure the domain is not taken and there is no company with the same name \n",
+    },
+    { type: "variable", content: "validation" },
+    {
+      type:"static",
+      content: "\n",
+    },
+    { type: "variable", content: "visionStatment" },
+    {
+      type:"static",
+      content: "\n",
+    },
+    { type: "variable", content: "targetAudience" },
+
+
+  ],
+  competitorAnalysis: [
     {
       type:"static",
       content: "Give me 10 apealing available startup names based on the following idea and vision statment and make it appealing too my target audience below. Make sure the domain is not taken and there is no company with the same name \n",
