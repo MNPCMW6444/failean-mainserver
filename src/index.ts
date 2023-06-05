@@ -61,5 +61,6 @@ try {
     const tree = dependencyMapper(promptMap);
     const order = getDependencyOrder(tree, "idea");
     console.log(order);
+    console.log("total: ", order.length);
   }
 } catch (e) {}

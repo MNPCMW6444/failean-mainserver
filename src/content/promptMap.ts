@@ -13,7 +13,7 @@ const promptMap: PromptMap = {
   validation: [
     {
       type: "static",
-      content: "You are now a Co-Founder and an expireinced entreprenuer. Please take this basic idea and make it clear, coherent and investor friendly.\n",
+      content: "You are now a Co-Founder and an expireinced entreprenuer. Please take this basic idea and make it clear and coherent so that investors will want to invest and everyone will understand it, add examles to help understand the idea for example 'It's like Amazon for cannabis' .\n",
     },
     { type: "variable", content: "idea" },
   ],
@@ -81,10 +81,10 @@ const promptMap: PromptMap = {
     { type: "variable", content: "problemStatment" },
 
   ],
-  starupName: [
+  startupName: [
     {
       type:"static",
-      content: "Give me 10 apealing available startup names based on the following idea and vision statment and make it appealing too my target audience below. Make sure the domain is not taken and there is no company with the same name \n",
+      content: "Give me 10 apealing available startup names based on the following idea and vision statment and make it appealing to my target audience below. Make sure the domain is not taken and there is no company with the same name \n",
     },
     { type: "variable", content: "validation" },
     {
@@ -103,7 +103,7 @@ const promptMap: PromptMap = {
   marketSize: [
     {
       type:"static",
-      content: "You are the CMO of my new startup company. We are preforming a comperhensive market reaserch. you need to answer the question 'Is there a sufficient demand for our product?' based on the following idea, solution and target audience,  Give an estimation to the market size and the total addresable market (TAM) and the number of potential customers based on   \n",
+      content: "You are the CMO of my new startup company. We are preforming a comperhensive market reaserch. you need to answer the question 'Is there a sufficient demand for our product?' based on the following idea, solution and target audience, First, give an estimation to the market size by calculating the total addresable market (TAM) as a multiplication of the estimated number of potential customers * the price of our service. Then calculate the servicable addresable market consider geographical and regulatory/legal parameters. then calculate the servisable obtainable market as 1%/5%/10% of the SAM.   \n",
     },
     { type: "variable", content: "validation" },
     {
@@ -116,6 +116,63 @@ const promptMap: PromptMap = {
       content: "\n",
     },
     { type: "variable", content: "targetAudience" },
+    {
+      type:"static",
+      content: "\n",
+    },
+   // { type: "variable", content: "pricing" },
+    {
+      type:"static",
+      content: "\n",
+    },
+    { type: "variable", content: "businessModel" },
+
+  ],
+
+  Channels: [
+    {
+      type: "static",
+      content: "You are the CMO of the startup. Based on our startup idea, solution, target audience, and business model, determine the best channels to reach our customers. List all potential marketing and distribution channels, discussing their pros and cons. \n",
+    },
+    { type: "variable", content: "validation" },
+    {
+      type: "static",
+      content: "\n",
+    },
+    { type: "variable", content: "solution" },
+    {
+      type: "static",
+      content: "\n",
+    },
+    { type: "variable", content: "targetAudience" },
+    {
+      type: "static",
+      content: "\n",
+    },
+    { type: "variable", content: "businessModel" },
+  ],
+  
+  marketCap: [
+    {
+      type:"static",
+      content: "You are the CMO of my new startup company. below is my idea, target audience and solution We are preforming a comperhensive market reaserch. Give me all the estimated market caps you can find including the name of the resource you used, add CAGR for each if it exist. try to find the market segment most relevant to us \n",
+    },
+    { type: "variable", content: "validation" },
+    {
+      type:"static",
+      content: "\n",
+    },
+    { type: "variable", content: "solution" },
+    {
+      type:"static",
+      content: "\n",
+    },
+    { type: "variable", content: "targetAudience" },
+    {
+      type:"static",
+      content: "\n",
+    },
+    { type: "variable", content: "businessModel" },
 
 
   ],
@@ -138,74 +195,36 @@ const promptMap: PromptMap = {
 
 
   ],
-  marketTrends: [
+
+  FundingStrategies:[
     {
-      type:"static",
-      content: "Give me 10 apealing available startup names based on the following idea and vision statment and make it appealing too my target audience below. Make sure the domain is not taken and there is no company with the same name \n",
+      type: "static",
+      content: "You are the CFO of the startup. Based on our startup idea, business model, and market analysis, propose the most suitable funding strategies for our startup. This should include potential investors, grants, loans, and crowdfunding platforms. Discuss the pros and cons of each strategy. \n",
     },
     { type: "variable", content: "validation" },
     {
-      type:"static",
+      type: "static",
       content: "\n",
     },
-    { type: "variable", content: "visionStatment" },
+    { type: "variable", content: "businessModel" },
     {
-      type:"static",
+      type: "static",
       content: "\n",
     },
-    { type: "variable", content: "targetAudience" },
-
-
+    { type: "variable", content: "marketAnalysis" },
   ],
-  marketGap: [
-    {
-      type:"static",
-      content: "Give me 10 apealing available startup names based on the following idea and vision statment and make it appealing too my target audience below. Make sure the domain is not taken and there is no company with the same name \n",
-    },
-    { type: "variable", content: "validation" },
-    {
-      type:"static",
-      content: "\n",
-    },
-    { type: "variable", content: "visionStatment" },
-    {
-      type:"static",
-      content: "\n",
-    },
-    { type: "variable", content: "targetAudience" },
-
-
-  ],
-  marketSegments: [
-    {
-      type:"static",
-      content: "Give me 10 apealing available startup names based on the following idea and vision statment and make it appealing too my target audience below. Make sure the domain is not taken and there is no company with the same name \n",
-    },
-    { type: "variable", content: "validation" },
-    {
-      type:"static",
-      content: "\n",
-    },
-    { type: "variable", content: "visionStatment" },
-    {
-      type:"static",
-      content: "\n",
-    },
-    { type: "variable", content: "targetAudience" },
-
-
-  ],
+  
   competitorAnalysis: [
     {
       type:"static",
-      content: "Give me 10 apealing available startup names based on the following idea and vision statment and make it appealing too my target audience below. Make sure the domain is not taken and there is no company with the same name \n",
+      content: "You are the Product Manager of my startup we need to first identify our direct and indirect competitores based on our market and solution I will give you below. then we need to preform a SWOT analysis for each competitor and lastly give a detailed table of the competitores with relevant columes like business model, target audience, basic information, products and services, market share, branding, website traffic and every other relevant detail you find. .  \n",
     },
     { type: "variable", content: "validation" },
     {
       type:"static",
       content: "\n",
     },
-    { type: "variable", content: "visionStatment" },
+    { type: "variable", content: "solution" },
     {
       type:"static",
       content: "\n",
