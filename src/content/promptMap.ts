@@ -120,7 +120,7 @@ const promptMap: PromptMap = {
       type:"static",
       content: "\n",
     },
-   // { type: "variable", content: "pricing" },
+    { type: "variable", content: "pricing" },
     {
       type:"static",
       content: "\n",
@@ -128,8 +128,35 @@ const promptMap: PromptMap = {
     { type: "variable", content: "businessModel" },
 
   ],
+  pricing:[
+    {
+      type: "static",
+      content: "As the Chief Financial Officer of our startup, it's your responsibility to devise a suitable pricing strategy. This decision must be based on our startup's idea, solution, and target audience. Consider factors like production and operational costs, competitor pricing, the perceived value of our product/service, and our business objectives. Do we aim for penetration pricing, price skimming, cost-based pricing, value-based pricing, or a different strategy altogether? Discuss the pros and cons of each potential strategy for our specific case.\n",
+    },
+    { type: "variable", content: "validation" },
+    {
+      type: "static",
+      content: "\n",
+    },
+    { type: "variable", content: "solution" },
+    {
+      type: "static",
+      content: "\n",
+    },
+    { type: "variable", content: "targetAudience" },
+    {
+      type: "static",
+      content: "\n",
+    },
+    { type: "variable", content: "competitorAnalysis" },
+    {
+      type: "static",
+      content: "\n",
+    },
+    { type: "variable", content: "competitorAnalysis" }
+  ],
 
-  Channels: [
+  channels: [
     {
       type: "static",
       content: "You are the CMO of the startup. Based on our startup idea, solution, target audience, and business model, determine the best channels to reach our customers. List all potential marketing and distribution channels, discussing their pros and cons. \n",
@@ -196,7 +223,7 @@ const promptMap: PromptMap = {
 
   ],
 
-  FundingStrategies:[
+  fundingStrategies:[
     {
       type: "static",
       content: "You are the CFO of the startup. Based on our startup idea, business model, and market analysis, propose the most suitable funding strategies for our startup. This should include potential investors, grants, loans, and crowdfunding platforms. Discuss the pros and cons of each strategy. \n",
@@ -213,7 +240,26 @@ const promptMap: PromptMap = {
     },
     { type: "variable", content: "marketAnalysis" },
   ],
+
+  marketAnalysis: [
+    {
+      type: "static",
+      content: "You are the Market Research Analyst for our startup. We need a detailed market analysis to make informed business decisions. Based on our startup idea, solution, and target audience, provide a comprehensive analysis of the market. This should include an analysis of market trends, customer needs, a demographic profile of our target market, an examination of our competitors, and any other factors that could affect our market. Also, make sure to identify any opportunities and threats in the market. \n",
+    },
+    { type: "variable", content: "validation" },
+    {
+      type: "static",
+      content: "\n",
+    },
+    { type: "variable", content: "solution" },
+    {
+      type: "static",
+      content: "\n",
+    },
+    { type: "variable", content: "targetAudience" },
+  ],
   
+
   competitorAnalysis: [
     {
       type:"static",
@@ -265,7 +311,7 @@ const isValidPromptMap = (map: PromptMap): boolean => {
         part.content !== "idea" &&
         !(part.content in map)
       ) {
-        console.error(`Invalid content "${part.content}" in prompt "${key}"`);
+        console.log(`Invalid content "${part.content}" in prompt "${key}"`);
         return false;
       }
     }
