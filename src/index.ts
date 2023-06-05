@@ -62,23 +62,5 @@ try {
     const order = getDependencyOrder(tree, "idea");
     //console.log(order);
     //console.log("total: ", order.length);
-
-
   }
 } catch (e) {}
-
-
-const sf=(name:string)=>{
-let deps:any=[];
-promptMap[name].forEach((prat)=>{if (prat.type==="variable") deps.push(prat.content)}) 
-  deps= deps.map((dep:string)=>{
-    if(dep==="idea") return dep
-return {
-  [dep]:sf(dep)
-}
-
-  });
-  return deps
-}
-
-console.log( sf("pricing"));

@@ -106,4 +106,26 @@ router.post("/getCostByPromptName", async (req, res) => {
   }
 });
 
+router.get("/xxx", async (req, res) => {
+  const sf = (name: string) => {
+    let deps: any = [];
+    promptMap[name].forEach((prat) => {
+      if (prat.type === "variable") deps.push(prat.content);
+    });
+    deps = deps.map((dep: string) => {
+      if (dep === "idea") return dep;
+      return {
+        [dep]: sf(dep),
+      };
+    });
+    return deps;
+  };
+
+  console.log(sf("pricing"));
+
+  return res.status(200).json({
+    order: sf("pricing"),
+  });
+});
+
 export default router;
