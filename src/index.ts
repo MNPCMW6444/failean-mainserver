@@ -39,7 +39,7 @@ app.use(
     origin:
       process.env.NODE_ENV === "development"
         ? ["http://localhost:5999"]
-        : ["https://app.f-ai-ler.com"],
+        : ["https://failean.com"],
     credentials: true,
   })
 );
