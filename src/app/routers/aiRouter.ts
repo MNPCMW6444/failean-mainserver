@@ -4,6 +4,7 @@ import promptMap, { PromptPart } from "../../content/promptMap";
 import PromptResult from "../models/data/promptResultModel";
 import jsonwebtoken, { JwtPayload } from "jsonwebtoken";
 import RawIdea from "../models/data/rawIdeaModel";
+import { getDependencyOrder, dependencyMapper } from "../util/promptUtils";
 
 const router = express.Router();
 
@@ -79,6 +80,30 @@ router.post("/runAndGetPromptResult", async (req, res) => {
   }
 });
 
-r;
+router.get("/getPromptsDependencyTree", async (req, res) => {
+  try {
+    const tree = dependencyMapper(promptMap);
+    return res.status(200).json({
+      tree,
+    });
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({ errorMessage: JSON.stringify(err) });
+  }
+});
+
+router.post("/getCostByPromptName", async (req, res) => {
+  try {
+    const tree = dependencyMapper(promptMap);
+    const { promptName } = req.body;
+    const order = getDependencyOrder(tree, promptName || "idea");
+    return res.status(200).json({
+      order,
+    });
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({ errorMessage: JSON.stringify(err) });
+  }
+});
 
 export default router;

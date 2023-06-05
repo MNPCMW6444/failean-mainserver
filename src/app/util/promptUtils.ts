@@ -23,29 +23,6 @@ export const dependencyMapper = (promptMap: PromptMap) => {
   return dependencyTree;
 };
 
-export const countUniqueDependents = (
-  dependencyTree: any,
-  promptName: string,
-  seen = new Set<string>()
-): number => {
-  const dependents = dependencyTree[promptName];
-  if (!dependents) {
-    return seen.size;
-  }
-  const addDependent = (dependent: string) => {
-    if (!seen.has(dependent)) {
-      seen.add(dependent);
-      countUniqueDependents(dependencyTree, dependent, seen);
-    }
-  };
-  if (Array.isArray(dependents)) {
-    dependents.forEach(addDependent);
-  } else {
-    Object.keys(dependents).forEach(addDependent);
-  }
-  return seen.size;
-};
-
 export const getDependencyOrder = (
   dependencyTree: any,
   promptName: string,
