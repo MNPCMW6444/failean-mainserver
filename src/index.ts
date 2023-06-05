@@ -7,6 +7,7 @@ import authRouter from "./app/routers/authRouter";
 import dataRouter from "./app/routers/dataRouter";
 import aiRouter from "./app/routers/aiRouter";
 import promptMap from "./content/promptMap";
+import { dependencyMapper, getDependencyOrder } from "./app/util/promptUtils";
 
 dotenv.config();
 
@@ -55,11 +56,10 @@ app.use("/auth", authRouter);
 app.use("/data", dataRouter);
 app.use("/ai", aiRouter);
 
-/* 
-try{
-  if(process.env.YOAD_FLAG==="dflkgmgj")
-
- countUniqueDependents(dependencyMapper(promptMap),)
-  console.log("AEDFEWFEWF")
-}
-catch (e){} */
+try {
+  if (process.env.YOAD_FLAG === "dflkgmgj") {
+    const tree = dependencyMapper(promptMap);
+    const order = getDependencyOrder(tree, "idea");
+    console.log(order);
+  }
+} catch (e) {}
