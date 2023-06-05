@@ -35,7 +35,7 @@ router.post("/signupreq", async (req, res) => {
       key,
     }).save();
 
-    const url = `https://app.f-ai-ler.com/register?key=${key}`;
+    const url = `https://failean.com/register?key=${key}`;
 
     const { subject, body } = signupreq(url);
 
@@ -275,7 +275,7 @@ router.post("/passresreq", async (req, res) => {
       key,
     }).save();
 
-    const url = `https://app.f-ai-ler.com/reset?key=${key}`;
+    const url = `https://failean.com/reset?key=${key}`;
 
     const { subject, body } = passreset(url);
 
