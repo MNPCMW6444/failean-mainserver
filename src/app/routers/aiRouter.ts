@@ -1,47 +1,14 @@
 import express from "express";
-import Idea from "../models/data/ideaModel";
 import { Configuration, OpenAIApi } from "openai";
-import promptMap, {
-  Prompt,
-  PromptMap,
-  PromptPart,
-} from "../../content/promptMap";
+import promptMap, { PromptPart } from "../../content/promptMap";
 import PromptResult from "../models/data/promptResultModel";
 import jsonwebtoken, { JwtPayload } from "jsonwebtoken";
 import RawIdea from "../models/data/rawIdeaModel";
-import { dependencyMapper } from "../util/promptUtils";
 
 const router = express.Router();
 
 router.post("/getPromptResult", async (req, res) => {
-  /* const { promptName } = req.body;
-
-  try {
-    const idea = await Idea.findById(ideaId);
-    if (!idea) return res.status(404).json({ errorMessage: "Idea not found." });
-
-    const prompt = `Validate the following business idea: ${idea.idea}. Provide a SWOT analysis, and predict the potential for success.`;
-
-    const configuration = new Configuration({
-      apiKey: process.env.COMPANY_OPENAI_KEY,
-    });
-    const openai = new OpenAIApi(configuration);
-
-    const completion = await openai.createChatCompletion({
-      model: "gpt-3.5-turbo",
-      messages: [
-        { role: "system", content: "You are a helpful assistant." },
-        { role: "user", content: prompt },
-      ],
-    }); */
-
-  return res.status(200).json({
-    response: null, //completion.data.choices[0].message?.content,
-  });
-  /* } catch (err) {
-    console.error(err);
-    return res.status(500).json({ errorMessage: JSON.stringify(err) });
-  } */
+  res.status(200).json({ response: "Hello World" });
 });
 
 router.post("/runAndGetPromptResult", async (req, res) => {
@@ -112,6 +79,6 @@ router.post("/runAndGetPromptResult", async (req, res) => {
   }
 });
 
-dependencyMapper(promptMap);
+r;
 
 export default router;
