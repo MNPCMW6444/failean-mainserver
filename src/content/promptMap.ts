@@ -149,11 +149,7 @@ const promptMap: PromptMap = {
       content: "\n",
     },
     { type: "variable", content: "competitorAnalysis" },
-    {
-      type: "static",
-      content: "\n",
-    },
-    { type: "variable", content: "competitorAnalysis" }
+   
   ],
 
   channels: [
@@ -206,7 +202,7 @@ const promptMap: PromptMap = {
   businessModel: [
     {
       type:"static",
-      content: "You are now the CEO & CBDO of my new startup company. We want to grow as fast as possible so we can be profitable at the near future.  You need to decide on a business model(B2B/B2C/B2B2C/B2M/B2G) and potential revenue streams for our startup. Here is our startup idea, solution and target audiance. for each relevant option give the pros and cons.   \n",
+      content: "You are now the CEO & CBDO of my new startup company. We want to grow as fast as possible so we can be profitable at the near future. You need to decide on a business model(B2B/B2C/B2B2C/B2M/B2G) and potential revenue streams for our startup. Here is our startup idea, solution and target audiance. for each relevant option give the pros and cons.   \n",
     },
     { type: "variable", content: "validation" },
     {
