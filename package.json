@@ -1,6 +1,6 @@
 {
   "name": "failer-server-main",
-  "version": "0.0.39",
+  "version": "0.0.40",
   "scripts": {
     "build": "npx ts-node build.ts",
     "update": "npx npm-check-updates -u",
@@ -25,7 +25,7 @@
     "exec": "./node_modules/.bin/ts-node ./src"
   },
   "dependencies": {
-    "@failean/shared-types": "^3.9.96",
+    "@failean/shared-types": "^3.9.97",
     "@sendgrid/mail": "^7.7.0",
     "@types/bcrypt": "^5.0.0",
     "@types/cookie-parser": "^1.4.3",
