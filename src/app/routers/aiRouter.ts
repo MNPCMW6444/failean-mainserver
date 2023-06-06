@@ -80,7 +80,7 @@ router.post("/runAndGetPromptResult", async (req, res) => {
   }
 });
 
-router.post("/getPromptTree", async (req, res) => {
+router.get("/getPromptTree", async (req, res) => {
   try {
     const tree = convertMaptoTree(promptMap);
     return res.status(200).json({
