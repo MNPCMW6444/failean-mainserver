@@ -10,7 +10,31 @@ import { PromptPart } from "@failean/shared-types";
 const router = express.Router();
 
 router.post("/getPromptResult", async (req, res) => {
-  res.status(200).json({ response: "Hello World" });
+  try {
+    const token = req.cookies.jsonwebtoken;
+    if (!token) return res.status(401).json({ clientMessage: "Unauthorized" });
+    const validatedUser = jsonwebtoken.verify(
+      token,
+      process.env.JWT_SECRET as string
+    );
+    const userId = (validatedUser as JwtPayload).id;
+
+    const { ideaId, promptName }: { ideaId: string; promptName: string } =
+      req.body;
+
+    const promptResult = await PromptResult.find({
+      owner: userId,
+      ideaId,
+      promptName,
+    });
+
+    return res.status(200).json({
+      promptResult,
+    });
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({ errorMessage: JSON.stringify(err) });
+  }
 });
 
 router.post("/runAndGetPromptResult", async (req, res) => {
