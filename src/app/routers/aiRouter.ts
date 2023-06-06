@@ -80,18 +80,6 @@ router.post("/runAndGetPromptResult", async (req, res) => {
   }
 });
 
-router.get("/getPromptsDependencyTree", async (req, res) => {
-  try {
-    const tree = dependencyMapper(promptMap);
-    return res.status(200).json({
-      tree,
-    });
-  } catch (err) {
-    console.error(err);
-    return res.status(500).json({ errorMessage: JSON.stringify(err) });
-  }
-});
-
 router.post("/getPromptTree", async (req, res) => {
   try {
     const tree = convertMaptoTree(promptMap);
