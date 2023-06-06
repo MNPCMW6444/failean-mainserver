@@ -5,7 +5,6 @@ import mongoose, { ConnectOptions } from "mongoose";
 import cookieParser from "cookie-parser";
 import authRouter from "./app/routers/authRouter";
 import dataRouter from "./app/routers/dataRouter";
-import aiRouter from "./app/routers/aiRouter";
 import promptMap from "./content/prompts/promptMap";
 import { convertMaptoTree } from "./app/util/promptUtils";
 
@@ -54,7 +53,6 @@ app.get("/areyoualive", (_, res) => {
 
 app.use("/auth", authRouter);
 app.use("/data", dataRouter);
-app.use("/ai", aiRouter);
 
 try {
   if (process.env.YOAD_FLAG === "dflkgmgj") {
