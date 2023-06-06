@@ -9,9 +9,5 @@ const name: AppName = {
 };
 
 // package.name
-// index.html.head.meta.description
-// index.html.head.title
-// manifest.short_name
-// manifest.name
 
 export default name;

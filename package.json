@@ -1,5 +1,5 @@
 {
-  "name": "failer-server-main",
+  "name": "failean-mainserver",
   "version": "0.0.41",
   "scripts": {
     "build": "npx ts-node build.ts",
