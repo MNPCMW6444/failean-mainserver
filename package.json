@@ -1,6 +1,6 @@
 {
   "name": "failer-server-main",
-  "version": "0.0.36",
+  "version": "0.0.38",
   "scripts": {
     "build": "npx ts-node build.ts",
     "update": "npx npm-check-updates -u",

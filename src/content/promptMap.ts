@@ -1,3 +1,5 @@
+import { PromptMap } from "@failean/shared-types";
+
 const promptMap: PromptMap = {
   validation: [
     {

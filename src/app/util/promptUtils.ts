@@ -1,4 +1,4 @@
-import { PromptMap } from "../../content/promptMap";
+import { PromptMap, TreeNode } from "@failean/shared-types";
 
 export const convertMaptoTree = (promptMap: PromptMap): TreeNode => {
   // Dictionary to track nodes that have already been visited

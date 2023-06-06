@@ -1,10 +1,11 @@
 import express from "express";
 import { Configuration, OpenAIApi } from "openai";
-import promptMap, { PromptPart } from "../../content/promptMap";
+import promptMap from "../../content/promptMap";
 import PromptResult from "../models/data/promptResultModel";
 import jsonwebtoken, { JwtPayload } from "jsonwebtoken";
 import RawIdea from "../models/data/rawIdeaModel";
 import { convertMaptoTree } from "../util/promptUtils";
+import { PromptPart } from "@failean/shared-types";
 
 const router = express.Router();
 
