@@ -60,7 +60,7 @@ try {
   if (process.env.YOAD_FLAG === "dflkgmgj") {
     const tree = dependencyMapper(promptMap);
     const order = getDependencyOrder(tree, "idea");
-    //console.log(order);
-    //console.log("total: ", order.length);
+    console.log(order);
+    console.log("total: ", order.length);
   }
 } catch (e) {}
