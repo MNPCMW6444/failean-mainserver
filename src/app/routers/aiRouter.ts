@@ -4,7 +4,11 @@ import promptMap, { PromptPart } from "../../content/promptMap";
 import PromptResult from "../models/data/promptResultModel";
 import jsonwebtoken, { JwtPayload } from "jsonwebtoken";
 import RawIdea from "../models/data/rawIdeaModel";
-import { getDependencyOrder, dependencyMapper } from "../util/promptUtils";
+import {
+  getDependencyOrder,
+  dependencyMapper,
+  convertMaptoTree,
+} from "../util/promptUtils";
 
 const router = express.Router();
 
@@ -92,40 +96,16 @@ router.get("/getPromptsDependencyTree", async (req, res) => {
   }
 });
 
-router.post("/getCostByPromptName", async (req, res) => {
+router.post("/getPromptTree", async (req, res) => {
   try {
-    const tree = dependencyMapper(promptMap);
-    const { promptName } = req.body;
-    const order = getDependencyOrder(tree, promptName || "idea");
+    const tree = convertMaptoTree(promptMap);
     return res.status(200).json({
-      order,
+      tree,
     });
   } catch (err) {
     console.error(err);
     return res.status(500).json({ errorMessage: JSON.stringify(err) });
   }
-});
-
-router.get("/xxx", async (req, res) => {
-  const sf = (name: string) => {
-    let deps: any = [];
-    promptMap[name].forEach((prat) => {
-      if (prat.type === "variable") deps.push(prat.content);
-    });
-    deps = deps.map((dep: string) => {
-      if (dep === "idea") return dep;
-      return {
-        [dep]: sf(dep),
-      };
-    });
-    return deps;
-  };
-
-  console.log(sf("pricing"));
-
-  return res.status(200).json({
-    order: sf("pricing"),
-  });
 });
 
 export default router;

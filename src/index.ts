@@ -6,8 +6,8 @@ import cookieParser from "cookie-parser";
 import authRouter from "./app/routers/authRouter";
 import dataRouter from "./app/routers/dataRouter";
 import aiRouter from "./app/routers/aiRouter";
-import promptMap, { PromptMap } from "./content/promptMap";
-import { dependencyMapper, getDependencyOrder } from "./app/util/promptUtils";
+import promptMap from "./content/promptMap";
+import { convertMaptoTree } from "./app/util/promptUtils";
 
 dotenv.config();
 
@@ -58,43 +58,7 @@ app.use("/ai", aiRouter);
 
 try {
   if (process.env.YOAD_FLAG === "dflkgmgj") {
-    const tree = dependencyMapper(promptMap);
-    const order = getDependencyOrder(tree, "idea");
-    console.log(order);
-    console.log("total: ", order.length);
+    const tree = convertMaptoTree(promptMap);
+    console.log(tree);
   }
 } catch (e) {}
-
-interface TreeNode {
-  name: string;
-  children: TreeNode[];
-}
-
-function buildPromptTree(promptMap: PromptMap): TreeNode {
-  // Dictionary to track nodes that have already been visited
-  let visited: { [nodeName: string]: boolean } = {};
-
-  // Function to recursively find children of each node
-  const findChildren = (nodeName: string): TreeNode[] => {
-    visited[nodeName] = true;
-
-    let children: TreeNode[] = [];
-    for (let key in promptMap) {
-      if (visited[key]) continue;
-
-      for (let part of promptMap[key]) {
-        if (part.type === "variable" && part.content === nodeName) {
-          children.push({ name: key, children: findChildren(key) });
-          break;
-        }
-      }
-    }
-    return children;
-  };
-
-  // Start building the tree from 'idea' node
-  return { name: "idea", children: findChildren("idea") };
-}
-
-const promptTree = buildPromptTree(promptMap);
-console.log(JSON.stringify(promptTree, null, 2));
