@@ -4,11 +4,7 @@ import promptMap, { PromptPart } from "../../content/promptMap";
 import PromptResult from "../models/data/promptResultModel";
 import jsonwebtoken, { JwtPayload } from "jsonwebtoken";
 import RawIdea from "../models/data/rawIdeaModel";
-import {
-  getDependencyOrder,
-  dependencyMapper,
-  convertMaptoTree,
-} from "../util/promptUtils";
+import { convertMaptoTree } from "../util/promptUtils";
 
 const router = express.Router();
 
