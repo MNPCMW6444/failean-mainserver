@@ -1,10 +1,5 @@
 import { PromptMap } from "../../content/promptMap";
 
-interface TreeNode {
-  name: string;
-  children: TreeNode[];
-}
-
 export const convertMaptoTree = (promptMap: PromptMap): TreeNode => {
   // Dictionary to track nodes that have already been visited
   let visited: { [nodeName: string]: boolean } = {};
