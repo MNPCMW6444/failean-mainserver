@@ -294,6 +294,104 @@ const promptMap: PromptMap = {
         "A good solution statement will cover what is the best practical and effective way to use the idea to solve the problem. It needs to show exactly how the idea solve each part of the problem and the overall problem",
     },
   ],
+  features: [
+    {
+      type: "static",
+      content:
+        "Detail the key features of the product/service based on the problem statement, solution, and user stories. Each feature should include its functionality, the user benefit, and how it aligns with the overall vision and mission of the startup. \n",
+    },
+    { type: "variable", content: "validation" },
+    { type: "static", content: "\n" },
+    { type: "variable", content: "solution" },
+    { type: "static", content: "\n" },
+    { type: "variable", content: "highLevelPRD" },
+  ],
+  devDependencies: [
+    {
+      type: "static",
+      content:
+        "Identify and detail all the dependencies for the development and operation of your startup's product/service. This should include technical dependencies, third-party services, regulatory or legal dependencies, and any other factors that could impact the development or deployment of your solution. \n",
+    },
+    { type: "variable", content: "validation" },
+    { type: "static", content: "\n" },
+    { type: "variable", content: "solution" },
+    { type: "static", content: "\n" },
+    { type: "variable", content: "features" },
+    { type: "static", content: "\n" },
+    { type: "variable", content: "highLevelPRD" },
+  ],
+  milestones: [
+    {
+      type: "static",
+      content:
+        "Define key milestones for the development and deployment of your startup's product/service. Milestones should be specific, measurable, attainable, relevant, and time-bound (SMART). They should align with the overall business objectives and be based on the dependencies and features identified. \n",
+    },
+    { type: "variable", content: "validation" },
+    { type: "static", content: "\n" },
+    { type: "variable", content: "solution" },
+    { type: "static", content: "\n" },
+    { type: "variable", content: "devDependencies" },
+    { type: "static", content: "\n" },
+    { type: "variable", content: "features" },
+  ],
+
+  valueProposition: [
+    {
+      type: "static",
+      content:
+        "You are now the Chief Product Officer of our startup. Based on the startup's idea, solution, and target audience, articulate the value proposition. The value proposition should clearly articulate why a customer should buy our product or service. What are the attractive benefits? What problems are we solving? How are we better than alternatives? \n",
+    },
+    { type: "variable", content: "validation" },
+    {
+      type: "static",
+      content: "\n",
+    },
+    { type: "variable", content: "solution" },
+    {
+      type: "static",
+      content: "\n",
+    },
+    { type: "variable", content: "targetAudience" },
+  ],
+  highLevelPRD: [
+    {
+      type: "static",
+      content:
+        "Please write user stories for the high-level Product Requirement Document (PRD). Each user story should reflect a requirement or need from your target audience, prioritized by importance. The format should be: 'As a [type of user], I want [some goal] so that [some reason].' \n",
+    },
+    { type: "variable", content: "targetAudience" },
+    { type: "static", content: "\n" },
+    { type: "variable", content: "problemStatement" },
+    { type: "static", content: "\n" },
+    { type: "variable", content: "solution" },
+    { type: "static", content: "\n" },
+    { type: "variable", content: "validation" },
+  ],
+
+  uniqueValueProposition: [
+    {
+      type: "static",
+      content:
+        "You are now the Chief Product Officer of our startup. Based on the startup's value proposition and competitive analysis, articulate the unique value proposition (UVP). The UVP should state what makes our product or service uniquely valuable to customers and differentiates us from the competition. \n",
+    },
+    { type: "variable", content: "validation" },
+    {
+      type: "static",
+      content: "\n",
+    },
+    { type: "variable", content: "valueProposition" },
+    {
+      type: "static",
+      content: "\n",
+    },
+
+    { type: "variable", content: "competitorAnalysis" },
+    {
+      type: "static",
+      content: "\n",
+    },
+    { type: "variable", content: "targetAudience" },
+  ],
 };
 
 const isValidPromptMap = (map: PromptMap): boolean => {
