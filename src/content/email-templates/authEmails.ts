@@ -1,6 +1,6 @@
 const signupreq = (url: string) => ({
-    subject: "Activate your Failean Account",
-    body: `<!DOCTYPE html>
+  subject: "Activate your Failean Account",
+  body: `<!DOCTYPE html>
   <html lang="en">
   <head>
       <meta charset="UTF-8">
@@ -20,11 +20,11 @@ const signupreq = (url: string) => ({
   </body>
   </html>
   `,
-  });
-  
-  const passreset = (url: string) => ({
-    subject: "Failean Password Reset Request",
-    body: `<!DOCTYPE html>
+});
+
+const passreset = (url: string) => ({
+  subject: "Failean Password Reset Request",
+  body: `<!DOCTYPE html>
     <html lang="en">
     <head>
         <meta charset="UTF-8">
@@ -43,7 +43,6 @@ const signupreq = (url: string) => ({
     </body>
     </html>
     `,
-  });
-  
-  export { signupreq, passreset };
-  
+});
+
+export { signupreq, passreset };

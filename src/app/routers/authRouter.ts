@@ -1,5 +1,5 @@
 import express from "express";
-import User from "../models/auth/userModel";
+import userModel from "../models/auth/userModel";
 import bcrypt from "bcrypt";
 import jsonwebtoken, { JwtPayload } from "jsonwebtoken";
 import RequestForAccount from "../models/auth/requestForAccountModal";
@@ -8,9 +8,7 @@ import RequestForPassChange from "../models/auth/requestForPassChangeModal";
 import zxcvbn from "zxcvbn";
 import { sendEmail } from "../util/emailUtil";
 import { v4 as keyv4 } from "uuid";
-
-import Idea from "../models/data/ideaModel";
-import RawIdea from "../models/data/rawIdeaModel";
+import ideaModel from "../models/data/ideaModel";
 
 const router = express.Router();
 const MIN_PASSWORD_STRENGTH = 3;
@@ -22,7 +20,7 @@ router.post("/signupreq", async (req, res) => {
       return res.status(400).json({
         clientError: "The email is missing",
       });
-    const existingUser = await User.findOne({ email });
+    const existingUser = await userModel.findOne({ email });
     if (existingUser)
       return res.status(400).json({
         clientError: "An account with this email already exists",
@@ -83,7 +81,7 @@ router.post("/signupfin", async (req, res) => {
       return res.status(400).json({
         clientError: "Passwords doesn't match",
       });
-    const existingUser = await User.findOne({
+    const existingUser = await userModel.findOne({
       email: existingSignupRequest.email,
     });
     if (existingUser)
@@ -96,7 +94,7 @@ router.post("/signupfin", async (req, res) => {
       });
     const salt = await bcrypt.genSalt();
     const passwordHash = await bcrypt.hash(password, salt);
-    const savedUser = await new User({
+    const savedUser = await new userModel({
       email: existingSignupRequest.email,
       name: fullname,
       passwordHash,
@@ -107,13 +105,9 @@ router.post("/signupfin", async (req, res) => {
       },
       process.env.JWT_SECRET as string
     );
-    const idea = await new Idea({
+    const idea = await new ideaModel({
       owner: savedUser._id,
       idea: "Enter you first idea here",
-    }).save();
-    await new RawIdea({
-      parent: idea._id,
-      rawIdea: "Enter you first idea here",
     }).save();
     res
       .cookie("jsonwebtoken", token, {
@@ -142,7 +136,7 @@ router.post("/signin", async (req, res) => {
     if (!email || !password)
       res.status(400).json({ clientError: "Wrong email or password" });
 
-    const existingUser = await User.findOne({ email });
+    const existingUser = await userModel.findOne({ email });
     if (!existingUser)
       return res.status(401).json({
         clientError: "Wrong email or password",
@@ -196,7 +190,7 @@ router.post("/updatename", async (req, res) => {
       process.env.JWT_SECRET as string
     );
     const userId = (validatedUser as JwtPayload).id;
-    const user = await User.findById(userId);
+    const user = await userModel.findById(userId);
     if (user) user.name = name;
     await user?.save();
     res.json(user);
@@ -221,7 +215,7 @@ router.post("/updatepassword", async (req, res) => {
       process.env.JWT_SECRET as string
     );
     const userId = (validatedUser as JwtPayload).id;
-    const user = await User.findById(userId);
+    const user = await userModel.findById(userId);
     const salt = await bcrypt.genSalt();
     const passwordHash = await bcrypt.hash(password, salt);
     if (user) user.passwordHash = passwordHash;
@@ -262,7 +256,7 @@ router.post("/passresreq", async (req, res) => {
       return res.status(400).json({
         clientError: "The email is missing",
       });
-    const existingUser = await User.findOne({ email });
+    const existingUser = await userModel.findOne({ email });
     if (!existingUser)
       return res.status(400).json({
         clientError: "An account with this email couldn't been found",
@@ -320,7 +314,7 @@ router.post("/passresfin", async (req, res) => {
       });
     const salt = await bcrypt.genSalt();
     const passwordHash = await bcrypt.hash(password, salt);
-    const user = (await User.find({ email }))[0];
+    const user = (await userModel.find({ email }))[0];
     user.passwordHash = passwordHash;
     await user.save();
     res.json({ changed: "yes" });
@@ -350,7 +344,7 @@ router.post("/updaten", async (req, res) => {
       process.env.JWT_SECRET as string
     );
     const userId = (validatedUser as JwtPayload).id;
-    const user = (await User.find({ userId }))[0];
+    const user = (await userModel.find({ userId }))[0];
     await user.save();
     res.json({ changed: "yes" });
   } catch (err) {
@@ -370,7 +364,7 @@ router.get("/signedin", async (req, res) => {
       process.env.JWT_SECRET as string
     );
     const userId = (validatedUser as JwtPayload).id;
-    res.json(await User.findById(userId));
+    res.json(await userModel.findById(userId));
   } catch (err) {
     return res.status(401).json({ errorMessage: "Unauthorized." });
   }

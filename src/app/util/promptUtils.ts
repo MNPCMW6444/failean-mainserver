@@ -1,49 +1,27 @@
-import { PromptMap } from "../../content/promptMap";
+import { PromptMap, TreeNode } from "@failean/shared-types";
 
-export const dependencyMapper = (promptMap: PromptMap) => {
-  const dependencyTree: any = {};
-  for (const promptName in promptMap) {
-    const prompt = promptMap[promptName];
-    for (const part of prompt) {
-      if (part.type === "variable") {
-        if (!dependencyTree[part.content.trim()]) {
-          dependencyTree[part.content.trim()] = {};
+export const convertMaptoTree = (promptMap: PromptMap): TreeNode => {
+  // Dictionary to track nodes that have already been visited
+  let visited: { [nodeName: string]: boolean } = {};
+
+  // Function to recursively find children of each node
+  const findChildren = (nodeName: string): TreeNode[] => {
+    visited[nodeName] = true;
+
+    let children: TreeNode[] = [];
+    for (let key in promptMap) {
+      if (visited[key]) continue;
+
+      for (let part of promptMap[key]) {
+        if (part.type === "variable" && part.content === nodeName) {
+          children.push({ name: key, children: findChildren(key) });
+          break;
         }
-        dependencyTree[part.content.trim()][promptName] = true;
       }
     }
-  }
-  for (const promptName in dependencyTree) {
-    if (
-      Object.values(dependencyTree[promptName]).every((value) => value === true)
-    ) {
-      dependencyTree[promptName] = Object.keys(dependencyTree[promptName]);
-    }
-  }
-  return dependencyTree;
-};
-
-export const getDependencyOrder = (
-  dependencyTree: any,
-  promptName: string,
-  seen = new Set<string>(),
-  order: any[] = []
-): string[] => {
-  const dependents = dependencyTree[promptName];
-  if (!dependents) {
-    return order;
-  }
-  const addDependent = (dependent: string) => {
-    if (!seen.has(dependent)) {
-      seen.add(dependent);
-      getDependencyOrder(dependencyTree, dependent, seen, order);
-      order.push(dependent);
-    }
+    return children;
   };
-  if (Array.isArray(dependents)) {
-    dependents.forEach(addDependent);
-  } else {
-    Object.keys(dependents).forEach(addDependent);
-  }
-  return order.reverse();
+
+  // Start building the tree from 'idea' node
+  return { name: "idea", children: findChildren("idea") };
 };

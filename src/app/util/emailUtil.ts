@@ -8,7 +8,7 @@ export const sendEmail = (to: string, subject: string, html: string) =>
   sgMail.send({
     from: {
       email: "service@failean.com",
-      name: "fAIlear",
+      name: "fAIlean",
     },
     to,
     subject,

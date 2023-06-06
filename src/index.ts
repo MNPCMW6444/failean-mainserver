@@ -6,8 +6,8 @@ import cookieParser from "cookie-parser";
 import authRouter from "./app/routers/authRouter";
 import dataRouter from "./app/routers/dataRouter";
 import aiRouter from "./app/routers/aiRouter";
-import promptMap from "./content/promptMap";
-import { dependencyMapper, getDependencyOrder } from "./app/util/promptUtils";
+import promptMap from "./content/prompts/promptMap";
+import { convertMaptoTree } from "./app/util/promptUtils";
 
 dotenv.config();
 
@@ -58,9 +58,7 @@ app.use("/ai", aiRouter);
 
 try {
   if (process.env.YOAD_FLAG === "dflkgmgj") {
-    const tree = dependencyMapper(promptMap);
-    const order = getDependencyOrder(tree, "idea");
-    //console.log(order);
-    //console.log("total: ", order.length);
+    const tree = convertMaptoTree(promptMap);
+    console.log(tree);
   }
 } catch (e) {}
