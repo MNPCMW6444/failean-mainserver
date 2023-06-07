@@ -1,6 +1,6 @@
 {
   "name": "failean-mainserver",
-  "version": "0.0.41",
+  "version": "0.0.42",
   "scripts": {
     "build": "npx ts-node build.ts",
     "update": "npx npm-check-updates -u",
