@@ -1,27 +1,52 @@
-import { PromptMap, TreeNode } from "@failean/shared-types";
+import { PromptMap, PromptPart } from "@failean/shared-types";
 
-export const convertMaptoTree = (promptMap: PromptMap): TreeNode => {
-  // Dictionary to track nodes that have already been visited
-  let visited: { [nodeName: string]: boolean } = {};
+export const convertMaptoTree = (promptMap: PromptMap) => {
+  const promptsAndTheirDeps: any = Object.keys(promptMap).map(
+    (promptName: string) => ({
+      name: promptName,
+      array: promptMap[promptName]
+        .map(
+          (promptPart: PromptPart) =>
+            promptPart.type === "variable" && promptPart.content
+        )
+        .filter((x) => x),
+    })
+  );
+  promptsAndTheirDeps.push({ name: "idea", array: [] });
+  let flags: any = [];
+  promptsAndTheirDeps.forEach((one: any) =>
+    flags.push({ name: one.name, flag: false })
+  );
+  let res: any = [];
+  res.push({ level: 1, name: "idea" });
 
-  // Function to recursively find children of each node
-  const findChildren = (nodeName: string): TreeNode[] => {
-    visited[nodeName] = true;
-
-    let children: TreeNode[] = [];
-    for (let key in promptMap) {
-      if (visited[key]) continue;
-
-      for (let part of promptMap[key]) {
-        if (part.type === "variable" && part.content === nodeName) {
-          children.push({ name: key, children: findChildren(key) });
-          break;
+  for (let i = 0; i < flags.filter((flag: any) => !flag.flag).length; ) {
+    console.log(flags.filter((flag: any) => !flag.flag).length);
+    flags
+      .filter((flag: any) => !flag.flag)
+      .forEach((flagg: any, index: number) => {
+        if (index !== 0) {
+          const prompt = promptsAndTheirDeps.find(
+            (x: any) => x.name === flagg.name
+          );
+          let satisfied = prompt.array.map((name: string) => {
+            const flagO = flags.find((flagx: any) => {
+              return flagx.name === name;
+            });
+            return flagO.flag;
+          });
+          let total = true;
+          satisfied.forEach((satis: boolean) => {
+            if (!satis) total = false;
+          });
+          if (total) {
+            res.push({ level: index, prompt: prompt.name });
+            console.log(prompt.name);
+            console.log(flags.find((flag: any) => flag.name === prompt.name));
+            flags.find((flag: any) => flag.name === prompt.name).flag = true;
+          }
         }
-      }
-    }
-    return children;
-  };
-
-  // Start building the tree from 'idea' node
-  return { name: "idea", children: findChildren("idea") };
+      });
+  }
+  return res;
 };
