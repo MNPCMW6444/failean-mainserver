@@ -14,6 +14,8 @@ export const convertMaptoTree = (promptMap: PromptMap) => {
   );
   promptsAndTheirDeps.push({ name: "idea", array: [] });
   let flags: any = [];
+  flags.push({ name: "idea", flag: true });
+
   promptsAndTheirDeps.forEach((one: any) =>
     flags.push({ name: one.name, flag: false })
   );
@@ -21,7 +23,6 @@ export const convertMaptoTree = (promptMap: PromptMap) => {
   res.push({ level: 1, name: "idea" });
 
   for (let i = 0; i < flags.filter((flag: any) => !flag.flag).length; ) {
-    console.log(flags.filter((flag: any) => !flag.flag).length);
     flags
       .filter((flag: any) => !flag.flag)
       .forEach((flagg: any, index: number) => {
@@ -31,19 +32,20 @@ export const convertMaptoTree = (promptMap: PromptMap) => {
           );
           let satisfied = prompt.array.map((name: string) => {
             const flagO = flags.find((flagx: any) => {
-              return flagx.name === name;
+              return { name, f: flagx.name === name };
             });
-            return flagO.flag;
+            return { name, f: flagO.flag };
           });
           let total = true;
-          satisfied.forEach((satis: boolean) => {
-            if (!satis) total = false;
+          satisfied.forEach(({ f }: { f: boolean }) => {
+            if (!f) total = false;
           });
           if (total) {
             res.push({ level: index, prompt: prompt.name });
             console.log(prompt.name);
-            console.log(flags.find((flag: any) => flag.name === prompt.name));
             flags.find((flag: any) => flag.name === prompt.name).flag = true;
+          } else {
+            console.log(prompt.name, satisfied);
           }
         }
       });
