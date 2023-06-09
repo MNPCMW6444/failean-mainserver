@@ -1,55 +1,30 @@
-import { PromptMap, PromptPart } from "@failean/shared-types";
-
-export const convertMaptoGraph = (promptMap: PromptMap) => {
-  let superPrompts = Object.keys(promptMap).map((promptName: string) => ({
+export const convertMaptoGraph = (promptMap) => {
+  let superPrompts = Object.keys(promptMap).map(promptName => ({
     name: promptName,
-    deps: promptMap[promptName]
-      .map(
-        (promptPart: PromptPart) =>
-          promptPart.type === "variable" && promptPart.content
-      )
-      .filter((x) => x) as string[],
+    deps: promptMap[promptName].filter(promptPart => promptPart.type === "variable" && promptPart.content),
     level: 0,
   }));
   superPrompts.unshift({ name: "idea", deps: [], level: 0 });
+
   let level = 0;
-  while (superPrompts.filter(({ level }) => level < 1).length > 0) {
+  while (superPrompts.some(sp => sp.level < 1)) {
     level++;
-    superPrompts
-      .filter(({ level }) => level === -1)
-      .forEach((sp) => {
-        sp.level = level - 1;
-        superPrompts = superPrompts.filter(({ name }) => name !== sp.name);
-        superPrompts = [...superPrompts, sp];
+    superPrompts.filter(sp => sp.level === -1).forEach(sp => {
+      sp.level = level - 1;
+      superPrompts = [...superPrompts.filter(s => s.name !== sp.name), sp];
+    });
+
+    superPrompts.filter(sp => !sp.level).forEach(sp => {
+      const satisfied = sp.deps.every(name => {
+        const number = superPrompts.find(spx => spx.name === name)?.level;
+        return number && number > 0;
       });
-    superPrompts
-      .filter(({ level }) => !level)
-      .forEach((sp: any) => {
-        let satisfied = sp.deps
-          .map(
-            (name: string) =>
-              superPrompts.find((spx) => spx.name === name)?.name
-          )
-          .map((name: string) => {
-            const number = superPrompts.find(
-              (spxx) => spxx.name === name
-            )?.level;
-            return !name || (number && number > 0);
-          });
-        let total = true;
-        satisfied.forEach((f: boolean) => {
-          if (!f) total = false;
-        });
-        if (total) {
-          sp.level = -1;
-          superPrompts = superPrompts.filter(({ name }) => name !== sp.name);
-          superPrompts = [...superPrompts, sp];
-        }
-      });
+      if (satisfied) {
+        sp.level = -1;
+        superPrompts = [...superPrompts.filter(s => s.name !== sp.name), sp];
+      }
+    });
   }
-  let graph = superPrompts.map(({ name, level }) => ({
-    name,
-    level,
-  }));
-  return graph;
+
+  return superPrompts.map(({ name, level }) => ({ name, level }));
 };
