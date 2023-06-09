@@ -1,6 +1,6 @@
 import { PromptMap, PromptPart } from "@failean/shared-types";
 
-export const convertMaptoGraph = (promptMap: PromptMap): PromptGraph => {
+export const convertMaptoGraph = (promptMap: PromptMap) => {
   let superPrompts = Object.keys(promptMap).map((promptName: string) => ({
     name: promptName,
     deps: promptMap[promptName]
@@ -39,7 +39,9 @@ export const convertMaptoGraph = (promptMap: PromptMap): PromptGraph => {
         }
       });
   }
-  let array: { name: string; level: number }[] = [];
-  superPrompts.map(({ name, level }) => ({ name, level }));
-  return { array };
+  let graph = superPrompts.map(({ name, level }) => ({
+    name,
+    level,
+  }));
+  return graph;
 };
