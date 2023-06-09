@@ -84,7 +84,7 @@ router.post("/getPromptResult", async (req, res) => {
     });
 
     return res.status(200).json({
-      promptResult,
+      promptResult: promptResult[promptResult.length - 1],
     });
   } catch (err) {
     console.error(err);
