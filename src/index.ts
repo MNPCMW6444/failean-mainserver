@@ -6,7 +6,7 @@ import cookieParser from "cookie-parser";
 import authRouter from "./app/routers/authRouter";
 import dataRouter from "./app/routers/dataRouter";
 import promptMap from "./content/prompts/promptMap";
-import { convertMaptoTree } from "./app/util/promptUtils";
+import { convertMaptoGraph } from "./app/util/promptUtils";
 
 dotenv.config();
 
@@ -56,7 +56,7 @@ app.use("/data", dataRouter);
 
 try {
   if (process.env.YOAD_FLAG === "dflkgmgj") {
-    const tree = convertMaptoTree(promptMap);
+    const tree = convertMaptoGraph(promptMap);
     console.log(tree);
   }
 } catch (e) {}

@@ -4,16 +4,16 @@ import { Configuration, OpenAIApi } from "openai";
 import promptMap from "../../content/prompts/promptMap";
 import PromptResultModel from "../models/data/promptResultModel";
 import jsonwebtoken, { JwtPayload } from "jsonwebtoken";
-import { convertMaptoTree } from "../util/promptUtils";
+import { convertMaptoGraph } from "../util/promptUtils";
 import { PromptPart } from "@failean/shared-types";
 
 const router = express.Router();
 
-router.get("/getPromptTree", async (req, res) => {
+router.get("/getPromptGraph", async (req, res) => {
   try {
-    const tree = convertMaptoTree(promptMap);
+    const graph = convertMaptoGraph(promptMap);
     return res.status(200).json({
-      tree,
+      graph,
     });
   } catch (err) {
     console.error(err);

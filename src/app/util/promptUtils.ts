@@ -1,54 +1,45 @@
 import { PromptMap, PromptPart } from "@failean/shared-types";
 
-export const convertMaptoTree = (promptMap: PromptMap) => {
-  const promptsAndTheirDeps: any = Object.keys(promptMap).map(
-    (promptName: string) => ({
-      name: promptName,
-      array: promptMap[promptName]
-        .map(
-          (promptPart: PromptPart) =>
-            promptPart.type === "variable" && promptPart.content
-        )
-        .filter((x) => x),
-    })
-  );
-  promptsAndTheirDeps.push({ name: "idea", array: [] });
-  let flags: any = [];
-  flags.push({ name: "idea", flag: true });
-
-  promptsAndTheirDeps.forEach((one: any) =>
-    flags.push({ name: one.name, flag: false })
-  );
-  let res: any = [];
-  res.push({ level: 1, name: "idea" });
-
-  for (let i = 0; i < flags.filter((flag: any) => !flag.flag).length; ) {
-    flags
-      .filter((flag: any) => !flag.flag)
-      .forEach((flagg: any, index: number) => {
-        if (index !== 0) {
-          const prompt = promptsAndTheirDeps.find(
-            (x: any) => x.name === flagg.name
+export const convertMaptoGraph = (promptMap: PromptMap): PromptGraph => {
+  let superPrompts = Object.keys(promptMap).map((promptName: string) => ({
+    name: promptName,
+    deps: promptMap[promptName]
+      .map(
+        (promptPart: PromptPart) =>
+          promptPart.type === "variable" && promptPart.content
+      )
+      .filter((x) => x) as string[],
+    level: 0,
+  }));
+  superPrompts.unshift({ name: "idea", deps: [], level: 0 });
+  let level = 0;
+  while (superPrompts.filter(({ level }) => !level).length > 0) {
+    level++;
+    superPrompts
+      .filter(({ level }) => !level)
+      .forEach((sp: any, index: number) => {
+        let satisfied = sp.deps
+          .map(
+            (name: string) =>
+              superPrompts.find((spx) => spx.name === name)?.name
+          )
+          .map(
+            (name: string) =>
+              !name || superPrompts.find((spxx) => spxx.name === name)?.level
           );
-          let satisfied = prompt.array.map((name: string) => {
-            const flagO = flags.find((flagx: any) => {
-              return { name, f: flagx.name === name };
-            });
-            return { name, f: flagO.flag };
-          });
-          let total = true;
-          satisfied.forEach(({ f }: { f: boolean }) => {
-            if (!f) total = false;
-          });
-          if (total) {
-            res.push({ level: index, prompt: prompt.name });
-            console.log(prompt.name);
-            flags.find((flag: any) => flag.name === prompt.name).flag = true;
-          } else {
-            console.log(prompt.name, satisfied);
-          }
+        let total = true;
+        satisfied.forEach((f: boolean) => {
+          if (!f) total = false;
+        });
+
+        if (total) {
+          sp.level = level;
+          superPrompts = [...superPrompts, sp];
+          superPrompts.splice(index, 1);
         }
       });
   }
-  return res;
+  let array: { name: string; level: number }[] = [];
+  superPrompts.map(({ name, level }) => ({ name, level }));
+  return { array };
 };
