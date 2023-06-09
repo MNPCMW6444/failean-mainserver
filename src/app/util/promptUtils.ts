@@ -17,6 +17,13 @@ export const convertMaptoGraph = (promptMap: PromptMap) => {
     level++;
     superPrompts
       .filter(({ level }) => !level)
+      .forEach((sp, index) => {
+        sp.level = level - 1;
+        superPrompts = [...superPrompts, sp];
+        superPrompts.splice(index, 1);
+      });
+    superPrompts
+      .filter(({ level }) => !level)
       .forEach((sp: any, index: number) => {
         let satisfied = sp.deps
           .map(
@@ -31,9 +38,8 @@ export const convertMaptoGraph = (promptMap: PromptMap) => {
         satisfied.forEach((f: boolean) => {
           if (!f) total = false;
         });
-
         if (total) {
-          sp.level = level;
+          sp.level = 0;
           superPrompts = [...superPrompts, sp];
           superPrompts.splice(index, 1);
         }
