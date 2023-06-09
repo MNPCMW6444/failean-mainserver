@@ -1,6 +1,6 @@
 {
   "name": "failean-mainserver",
-  "version": "0.0.42",
+  "version": "0.0.43",
   "scripts": {
     "build": "npx ts-node build.ts",
     "update": "npx npm-check-updates -u",
@@ -48,5 +48,10 @@
     "ts-node": "^10.9.1",
     "uuid": "^9.0.0",
     "zxcvbn": "^4.4.2"
-  }
+  },
+  "main": "index.js",
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": ""
 }

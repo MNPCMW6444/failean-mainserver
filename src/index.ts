@@ -7,6 +7,7 @@ import authRouter from "./app/routers/authRouter";
 import dataRouter from "./app/routers/dataRouter";
 import promptMap from "./content/prompts/promptMap";
 import { convertMaptoTree } from "./app/util/promptUtils";
+import axios from 'axios'; // Add this import
 
 dotenv.config();
 
@@ -53,6 +54,30 @@ app.get("/areyoualive", (_, res) => {
 
 app.use("/auth", authRouter);
 app.use("/data", dataRouter);
+
+// New chatbot route
+app.post('/api/chat', async (req, res) => {
+  const prompt = req.body.prompt;
+  try {
+    const response = await axios.post(
+      'https://api.openai.com/v1/engines/davinci-codex/completions',
+      {
+        prompt: prompt,
+        max_tokens: 100,
+      },
+      {
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${process.env.OPENAI_API_KEY}`,
+        },
+      }
+    );
+    res.json(response.data);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Error in fetching response from OpenAI' });
+  }
+});
 
 try {
   if (process.env.YOAD_FLAG === "dflkgmgj") {
