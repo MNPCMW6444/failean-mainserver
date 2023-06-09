@@ -11,7 +11,7 @@ const router = express.Router();
 
 router.get("/getPromptGraph", async (req, res) => {
   try {
-    const graph = convertMaptoGraph(promptMap);
+    const graph = /* convertMaptoGraph */ promptMap;
     return res.status(200).json({
       graph,
     });
