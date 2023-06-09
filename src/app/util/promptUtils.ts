@@ -13,18 +13,18 @@ export const convertMaptoGraph = (promptMap: PromptMap) => {
   }));
   superPrompts.unshift({ name: "idea", deps: [], level: 0 });
   let level = 0;
-  while (superPrompts.filter(({ level }) => level < 0).length > 0) {
+  while (superPrompts.filter(({ level }) => level < 1).length > 0) {
     level++;
     superPrompts
-      .filter(({ level }) => !level)
-      .forEach((sp, index) => {
+      .filter(({ level }) => level === -1)
+      .forEach((sp) => {
         sp.level = level - 1;
+        superPrompts = superPrompts.filter(({ name }) => name !== sp.name);
         superPrompts = [...superPrompts, sp];
-        superPrompts.splice(index, 1);
       });
     superPrompts
       .filter(({ level }) => !level)
-      .forEach((sp: any, index: number) => {
+      .forEach((sp: any) => {
         let satisfied = sp.deps
           .map(
             (name: string) =>
@@ -34,7 +34,6 @@ export const convertMaptoGraph = (promptMap: PromptMap) => {
             const number = superPrompts.find(
               (spxx) => spxx.name === name
             )?.level;
-            debugger;
             return !name || (number && number > 0);
           });
         let total = true;
@@ -43,8 +42,8 @@ export const convertMaptoGraph = (promptMap: PromptMap) => {
         });
         if (total) {
           sp.level = -1;
+          superPrompts = superPrompts.filter(({ name }) => name !== sp.name);
           superPrompts = [...superPrompts, sp];
-          superPrompts.splice(index, 1);
         }
       });
   }

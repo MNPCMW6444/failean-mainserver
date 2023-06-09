@@ -9,9 +9,9 @@ import { PromptPart } from "@failean/shared-types";
 
 const router = express.Router();
 
-router.get("/getPromptGraph", async (req, res) => {
+router.get("/getPromptGraph", async (_, res) => {
   try {
-    const graph = /* convertMaptoGraph */ promptMap;
+    const graph = convertMaptoGraph(promptMap);
     return res.status(200).json({
       graph,
     });
