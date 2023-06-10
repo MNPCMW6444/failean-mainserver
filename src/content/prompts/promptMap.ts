@@ -472,7 +472,49 @@ const promptMap: PromptMap = {
     
 
   ],
-
+  potentialInvestors: [
+    {
+      type: "static",
+      content:
+        "You are an expert all things fundraising and investors. You've been a VC and VD manager, angel investor, hosted countless accelerators and startup hubs. Give me the potential investors by different reasons/categories. Base your decisions on our product roadman, solution, go to market strategy, business model, market analysis and competitor analysis. \n",
+    },
+    product roadman, go to market strategy, business model, market analysis and competitor analysis.
+    { type: "variable", content: "refinedIdea" },
+    {
+      type: "static",
+      content: "\n",
+    },
+    { type: "variable", content: "solution" },
+    {
+      type: "static",
+      content: "\n",
+    },
+    { type: "variable", content: "businessModel" },
+    {
+      type: "static",
+      content: "\n",
+    },
+    { type: "variable", content: "competitorAnalysis" },
+    {
+      type: "static",
+      content: "\n",
+    },
+    { type: "variable", content: "productRoadmap" },
+    {
+      type: "static",
+      content: "\n",
+    },
+    { type: "variable", content: "gtmStrategy" },
+    {
+      type: "static",
+      content: "\n",
+    },
+    { type: "variable", content: "marketAnalysis" },
+    {
+      type: "static",
+      content: "\n",
+    },
+  ],
   fundingStrategies: [
     {
       type: "static",
@@ -491,6 +533,7 @@ const promptMap: PromptMap = {
     },
     { type: "variable", content: "marketAnalysis" },
   ],
+
 
   marketAnalysis: [
     {
@@ -629,12 +672,67 @@ const promptMap: PromptMap = {
 
 
   ],
+  productRoadmap: [
+    {
+      type: "static",
+      content:
+        "You are an expireinced product manager in our startup. please create a product roadmap with atlassian confluence product roadmap page for our product/service based on your go to market strategy, target audience, problem Statement, solution, and ideal customer persona. \n",
+    },
+    { type: "variable", content: "targetAudience" },
+    { type: "static", content: "\n" },
+    { type: "variable", content: "problemStatement" },
+    { type: "static", content: "\n" },
+    { type: "variable", content: "solution" },
+    { type: "static", content: "\n" },
+    { type: "variable", content: "refinedIdea" },
+    { type: "static", content: "\n" },
+    { type: "variable", content: "idealCustomerPersona" },
+    { type: "static", content: "\n" },
+    { type: "variable", content: "gtmStrategy" },
+    { type: "static", content: "\n" },
+  ],
+  Partnerships: [
+    {
+      type: "static",
+      content:
+        "You are a chief business development officer with 30 years of experience in the field of partnerships, marketing and personal relations. Please suggest all the potential partnerships we can (based on the solution, business model, market analysis, competitor analysis, product roadmap and go to market strategy) have and categorize them how you see fit.\n",
+    },
+    { type: "variable", content: "Solution" },
+    { type: "static", content: "\n" },
+    { type: "variable", content: "businessModel" },
+    { type: "static", content: "\n" },
+    { type: "variable", content: "marketAnalysis" },
+    { type: "static", content: "\n" },
+    { type: "variable", content: "competitorAnalysis" },
+    { type: "static", content: "\n" },
+    { type: "variable", content: "productRoadmap" },
+    { type: "static", content: "Consider the roadmap, because in different stages different partners are relevant\n" },
+    { type: "variable", content: "gtmStrategy" },
+    { type: "static", content: "Consider the go to market strategy, to have partners with strong position in the different stages.\n" },
+  ],
+  teamComposition: [
+    {
+      type: "static",
+      content:
+        "You are an expireinced CEO with endless years of experience in company building. you know all the best practices of department structures in a lot of different business types. Create a the dream team, not more than nesseccary (it's a startup that's just starting), of the individuals most important for for achieving product market fit, based on product roadmap, go to market strategy, solution and competitor analysis.\n",
+    },
+    { type: "variable", content: "solution" },
+    { type: "static", content: "\n" },
+    { type: "variable", content: "refinedIdea" },
+    { type: "static", content: "\n" },
+    { type: "variable", content: "productRoadmap" },
+    { type: "static", content: "\n" },
+    { type: "variable", content: "gtmStrategy" },
+    { type: "static", content: "\n" },
+    { type: "variable", content: "competitorAnalysis" },
+    { type: "static", content: "\n" },
+  ],
 
   uniqueValueProposition: [
     {
       type: "static",
       content:
-        "You are now the Chief Product Officer of our startup. Based on the startup's value proposition and competitive analysis, define the unique value proposition (UVP). The UVP should state what makes our product or service uniquely valuable to customers and differentiates us from the competition. at the end, add a table of our competitores compared to our UVP \n",
+        "You are now the Chief Product Officer and chief marketing office of our startup. you have 30 years of experience in the fields. Based on the startup's value proposition and competitive analysis, define the unique value proposition (UVP). The UVP should state what makes our product or service uniquely valuable to customers and differentiates us from the competition. add a version of the UVP in bulletpoints. at the end, add a table of our competitores compared to us when measuring their features against our UVP \n",
     },
     { type: "variable", content: "refinedIdea" },
     {
