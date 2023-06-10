@@ -10,6 +10,10 @@ const requestForAccountModal = new mongoose.Schema(
       type: String,
       required: true,
     },
+    idea: {
+      type: String,
+      required: false,
+    },
   },
   {
     timestamps: true,

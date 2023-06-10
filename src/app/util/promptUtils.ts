@@ -1,54 +1,43 @@
 import { PromptMap, PromptPart } from "@failean/shared-types";
 
-export const convertMaptoTree = (promptMap: PromptMap) => {
-  const promptsAndTheirDeps: any = Object.keys(promptMap).map(
-    (promptName: string) => ({
+export const convertMaptoGraph = (promptMap: PromptMap) => {
+  let superPrompts: { name: string; deps: string[]; level: number }[] = Object.keys(promptMap).map(promptName => ({
       name: promptName,
-      array: promptMap[promptName]
-        .map(
-          (promptPart: PromptPart) =>
-            promptPart.type === "variable" && promptPart.content
-        )
-        .filter((x) => x),
-    })
-  );
-  promptsAndTheirDeps.push({ name: "idea", array: [] });
-  let flags: any = [];
-  flags.push({ name: "idea", flag: true });
+          deps: promptMap[promptName]
+                .filter((promptPart: PromptPart) => promptPart.type === "variable" && promptPart.content)
+                      .map((promptPart: PromptPart) => promptPart.content || '') as string[],
+                          level: 0,
+                            }));
 
-  promptsAndTheirDeps.forEach((one: any) =>
-    flags.push({ name: one.name, flag: false })
-  );
-  let res: any = [];
-  res.push({ level: 1, name: "idea" });
+                              superPrompts.unshift({ name: "idea", deps: [], level: 0 });
 
-  for (let i = 0; i < flags.filter((flag: any) => !flag.flag).length; ) {
-    flags
-      .filter((flag: any) => !flag.flag)
-      .forEach((flagg: any, index: number) => {
-        if (index !== 0) {
-          const prompt = promptsAndTheirDeps.find(
-            (x: any) => x.name === flagg.name
-          );
-          let satisfied = prompt.array.map((name: string) => {
-            const flagO = flags.find((flagx: any) => {
-              return { name, f: flagx.name === name };
-            });
-            return { name, f: flagO.flag };
-          });
-          let total = true;
-          satisfied.forEach(({ f }: { f: boolean }) => {
-            if (!f) total = false;
-          });
-          if (total) {
-            res.push({ level: index, prompt: prompt.name });
-            console.log(prompt.name);
-            flags.find((flag: any) => flag.name === prompt.name).flag = true;
-          } else {
-            console.log(prompt.name, satisfied);
-          }
-        }
-      });
-  }
-  return res;
-};
+                                let level = 0;
+
+                                  while (superPrompts.some(({ level }) => level < 1)) {
+                                      level++;
+
+                                          superPrompts
+                                                .filter(({ level }) => level === -1)
+                                                      .forEach(sp => {
+                                                              sp.level = level - 1;
+                                                                      superPrompts = [...superPrompts.filter(({ name }) => name !== sp.name), sp];
+                                                                            });
+
+                                                                                superPrompts
+                                                                                      .filter(({ level }) => level === 0)
+                                                                                            .forEach(sp => {
+                                                                                                    const satisfied = sp.deps.every(name => {
+                                                                                                              const number = superPrompts.find(spx => spx.name === name)?.level;
+                                                                                                                        return number && number > 0;
+                                                                                                                                });
+
+                                                                                                                                        if (satisfied) {
+                                                                                                                                                  sp.level = -1;
+                                                                                                                                                            superPrompts = [...superPrompts.filter(({ name }) => name !== sp.name), sp];
+                                                                                                                                                                    }
+                                                                                                                                                                          });
+                                                                                                                                                                            }
+
+                                                                                                                                                                              return superPrompts.map(({ name, level }) => ({ name, level }));
+                                                                                                                                                                              };
+                                                                                                                                                                              

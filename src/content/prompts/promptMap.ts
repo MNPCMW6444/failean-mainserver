@@ -13,7 +13,7 @@ const promptMap: PromptMap = {
     {
       type: "static",
       content:
-        "You are now a Co-Founder and an expireinced entreprenuer. Youre goal is to write a good problem statmrnt. A good problem statement will cover what is the problem, why it's important, and who it impacts (Try giving the number of people/the amount of money lost). A good problem statement should should create awareness and stimulate creative thinking. Define the problem statement shorly based on the following Idea .\n",
+        "You are now a Co-Founder and an expireinced entreprenuer. Youre goal is to write a good problem statmrnt. A good problem statement will cover what is the problem, why it's important, and who it impacts (all the different options) add the economic burden of the problem if relevant. A good problem statement should should create awareness and stimulate creative thinking. Define the problem statement shorly based on the following Idea .\n",
     },
     { type: "variable", content: "refinedIdea" },
   ],
@@ -21,7 +21,7 @@ const promptMap: PromptMap = {
     {
       type: "static",
       content:
-        "Define the vision statement of my startup in one sentence. It should be clear and apealing and deliver the positive change the idea will have in the world. use this idea and problem statement to detemine the vision statement   \n",
+        "Define the vision statement of my startup in one sentence. It should be clear and apealing and deliver the positive change the idea will have in the world. use the following idea and problem statement to detemine the vision statement. This is an example for a good vision statment: BBC: “To be the most creative organization in the world” Disney: “To make people happy.” Google: “To provide access to the world's information in one click” IKEA: “To create a better everyday life for the'  \n",
     },
     { type: "variable", content: "refinedIdea" },
     {
@@ -34,7 +34,7 @@ const promptMap: PromptMap = {
     {
       type: "static",
       content:
-        "Give me the startup's mission statmmments the idea and vision statement A mission statement can cover: Purpose - This is the reason for the company's existence. It often includes what the company does and for whom. Strategy - This includes how the company approaches its work and how it achieves its objectives. Values - These are the guiding principles and beliefs that are at the heart of the company's culture. For instance, Google's mission statement is, 'To organize the world's information and make it universally accessible and useful.'  \n",
+        "Give me the startup's mission statmmments shortly try to cover: Purpose - This is the reason for the company's existence. It often includes what the company does and for whom. Strategy - This includes how the company approaches its work and how it achieves its objectives. Values - These are the guiding principles and beliefs that are at the heart of the company's culture. Write a short paragraphe and at the end in a new row write one sentence mission statment like Google's mission statement is, 'To organize the world's information and make it universally accessible and useful.'  \n",
     },
     { type: "variable", content: "refinedIdea" },
     {
@@ -47,7 +47,7 @@ const promptMap: PromptMap = {
     {
       type: "static",
       content:
-        "Provide a detailed startup branding strategy. give a list of 3 promises we will make to our customers for example Apple promises customers quality and high social status. It is what our customers expect to get when using our products or servises. Also determine the overall design we should use based on the following idea, missiom statement and target customers. \n",
+        "Provide a detailed startup branding strategy. give a list of 3 promises we will make to our customers for example Apple promises customers quality and high social status. It is what our customers expect to get when using our products or servises. Also determine the overall design we should use to reach our audience based on the following idea, missiom statement and target customers. \n",
     },
     { type: "variable", content: "refinedIdea" },
     {
@@ -60,6 +60,16 @@ const promptMap: PromptMap = {
       content: "\n",
     },
     { type: "variable", content: "targetAudience" },
+    {
+      type: "static",
+      content: "\n",
+    },
+    { type: "variable", content: "competitorAnalysis" },
+    {
+      type: "static",
+      content: "\n",
+    },
+    { type: "variable", content: "marketAnalysis" },
   ],
   targetAudience: [
     {
@@ -119,6 +129,11 @@ const promptMap: PromptMap = {
       content: "\n",
     },
     { type: "variable", content: "businessModel" },
+    {
+      type: "static",
+      content: "\n",
+    },
+    { type: "variable", content: "marketAnalysis" },
   ],
   pricing: [
     {
@@ -309,7 +324,7 @@ const promptMap: PromptMap = {
   salesVolumeEstimation: [
     {
       type: "static",
-      content: "You are the Chief Sales Officer of our startup company. With our current business model, pricing strategy, and market size, we are performing a thorough sales forecasting. Please provide as detailed sales volume estimates as possible, outlining your methodologies and any assumptions made. Endeavor to identify the key factors affecting our sales volume and provide KPI's to measure them and a growth rate for each if available.\n",
+      content: "You are the Chief Sales Officer of our startup company. Use the iformation below to create a. Please provide as detailed sales volume estimates as possible, outlining your methodologies and any assumptions made. Endeavor to identify the key factors affecting our sales volume and provide KPI's to measure them and a growth rate for each if available.\n",
     },
     { type: "variable", content: "refinedIdea" },
     { 
@@ -380,6 +395,18 @@ const promptMap: PromptMap = {
       content: "\n",
     },
     { type: "variable", content: "targetAudience" },
+    {
+      type: "static",
+      content: "\n",
+    },
+    { type: "variable", content: "marketAnalysis" },
+    {
+      type: "static",
+      content: "\n",
+    },
+    { type: "variable", content: "competitorAnalysis" },
+    
+
   ],
 
   fundingStrategies: [
@@ -424,7 +451,7 @@ const promptMap: PromptMap = {
     {
       type: "static",
       content:
-        "You are the Product Manager of my startup we need to first identify our direct and indirect competitores based on our market and solution I will give you below. then we need to preform a SWOT analysis for each competitor and lastly give a detailed table of the competitores with relevant columes like business model, target audience, basic information, products and services, market share, branding, website traffic and every other relevant detail you find. .  \n",
+        "You are the CMO of my startup we need to first identify our direct and indirect competitores based on our market and solution I will give you below. then we need to preform a SWOT analysis for each competitor and lastly give a detailed table of the competitores with relevant columes like business model, target audience, basic information, products and services, market share, branding, website traffic and every other relevant detail you find. .  \n",
     },
     { type: "variable", content: "refinedIdea" },
     {
@@ -465,7 +492,7 @@ const promptMap: PromptMap = {
     {
       type: "static",
       content:
-        "Detail the key features of the product/service based on the problem statement, solution, and user stories. Each feature should include its functionality, the user benefit, and how it aligns with the overall vision and mission of the startup. \n",
+        "You are a product manager at our startup. Detail the features that needs to be developed of the product/service based on the information below. Add a list of epics, tasks and sub tasks for the developent team below. a. \n",
     },
     { type: "variable", content: "refinedIdea" },
     { type: "static", content: "\n" },
@@ -524,7 +551,7 @@ const promptMap: PromptMap = {
     {
       type: "static",
       content:
-        "Please write user stories for the high-level Product Requirement Document (PRD). Each user story should reflect a requirement or need from your target audience, prioritized by importance. The format should be: 'As a [type of user], I want [some goal] so that [some reason].' \n",
+        "You are an expireinced product manager in our startup. Please write user stories for the high-level Product Requirement Document (PRD). Each user story should reflect a requirement or need from your target audience, prioritized by RICE score. Use the information provided below and the user persona's provided. The format should be: 'As a [type of user], I want [some goal] so that [some reason].' \n",
     },
     { type: "variable", content: "targetAudience" },
     { type: "static", content: "\n" },
@@ -533,13 +560,17 @@ const promptMap: PromptMap = {
     { type: "variable", content: "solution" },
     { type: "static", content: "\n" },
     { type: "variable", content: "refinedIdea" },
+    { type: "static", content: "\n" },
+    { type: "variable", content: "idealCustomerPersona" },
+
+
   ],
 
   uniqueValueProposition: [
     {
       type: "static",
       content:
-        "You are now the Chief Product Officer of our startup. Based on the startup's value proposition and competitive analysis, articulate the unique value proposition (UVP). The UVP should state what makes our product or service uniquely valuable to customers and differentiates us from the competition. \n",
+        "You are now the Chief Product Officer of our startup. Based on the startup's value proposition and competitive analysis, define the unique value proposition (UVP). The UVP should state what makes our product or service uniquely valuable to customers and differentiates us from the competition. at the end, add a table of our competitores compared to our UVP \n",
     },
     { type: "variable", content: "refinedIdea" },
     {
