@@ -478,7 +478,6 @@ const promptMap: PromptMap = {
       content:
         "You are an expert all things fundraising and investors. You've been a VC and VD manager, angel investor, hosted countless accelerators and startup hubs. Give me the potential investors by different reasons/categories. Base your decisions on our product roadman, solution, go to market strategy, business model, market analysis and competitor analysis. \n",
     },
-    product roadman, go to market strategy, business model, market analysis and competitor analysis.
     { type: "variable", content: "refinedIdea" },
     {
       type: "static",
@@ -691,13 +690,13 @@ const promptMap: PromptMap = {
     { type: "variable", content: "gtmStrategy" },
     { type: "static", content: "\n" },
   ],
-  Partnerships: [
+  partnerships: [
     {
       type: "static",
       content:
         "You are a chief business development officer with 30 years of experience in the field of partnerships, marketing and personal relations. Please suggest all the potential partnerships we can (based on the solution, business model, market analysis, competitor analysis, product roadmap and go to market strategy) have and categorize them how you see fit.\n",
     },
-    { type: "variable", content: "Solution" },
+    { type: "variable", content: "solution" },
     { type: "static", content: "\n" },
     { type: "variable", content: "businessModel" },
     { type: "static", content: "\n" },
