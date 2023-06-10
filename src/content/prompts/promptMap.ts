@@ -13,7 +13,7 @@ const promptMap: PromptMap = {
     {
       type: "static",
       content:
-        "You are now a Co-Founder and an expireinced entreprenuer. Youre goal is to write a good problem statmrnt. A good problem statement will cover what is the problem, why it's important, and who it impacts (all the different options) add the economic burden of the problem if relevant. A good problem statement should should create awareness and stimulate creative thinking. Define the problem statement shorly based on the following Idea .\n",
+        "You are now a Co-Founder and an expireinced entreprenuer. Youre goal is to write a good problem statment. A good problem statement will cover what is the problem, why it's important, and who it impacts (all the different options) add the economic burden of the problem if relevant. A good problem statement should create awareness and stimulate creative thinking. Define the problem statement shorly based on the following Idea .\n",
     },
     { type: "variable", content: "refinedIdea" },
   ],
@@ -47,7 +47,7 @@ const promptMap: PromptMap = {
     {
       type: "static",
       content:
-        "Provide a detailed startup branding strategy. give a list of 3 promises we will make to our customers for example Apple promises customers quality and high social status. It is what our customers expect to get when using our products or servises. Also determine the overall design we should use to reach our audience based on the following idea, missiom statement and target customers. \n",
+        "Provide a detailed startup branding strategy. Branding includes 3 things: set of values, tone of voice and visual branding. create a table for each. set of values: value, how is the customer reacting. tone of voice: emotions (what emotions do the brand want to convey). visual branding: logo (give suggestion of style), typography (suggest typographies that are relevant to the tone of voice),next, give a list of 3 brand drivers (things we want the customer to say about our brand). example Apple: set of values - quality, hight society, ect... tone of voice - advanced, knowledgable, ect... visual branding: logo - simple, futuristic ect... typography: ect.... brand drivers: I just love looking at my phone, I feel relaxed when apple is taking care of my data, ect... in the end, consider all of these and create a brand identity prism.\n",
     },
     { type: "variable", content: "refinedIdea" },
     {
@@ -75,7 +75,7 @@ const promptMap: PromptMap = {
     {
       type: "static",
       content:
-        "Give me a detailed description of all my potential target audiences based on my startup idea and problem statement. If needed, devide it to 'customers' if they are only paying and 'users' if they only use it. It shuld include he needs, purchase habits, characteristics, and location of the target market \n",
+        "Give me a detailed description of all my potential target audiences based on my startup idea and problem statement. If needed, devide it to 'customers' if they are only paying and 'users' if they only use it. It shuld include the needs, purchase habits, characteristics, problem, and other categories you see as important for this specific idea.\n",
     },
     { type: "variable", content: "refinedIdea" },
     {
@@ -88,7 +88,7 @@ const promptMap: PromptMap = {
     {
       type: "static",
       content:
-        "Give me 10 apealing available startup names based on the following idea and vision statement and make it appealing to my target audience below. Make sure the domain is not taken and there is no company with the same name \n",
+        "Give me 10 apealing available startup names based on the idea and vision statement, and make it appealing to my target audience. Make sure the domain is not taken and there is no company with the same name \n",
     },
     { type: "variable", content: "refinedIdea" },
     {
@@ -106,7 +106,7 @@ const promptMap: PromptMap = {
     {
       type: "static",
       content:
-        "You are the CMO of my new startup company. We are preforming a comperhensive market reaserch. you need to answer the question 'Is there a sufficient demand for our product?' based on the following idea, solution and target audience, First, give an estimation to the market size by calculating the total addresable market (TAM) as a multiplication of the estimated number of potential customers * the price of our service. Then calculate the servicable addresable market consider geographical and regulatory/legal parameters. then calculate the servisable obtainable market as 1%/5%/10% of the SAM.   \n",
+        "You are the CMO of my new startup company. We are preforming a comperhensive market reaserch. you need to answer the question 'Is there a sufficient demand for our product?' based on the following idea, solution and target audience, First, give an estimation to the market size by calculating the total addresable market (TAM) as a multiplication of the estimated number of potential customers * pricing. Then calculate the servicable addresable market (SAM), based on the gtmStrategy. then calculate the servisable obtainable market as 1%/5%/10% of the SAM.\n",
     },
     { type: "variable", content: "refinedIdea" },
     {
@@ -133,7 +133,76 @@ const promptMap: PromptMap = {
       type: "static",
       content: "\n",
     },
-    { type: "variable", content: "marketAnalysis" },
+    { type: "variable", content: "gtmStrategy"},
+    {
+      type: "static",
+      content: "\n",
+    },
+  ],
+  gtmStrategy: [
+    {
+      type: "static",
+      content:
+        "You are a business and marketing expert with more than 30 years of knowledge, and vast experience in different marketing landscapes. Build your go to market strategy based on the solution, target audience and competitor analysis. It should look like actionable steps, example: 1. start advertising in location:x/ platform:y to persona (short description of the idealPersona) for: z amount of time. 2. ect...\n",
+    },
+    { type: "variable", content: "refinedIdea" },
+    {
+      type: "static",
+      content: "\n",
+    },
+    { type: "variable", content: "solution" },
+    {
+      type: "static",
+      content: "\n",
+    },
+    { type: "variable", content: "targetAudience" },
+    {
+      type: "static",
+      content: "Cosider the place where it's most probable I would find my target audience, in terms of geography, platform, ect. criteria depends on the idea.\n",
+    },
+    { type: "variable", content: "competitorAnalysis" },
+    {
+      type: "static",
+      content: "Consider the competitors location, consider wether you decide to compete in the same geography/ demography ect. or not into the strategy \n",
+    },
+  ],
+    risksAndChallanges: [
+      {
+        type: "static",
+        content:
+          "You are a Chif Risk Oficer with more than 30 years of knowledge, and vast experience in companies and different situations. Based on the information below, Build your risk management plan with the best practices of risk management like this (parameters are 1-5): the potential impact of a risk, the likelyhood of happening, and final score is multiplication of both. in the end note who is the position in the company responsible for mitigating the risk, all the actions needed to midigate the risk.   \n",
+      },
+      { type: "variable", content: "refinedIdea" },
+      {
+        type: "static",
+        content: "\n",
+      },
+      { type: "variable", content: "businessModel" },
+      {
+        type: "static",
+        content: "\n",
+      },
+      { type: "variable", content: "channels" },
+      {
+        type: "static",
+        content: "\n",
+      },
+      { type: "variable", content: "marketCap" },
+      {
+        type: "static",
+        content: "\n",
+      },
+      { type: "variable", content: "revenueProjections" },
+      {
+        type: "static",
+        content: "\n",
+      },
+      { type: "variable", content: "competitorAnalysis" },
+      {
+        type: "static",
+        content: "\n",
+      },
+      
   ],
   pricing: [
     {
@@ -395,11 +464,6 @@ const promptMap: PromptMap = {
       content: "\n",
     },
     { type: "variable", content: "targetAudience" },
-    {
-      type: "static",
-      content: "\n",
-    },
-    { type: "variable", content: "marketAnalysis" },
     {
       type: "static",
       content: "\n",
