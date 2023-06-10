@@ -15,7 +15,7 @@ const MIN_PASSWORD_STRENGTH = 3;
 
 router.post("/signupreq", async (req, res) => {
   try {
-    const { email } = req.body;
+    const { email, idea } = req.body;
     if (!email)
       return res.status(400).json({
         clientError: "The email is missing",
@@ -31,6 +31,7 @@ router.post("/signupreq", async (req, res) => {
     await new RequestForAccount({
       email,
       key,
+      idea,
     }).save();
 
     const url = `https://failean.com/register?key=${key}`;
@@ -99,16 +100,20 @@ router.post("/signupfin", async (req, res) => {
       name: fullname,
       passwordHash,
     }).save();
+
+    try {
+      await new ideaModel({
+        owner: savedUser._id,
+        idea: existingSignupRequest.idea,
+      }).save();
+    } catch (err) {}
+
     const token = jsonwebtoken.sign(
       {
         id: savedUser._id,
       },
       process.env.JWT_SECRET as string
     );
-    const idea = await new ideaModel({
-      owner: savedUser._id,
-      idea: "Enter you first idea here",
-    }).save();
     res
       .cookie("jsonwebtoken", token, {
         httpOnly: true,

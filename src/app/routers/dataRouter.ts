@@ -29,7 +29,10 @@ router.get("/getIdeas", async (req, res) => {
       token,
       process.env.JWT_SECRET as any
     );
-    let hisIdeas = await ideaModel.find({ owner: (validatedUser as any).id });
+    let hisIdeas = await ideaModel.find({
+      owner: (validatedUser as any).id,
+      archived: false,
+    });
     return res.status(200).json({
       ideas: hisIdeas
         .map((idea: any) => idea._doc)
@@ -51,13 +54,44 @@ router.post("/saveIdea", async (req, res) => {
       token,
       process.env.JWT_SECRET as any
     );
-    const { idea } = req.body;
+    const { idea, ideaId } = req.body;
+    try {
+      const ideaToUpdate = await ideaModel.findById(ideaId);
+      if (ideaToUpdate) {
+        ideaToUpdate.idea = idea;
+        await ideaToUpdate.save();
+        return res.status(200).json({ message: "Idea updated" });
+      }
+    } catch (err) {}
     await new ideaModel({
       owner: (validatedUser as any).id,
       idea,
     }).save();
+    return res.status(200).json({ message: "Idea saved" });
+  } catch (err) {
+    console.log(err);
+    return res.status(500).json({ errorMessage: JSON.stringify(err) });
+  }
+});
 
-    return res.status(200).json({ message: "Idea created" });
+router.post("/archiveIdea", async (req, res) => {
+  try {
+    const token = req.cookies.jsonwebtoken;
+    if (!token) return res.status(401).json({ errorMessage: "Unauthorized." });
+    const validatedUser = jsonwebtoken.verify(
+      token,
+      process.env.JWT_SECRET as any
+    );
+    const { ideaId } = req.body;
+    const ideaToUpdate = await ideaModel.findById(ideaId);
+    if (ideaToUpdate && ideaToUpdate.owner === (validatedUser as any).id) {
+      ideaToUpdate.archived = true;
+      await ideaToUpdate.save();
+      return res.status(200).json({ message: "Idea updated" });
+    } else
+      return res
+        .status(401)
+        .json({ errorMessage: "Unauthorized, not your idea" });
   } catch (err) {
     console.log(err);
     return res.status(500).json({ errorMessage: JSON.stringify(err) });
