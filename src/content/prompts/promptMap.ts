@@ -13,7 +13,7 @@ const promptMap: PromptMap = {
     {
       type: "static",
       content:
-        "You are now a Co-Founder and an expireinced entreprenuer. Youre goal is to write a good problem statment. A good problem statement will cover what is the problem, why it's important, and who it impacts (all the different options) add the economic burden of the problem if relevant. A good problem statement should create awareness and stimulate creative thinking. Define the problem statement shorly based on the following Idea .\n",
+        "You are now a Co-Founder and an expireinced entreprenuer. Youre goal is to write a good problem statment. A good problem statement will cover what is the problem, why it's important, and who it impacts (all the different options) add the economic burden of the problem if relevant. A good problem statement should create awareness and stimulate creative thinking. Define the problem statement shorly based on the following Idea Use numbers to support your claims .\n",
     },
     { type: "variable", content: "refinedIdea" },
   ],
@@ -143,7 +143,7 @@ const promptMap: PromptMap = {
     {
       type: "static",
       content:
-        "You are a business and marketing expert with more than 30 years of knowledge, and vast experience in different marketing landscapes. Build your go to market strategy based on the solution, target audience and competitor analysis. It should look like actionable steps, example: 1. start advertising in location:x/ platform:y to persona (short description of the idealPersona) for: z amount of time. 2. ect...\n",
+        "You are a business and marketing expert with more than 30 years of knowledge, and vast experience in different marketing landscapes. Build your go to market strategy based on the solution, target audience and competitor analysis. It should look like actionable steps, example: 1. start advertising in location:x/ platform:y to persona:e for: z amount of time. 2. ect...\n",
     },
     { type: "variable", content: "refinedIdea" },
     {
@@ -163,7 +163,7 @@ const promptMap: PromptMap = {
     { type: "variable", content: "competitorAnalysis" },
     {
       type: "static",
-      content: "Consider the competitors location, consider wether you decide to compete in the same geography/ demography ect. or not into the strategy \n",
+      content: "based on the competitors location, consider wether you decide to compete in the same geography/ demography ect. or not into the strategy \n",
     },
   ],
     risksAndChallanges: [
@@ -362,7 +362,7 @@ const promptMap: PromptMap = {
   revenueProjections: [
     {
       type: "static",
-      content: "You are the CFO of my startup company. Here is our revenue model, market size, market growth rate, pricing strategy, sales volume estimation, and competitive landscape. We are conducting an in-depth financial analysis. Provide as many projected revenue estimates as you can find, including the source you used. Try to determine the revenue stream most relevant to us and include the projected growth rate for each if it exists.\n",
+      content: "You are the CFO of my startup company. Here is some of the relevant information. We are conducting an in-depth financial analysis. Provide as many projected revenue estimates as you can find, including the source you used. Identify your target market: To begin, you need to identify your target market. This would involve determining who needs your service and who would be willing to pay for it. Let's say our target market is small businesses in the United States. use the estimation below for market size: Next, you need use the estimaation below for the size of your target market. for example (replace this with my startupq) Suppose there are approximately 30 million small businesses in the U.S. Calculate the market penetration rate: Your market penetration rate is the percentage of your target market you think you can reach. For a new startup, this rate could be quite small. Let's say we set an ambitious, yet realistic, goal of 0.01% market penetration in our first year. That would equate to 3,000 customers. Determine the average revenue per customer: This is where your pricing strategy comes in. If you are a SaaS business, you might charge a monthly subscription fee. Let's say the fee is $50/month or $600/year. Calculate projected revenue: Multiply your estimated number of customers by your average revenue per customer. So, 3,000 customers spending $600/year gives us an estimated first-year revenue of $1.8 million. Factor in growth: In subsequent years, you would want to factor in growth. This could come from expanding your market penetration, increasing your prices, or upselling/cross-selling to existing customers. Let's say you aim for a 50% year-on-year growth rate for these projections. This gives us a rough projection for the first few years: Year 1: $1.8 million Year 2: $2.7 million ($1.8 million * 150%) Year 3: $4.05 million ($2.7 million * 150%)s.\n",
     },
     { type: "variable", content: "refinedIdea" },
     { 
@@ -393,7 +393,7 @@ const promptMap: PromptMap = {
   salesVolumeEstimation: [
     {
       type: "static",
-      content: "You are the Chief Sales Officer of our startup company. Use the iformation below to create a. Please provide as detailed sales volume estimates as possible, outlining your methodologies and any assumptions made. Endeavor to identify the key factors affecting our sales volume and provide KPI's to measure them and a growth rate for each if available.\n",
+      content: "You are the Chief Sales Officer of our startup company. Use the iformation below to create detailed sales volume estimates, outlining your methodologies and any assumptions made.This is a prediction of the quantity or number of units that a company expects to sell in a specified future period. It's expressed in units and does not consider the price at which those units will be sold. Endeavor to identify the key factors affecting our sales volume and provide KPI's to measure them and a growth rate for each if available. calculate your sales volume by multiplying the market size below by your market share below and your estimated conversion rate. Remember to consider seasonal factors and trends if they apply to your business.\n",
     },
     { type: "variable", content: "refinedIdea" },
     { 
@@ -705,7 +705,7 @@ const promptMap: PromptMap = {
     { type: "variable", content: "competitorAnalysis" },
     { type: "static", content: "\n" },
     { type: "variable", content: "productRoadmap" },
-    { type: "static", content: "Consider the roadmap, because in different stages different partners are relevant\n" },
+    { type: "static", content: "Consnpm runider the roadmap, because in different stages different partners are relevant\n" },
     { type: "variable", content: "gtmStrategy" },
     { type: "static", content: "Consider the go to market strategy, to have partners with strong position in the different stages.\n" },
   ],
@@ -731,7 +731,7 @@ const promptMap: PromptMap = {
     {
       type: "static",
       content:
-        "You are now the Chief Product Officer and chief marketing office of our startup. you have 30 years of experience in the fields. Based on the startup's value proposition and competitive analysis, define the unique value proposition (UVP). The UVP should state what makes our product or service uniquely valuable to customers and differentiates us from the competition. add a version of the UVP in bulletpoints. at the end, add a table of our competitores compared to us when measuring their features against our UVP \n",
+        "You are now the Chief Product Officer and chief marketing office of our startup. you have 30 years of experience in the fields. Based on the startup's value proposition and competitive analysis, define our unique value proposition (UVP). The UVP should state what makes our product or service uniquely valuable to customers and differentiates us from the competition. add a list of the UVP in bulletpoints. at the end, add a table of our competitores (listed below) compared to us when measuring their features against our UVP \n",
     },
     { type: "variable", content: "refinedIdea" },
     {
@@ -812,7 +812,7 @@ idealCustomerPersona: [
   {
     type: "static",
     content:
-      "As our startup's Chief Marketing Officer, identifying our Ideal Customer Persona (ICP) is critical to our business strategy. You need to focus on the customer type that you believe will receive the most value from our solution.\n\nRemember, not all customers are right for our product, and some could even harm our brand or product development. We need to be selective, even if it means 'losing out' on some potential customers initially. This focus will help keep our positioning, marketing strategy, and product roadmap consistent.\n\nPlease note, if we are a two (or more) sided marketplace, we should define one ICP for each side of the market. Our understanding of the ICP might change as the business evolves. It's a natural process for early-stage startups. We need to learn from our early customers and adapt as needed.\n\nBased on our startup's refined idea and solution, who do you think is our ICP? Please provide a detailed description including demographic information, interests, behavioral patterns, needs, and challenges. Also, discuss how our product fits into their life or work.",
+      "As our startup's Chief Marketing Officer, identifying our Ideal Customer Persona (ICP) is critical to our business strategy. You need to focus on the customer type that you believe will receive the most value from our solution.\n\nRemember, not all customers are right for our product, and some could even harm our brand or product development. We need to be selective, even if it means 'losing out' on some potential customers initially. This focus will help keep our positioning, marketing strategy, and product roadmap consistent.\n\nPlease note, if we are a two (or more) sided marketplace, we should define one ICP for each side of the market. Our understanding of the ICP might change as the business evolves. It's a natural process for early-stage startups. We need to learn from our early customers and adapt as needed.\n\nBased on our startup's refined idea and solution, who do you think is our ICP? Please provide a detailed description (persona ID) including demographic information, interests, behavioral patterns, needs, and challenges. Also, discuss how our product fits into their life or work.",
   },
   { type: "variable", content: "refinedIdea" },
   {

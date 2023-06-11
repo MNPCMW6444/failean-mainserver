@@ -21,7 +21,7 @@ router.post("/signupreq", async (req, res) => {
         clientError: "The email is missing",
       });
     const existingUser = await userModel.findOne({ email });
-    if (existingUser)
+    if (existingUser) 
       return res.status(400).json({
         clientError: "An account with this email already exists",
       });
@@ -35,7 +35,7 @@ router.post("/signupreq", async (req, res) => {
     }).save();
 
     const url = `https://failean.com/register?key=${key}`;
-
+    console.log(url);
     const { subject, body } = signupreq(url);
 
     sendEmail(email, subject, body)
@@ -275,7 +275,7 @@ router.post("/passresreq", async (req, res) => {
     }).save();
 
     const url = `https://failean.com/reset?key=${key}`;
-
+console.log(url)
     const { subject, body } = passreset(url);
 
     sendEmail(email, subject, body)
