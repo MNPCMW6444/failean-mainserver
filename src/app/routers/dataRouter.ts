@@ -152,10 +152,11 @@ router.post("/runAndGetPromptResult", async (req, res) => {
         if (promptPart.type === "variable" && promptPart.content !== "idea") {
           let promptRes = await PromptResultModel.find({
             owner: userId,
+            ideaId,
             promptName: promptPart.content,
           });
           return {
-            x: promptRes.length > 0 && promptRes[promptRes.length - 1].data,
+            x: promptRes[promptRes.length - 1].data,
           };
         }
       });
@@ -164,14 +165,18 @@ router.post("/runAndGetPromptResult", async (req, res) => {
           return r;
         });
 
+        const cleanDeps: string[] = [];
+        dependencies.forEach((dep) => {
+          if (dep) cleanDeps.push(dep);
+        });
         let i = 0;
 
         const constructedPrompt = prompt.map((promptPart: PromptPart) => {
           if (promptPart.type === "static") return promptPart.content;
           else if (promptPart.type === "variable") {
-            if (promptPart.content === "idea") return idea;
+            if (promptPart.content === "idea") return idea?.idea;
             i++;
-            return (dependencies[i - 1] as any)?.x;
+            return (cleanDeps[i - 1] as any)?.x;
           }
         });
 
