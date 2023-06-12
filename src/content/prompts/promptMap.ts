@@ -232,6 +232,7 @@ const promptMap: PromptMap = {
     },
     { type: "variable", content: "competitorAnalysis" },
   ],
+  
   operationalCosts: [
     {
       type: "static",
@@ -826,7 +827,35 @@ idealCustomerPersona: [
   },
   { type: "variable", content: "targetAudience" },
 ],
-
+slogan: [
+  {
+    type: "static",
+    content:
+      "You are a CMO at our startup. Your goal is to create a creative slogan for our company that will  attract new customers and convey the vision statement and branding strategy provided below. A good slogan will be maximum 5 words and will be memorable, includes key benefits, it imports positive feelings about the brand. Here are some examples for good slogans Meow Mix: 'Tastes So Good, Cats Ask for It By Name' The U.S. Marine Corps: 'Semper Fi' Allstate: ‘You’re in Good Hands With Allstate’ Ronseal: 'It Does Exactly What It Says on the Tin.' The Mosaic Company: 'We Help the World Grow the Food It Needs' Pitney Bowes: 'We Power Transactions That Drive Commerce' Target: 'Expect More. Pay Less.'Verizon: '5G Built Right.' Nike: 'Just Do It.' Apple: 'Think Different. Provide a list of 10 potential slogens for our startup. add a short descroption for why this is a good slogen for our startup"
+     
+  },
+  { type: "variable", content: "refinedIdea" },
+  {
+    type: "static",
+    content: "\n",
+  },
+  { type: "variable", content: "visionStatement" },
+  {
+    type: "static",
+    content: "\n",
+  },
+  { type: "variable", content: "missions" },
+  {
+    type: "static",
+    content: "\n",
+  },
+  { type: "variable", content: "branding" },
+  {
+    type: "static",
+    content: "\n",
+  },
+  { type: "variable", content: "solution" },
+],
 
 
 };
