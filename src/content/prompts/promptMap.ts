@@ -113,22 +113,12 @@ const promptMap: PromptMap = {
       type: "static",
       content: "\n",
     },
-    { type: "variable", content: "solution" },
-    {
-      type: "static",
-      content: "\n",
-    },
     { type: "variable", content: "targetAudience" },
     {
       type: "static",
       content: "\n",
     },
     { type: "variable", content: "pricing" },
-    {
-      type: "static",
-      content: "\n",
-    },
-    { type: "variable", content: "businessModel" },
     {
       type: "static",
       content: "\n",
@@ -242,7 +232,7 @@ const promptMap: PromptMap = {
     {
       type: "static",
       content:
-        "As the COO of our startup company, you are responsible for estimating and managing the operational costs. These costs are essential for running our business smoothly on a day-to-day basis. Consider the following categories and provide a detailed breakdown of the associated costs for each:\n\n",
+        "As the COO of our startup company, you are responsible for estimating and managing the operational costs. These costs are essential for running our business smoothly on a day-to-day basis. Consider the following categories and provide a detailed breakdown of the associated costs for each. Give estimation in numbers for each and do not give general information on each category provide specific information on our startup\n\n",
     },
     {
       type: "static",
@@ -305,11 +295,6 @@ const promptMap: PromptMap = {
       content: "\n",
     },
     { type: "variable", content: "refinedIdea" },
-    {
-      type: "static",
-      content: "\n",
-    },
-    { type: "variable", content: "solution" },
     {
       type: "static",
       content: "\n",
@@ -481,7 +466,7 @@ const promptMap: PromptMap = {
     {
       type: "static",
       content:
-        "You are an expert all things fundraising and investors. You've been a VC and VD manager, angel investor, hosted countless accelerators and startup hubs. Give me the potential investors by different reasons/categories. Base your decisions on our product roadman, solution, go to market strategy, business model, market analysis and competitor analysis. \n",
+        "You are an expert all fundraising and investors. You've been a VC and VD manager, angel investor, hosted countless accelerators and startup hubs. Give me the potential investors by different reasons/categories. Base your decisions on our product roadman, solution, go to market strategy, business model, market analysis and competitor analysis. \n",
     },
     { type: "variable", content: "refinedIdea" },
     {
@@ -710,7 +695,7 @@ const promptMap: PromptMap = {
     { type: "variable", content: "competitorAnalysis" },
     { type: "static", content: "\n" },
     { type: "variable", content: "productRoadmap" },
-    { type: "static", content: "Consnpm runider the roadmap, because in different stages different partners are relevant\n" },
+    { type: "static", content: " conider the roadmap in your partners selection, because in different stages different partners are relevant\n" },
     { type: "variable", content: "gtmStrategy" },
     { type: "static", content: "Consider the go to market strategy, to have partners with strong position in the different stages.\n" },
   ],
@@ -760,7 +745,7 @@ const promptMap: PromptMap = {
     {
       type: "static",
       content:
-        "Now that we have outlined the solution, features, dependencies, milestones, and value propositions, it's time to estimate the development costs. This includes not just the monetary costs, but also the time and resources necessary for each aspect of the product development. Provide 3 optional Dev team cost (High,Medium,Low budget) include team salaries and add insights on how to reduce costs.  \n",
+        "You are the CTO of our company. Now that we have outlined the solution, features, dependencies, milestones, and value propositions, it's time to estimate the development costs. This includes not just the monetary costs, but also the time and resources necessary for each aspect of the product development. Provide 3 optional Dev team cost (High,Medium,Low budget) include team salaries and add insights on how to reduce costs. Make sure to include all relevant team members for example, an AI/ML product also requires a data science team. \n",
     },
     { type: "variable", content: "solution" },
     {
@@ -848,7 +833,7 @@ slogan: [
     type: "static",
     content: "\n",
   },
-  { type: "variable", content: "missions" },
+  { type: "variable", content: "missionStatements" },
   {
     type: "static",
     content: "\n",
