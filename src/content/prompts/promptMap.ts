@@ -13,7 +13,7 @@ const promptMap: PromptMap = {
     {
       type: "static",
       content:
-        "You are now a Co-Founder and an expireinced entreprenuer. Youre goal is to write a good problem statment. A good problem statement will cover what is the problem, why it's important, and who it impacts (all the different options) add the economic burden of the problem if relevant. A good problem statement should create awareness and stimulate creative thinking. Define the problem statement shorly based on the following Idea Use numbers to support your claims .\n",
+        "You are now My Co-Founder and an expireinced entreprenuer. Youre goal is to write a good problem statment based on the information below. A good problem statement will cover what is the problem, why it's important, and who it impacts (all the different options) add numbers and facts about the problem impact and economic burden of the problem. A good problem statement should create awareness and stimulate creative thinking. Define the problem statement shorly based on the following Idea Use numbers to support your claims. Consider the pain caused by the problem.\n",
     },
     { type: "variable", content: "refinedIdea" },
   ],
@@ -34,7 +34,7 @@ const promptMap: PromptMap = {
     {
       type: "static",
       content:
-        "Give me the startup's mission statmmments shortly try to cover: Purpose - This is the reason for the company's existence. It often includes what the company does and for whom. Strategy - This includes how the company approaches its work and how it achieves its objectives. Values - These are the guiding principles and beliefs that are at the heart of the company's culture. Write a short paragraphe and at the end in a new row write one sentence mission statment like Google's mission statement is, 'To organize the world's information and make it universally accessible and useful.'  \n",
+        "Give me the startup's mission statmmments shortly try to cover: Purpose - This is the reason for the company's existence. It often includes what the company does and for whom. Strategy - This includes how the company approaches its work and how it achieves its objectives. Values - These are the guiding principles and beliefs that are at the heart of the company's culture. Write a short paragraphe and at the end in a new row write one sentence mission statment like Google's mission statement is, 'To organize the world's information and make it universally accessible and useful.' Use visionery and inspiring tone of voive   \n",
     },
     { type: "variable", content: "refinedIdea" },
     {
@@ -47,7 +47,7 @@ const promptMap: PromptMap = {
     {
       type: "static",
       content:
-        "Provide a detailed startup branding strategy. Branding includes 3 things: set of values, tone of voice and visual branding. create a table for each. set of values: value, how is the customer reacting. tone of voice: emotions (what emotions do the brand want to convey). visual branding: logo (give suggestion of style), typography (suggest typographies that are relevant to the tone of voice),next, give a list of 3 brand drivers (things we want the customer to say about our brand). example Apple: set of values - quality, hight society, ect... tone of voice - advanced, knowledgable, ect... visual branding: logo - simple, futuristic ect... typography: ect.... brand drivers: I just love looking at my phone, I feel relaxed when apple is taking care of my data, ect... in the end, consider all of these and create a brand identity prism.\n",
+        "Provide a detailed startup branding strategy based on the information provided. Branding includes 3 things: set of values and promises, tone of voice and visual branding. Core values are the principles guiding and often driving an organization's mission and goals. They guide crucial actions and behaviors, such as how business decisions are made and successful relationships are formed. They inform the company's culture, hiring practices, and product ideation. Tone of voice: emotions (what emotions do the brand want to convey). visual branding: logo (give suggestion of style), typography (suggest typographies that are relevant to the tone of voice),next, give a list of 3 brand drivers (things we want the customer to say about our brand). example Apple: set of values - quality, hight society, ect... tone of voice - advanced, knowledgable, ect... visual branding: logo - simple, futuristic ect... typography: ect.... brand drivers: I just love looking at my phone, I feel relaxed when apple is taking care of my data, ect... in the end, consider all of these and create a brand identity prism.\n",
     },
     { type: "variable", content: "refinedIdea" },
     {
@@ -88,7 +88,7 @@ const promptMap: PromptMap = {
     {
       type: "static",
       content:
-        "Give me 10 apealing available startup names based on the idea and vision statement, and make it appealing to my target audience. Make sure the domain is not taken and there is no company with the same name \n",
+        "Give me 10 apealing available startup names based on the idea and vision statement, and make it appealing to my target audience. Make sure the domain is not taken and there is no company with the same name. Write a short explanation for why this name is relevant for our startup \n",
     },
     { type: "variable", content: "refinedIdea" },
     {
@@ -143,7 +143,7 @@ const promptMap: PromptMap = {
     {
       type: "static",
       content:
-        "You are a business and marketing expert with more than 30 years of knowledge, and vast experience in different marketing landscapes. Build your go to market strategy based on the solution, target audience and competitor analysis. It should look like actionable steps, example: 1. start advertising in location:x/ platform:y to persona:e for: z amount of time. 2. ect...\n",
+        "You are a business and marketing expert with more than 30 years of knowledge, and vast experience in different marketing landscapes. Create a practical data-driven GTM plan. Pay attention to the Market Competition and Market Size. Discuss different relevant Local Market Peculiarities Thoroughly assess the state of the economy in your chosen region to see if it’s a good fit and the time is right. These steps might look something like this: if you were launching a new online learning platform, you might identify your target market as busy professionals looking for flexible ways to upskill. Your value proposition could be that your platform uses AI to create personalized learning paths. Your pricing might be a monthly subscription that's competitively priced compared to other platforms. Your distribution would primarily be via your website, with a strong focus on SEO and social media marketing. Your customer support could be a mix of AI chatbot and human support. Goals could be to acquire 5,000 new users in the first quarter after launch, and your launch plan could include a PR campaign in relevant professional publications. Consider Language Barriers for example the WhatsApp expansion in Germany. By 2016, WhatsApp had acquired 1.2 billion users by successfully scaling up worldwide. However, before expanding into Germany, they failed to translate their terms of use into German. As a result, the Federation of German Consumer Organizations filed a lawsuit against the company charging that the technical language was “largely incomprehensible” to German users. A small oversight cost the company more than a quarter of a million euros. Consider similar challenges when building our GTM. As you do so, ask yourself the following questions: How are consumers going to find you? How are they going to convert? How are you going to turn them into loyal customers? The best sales funnels attract new customers while fostering repeat business. Retaining customers remains far more lucrative than acquiring new ones. As for awareness, consider a wide-ranging campaign to attract new people to your brand. This could include everything from digital and print materials to events. \n",
     },
     { type: "variable", content: "refinedIdea" },
     {
@@ -208,7 +208,7 @@ const promptMap: PromptMap = {
     {
       type: "static",
       content:
-        "As the Chief Financial Officer of our startup, it's your responsibility to devise a suitable pricing strategy. This decision must be based on our startup's idea, solution, and target audience. Consider factors like production and operational costs, competitor pricing, the perceived value of our product/service, and our business objectives. Do we aim for penetration pricing, price skimming, cost-based pricing, value-based pricing, or a different strategy altogether? Discuss the pros and cons of each potential strategy for our specific case.\n",
+        "As the Chief Financial Officer of our startup, it's your responsibility to devise a suitable pricing for our producr/services. Consider factors like production and operational costs, competitor pricing, the perceived value of our product/service, and our prefered business model. Relay on the data provided and the data you are trained on. Remeber, Prices set expectations. On a psychological level, pricing conveys meaningful information. Beyond the principles of supply and demand, price is a sign of quality. Give 3 pricing options high, medium and low (provide them in numbers if it's a subscription-based price each subscription option) here are soma strategies to consider, discuss only those relevant to our startup - Penetrate the Market: Launch at a lower price to attract customers, then gradually raise prices. Make sure you have the funding to support initial losses. Charge a Premium: Justify higher prices with a solid value proposition and strong marketing that clearly communicates your product's unique value. Maximize your Price: Use this strategy if your product is unique and there's little competition. Continuous innovation is crucial to maintain high prices. Skim the Top: Start with a high price and lower it over time. This works for products with high novelty that early adopters are willing to pay a premium for. Choose the most relevant pricing strategy and build  .\n",
     },
     { type: "variable", content: "refinedIdea" },
     {
@@ -231,6 +231,11 @@ const promptMap: PromptMap = {
       content: "\n",
     },
     { type: "variable", content: "competitorAnalysis" },
+    {
+      type: "static",
+      content: "\n",
+    },
+    { type: "variable", content: "businessModel" },
   ],
   
   operationalCosts: [
@@ -451,8 +456,7 @@ const promptMap: PromptMap = {
   businessModel: [
     {
       type: "static",
-      content:
-        "You are now the CEO & CBDO of my new startup company. We want to grow as fast as possible so we can be profitable at the near future.  You need to decide on a business model(B2B/B2C/B2B2C/B2M/B2G) and potential revenue streams for our startup. Here is our startup idea, solution and target audiance. for each relevant option give the pros and cons.   \n",
+      content: "You are now the CEO & Chief Business Development Officer (CBDO) of my innovative startup. Our ultimate goal is to accelerate our growth and become profitable in the near future. Your task is to determine the optimal digital business model for our venture and to propose potential revenue streams that align with it. To help you formulate an insightful response I provided you we relevant information about our startup below Using your deep understanding of digital business models, identify the most suitable model(s) for our startup from this 11 types: Free-Model (ad-supported) Freemium Model On-Demand Model eCommerce Model Marketplace Model Digital Ecosystem Model Sharing Model / Access-Over-Ownership Model Model of Experience Model of Subscription Model of Open-Source Model for Generating Hidden Revenue Also consider additional models such as: Club Affinity Services with Automation Digital Business Model of Bundling Crowdsourcing Digital Business Model of turning Data-Into-Assets Digital Business Model of Disintermediation. Lastly, propose potential revenue streams that are in line with the selected model and the speciphic needs of our startup. Do not give generic information only speciphic information regarding the needs of our startup.\n" 
     },
     { type: "variable", content: "refinedIdea" },
     {
