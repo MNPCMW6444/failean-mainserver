@@ -9,7 +9,7 @@ import zxcvbn from "zxcvbn";
 import { sendEmail } from "../util/emailUtil";
 import { v4 as keyv4 } from "uuid";
 import ideaModel from "../models/data/ideaModel";
-import { clientDomain } from "src";
+import { clientDomain } from "../../index";
 
 const router = express.Router();
 const MIN_PASSWORD_STRENGTH = 3;
