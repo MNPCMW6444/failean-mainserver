@@ -4,6 +4,7 @@ import dotenv from "dotenv";
 import mongoose, { ConnectOptions } from "mongoose";
 import cookieParser from "cookie-parser";
 import authRouter from "./app/routers/authRouter";
+import websiteRouter from "./app/routers/websiteRouter";
 import dataRouter from "./app/routers/dataRouter";
 import promptMap from "./content/prompts/promptMap";
 import { convertMaptoGraph } from "./app/util/promptUtils";
@@ -57,6 +58,7 @@ app.get("/areyoualive", (_, res) => {
 });
 
 app.use("/auth", authRouter);
+app.use("/websute", websiteRouter);
 app.use("/data", dataRouter);
 
 try {
