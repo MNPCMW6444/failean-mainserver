@@ -35,12 +35,17 @@ connectToDBs();
 
 app.use(express.json());
 
+export const clientDomain =
+  process.env.NODE_ENV === "development"
+    ? "http://localhost:5999"
+    : "https://tst.failean.com";
+
 app.use(
   cors({
     origin:
       process.env.NODE_ENV === "development"
         ? ["http://localhost:5999"]
-        : ["https://tst.failean.com"],
+        : [`${clientDomain}`],
     credentials: true,
   })
 );

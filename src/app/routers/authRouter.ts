@@ -9,6 +9,7 @@ import zxcvbn from "zxcvbn";
 import { sendEmail } from "../util/emailUtil";
 import { v4 as keyv4 } from "uuid";
 import ideaModel from "../models/data/ideaModel";
+import { clientDomain } from "src";
 
 const router = express.Router();
 const MIN_PASSWORD_STRENGTH = 3;
@@ -34,7 +35,7 @@ router.post("/signupreq", async (req, res) => {
       idea,
     }).save();
 
-    const url = `https://failean.com/register?key=${key}`;
+    const url = `${clientDomain}/register?key=${key}`;
 
     const { subject, body } = signupreq(url);
 
@@ -274,7 +275,7 @@ router.post("/passresreq", async (req, res) => {
       key,
     }).save();
 
-    const url = `https://failean.com/reset?key=${key}`;
+    const url = `${clientDomain}/reset?key=${key}`;
 
     const { subject, body } = passreset(url);
 
