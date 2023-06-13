@@ -58,7 +58,7 @@ app.get("/areyoualive", (_, res) => {
 });
 
 app.use("/auth", authRouter);
-app.use("/websute", websiteRouter);
+app.use("/website", websiteRouter);
 app.use("/data", dataRouter);
 
 try {
