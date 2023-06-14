@@ -50,3 +50,5 @@ export const convertMaptoGraph = (promptMap: PromptMap) => {
 
   return superPrompts.map(({ name, level }) => ({ name, level }));
 };
+
+export const callOpenAI = () => {};

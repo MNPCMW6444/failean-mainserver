@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import { WhiteRequestForPassChange } from "@failean/shared-types";
 
 const requestForPassChangeModal = new mongoose.Schema(
   {
@@ -16,7 +17,7 @@ const requestForPassChangeModal = new mongoose.Schema(
   }
 );
 
-export default mongoose.model(
+export default mongoose.model<WhiteRequestForPassChange>(
   "requestForPassChange",
   requestForPassChangeModal
 );
