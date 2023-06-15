@@ -3,11 +3,11 @@ import cors from "cors";
 import dotenv from "dotenv";
 import mongoose, { ConnectOptions } from "mongoose";
 import cookieParser from "cookie-parser";
-import authRouter from "./app/routers/authRouter";
-import websiteRouter from "./app/routers/websiteRouter";
-import dataRouter from "./app/routers/dataRouter";
+import authRouter from "./app/routers/auth/authRouter";
+import websiteRouter from "./app/routers/website/websiteRouter";
+import dataRouter from "./app/routers/data/dataRouter";
 import promptMap from "./content/prompts/promptMap";
-import { convertMaptoGraph } from "./app/util/promptUtils";
+import { convertMaptoGraph } from "./app/util/data/promptUtil";
 
 dotenv.config();
 

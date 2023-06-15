@@ -1,4 +1,5 @@
 import mongoose, { Schema } from "mongoose";
+import { WhiteUser } from "@failean/shared-types";
 
 const UserSchema = new Schema(
   {
@@ -23,4 +24,4 @@ const UserSchema = new Schema(
   }
 );
 
-export default mongoose.model("User", UserSchema);
+export default mongoose.model<WhiteUser>("User", UserSchema);

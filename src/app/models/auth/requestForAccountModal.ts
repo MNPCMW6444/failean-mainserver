@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import { WhiteRequestForAccount } from "@failean/shared-types";
 
 const requestForAccountModal = new mongoose.Schema(
   {
@@ -20,4 +21,7 @@ const requestForAccountModal = new mongoose.Schema(
   }
 );
 
-export default mongoose.model("requestForAccount", requestForAccountModal);
+export default mongoose.model<WhiteRequestForAccount>(
+  "requestForAccount",
+  requestForAccountModal
+);

@@ -1,15 +1,18 @@
 import express from "express";
-import userModel from "../models/auth/userModel";
+import userModel from "../../models/auth/userModel";
 import bcrypt from "bcrypt";
 import jsonwebtoken, { JwtPayload } from "jsonwebtoken";
-import RequestForAccount from "../models/auth/requestForAccountModal";
-import { passreset, signupreq } from "../../content/email-templates/authEmails";
-import RequestForPassChange from "../models/auth/requestForPassChangeModal";
+import RequestForAccount from "../../models/auth/requestForAccountModal";
+import {
+  passreset,
+  signupreq,
+} from "../../../content/email-templates/authEmails";
+import RequestForPassChange from "../../models/auth/requestForPassChangeModal";
 import zxcvbn from "zxcvbn";
-import { sendEmail } from "../util/emailUtil";
+import { sendEmail } from "../../util/emailUtil";
 import { v4 as keyv4 } from "uuid";
-import ideaModel from "../models/data/ideaModel";
-import { clientDomain } from "../../index";
+import ideaModel from "../../models/data/ideaModel";
+import { clientDomain } from "../../../index";
 
 const router = express.Router();
 const MIN_PASSWORD_STRENGTH = 3;

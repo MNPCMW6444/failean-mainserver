@@ -1,10 +1,10 @@
 import express from "express";
-import userModel from "../models/auth/userModel";
-import RequestForAccount from "../models/auth/requestForAccountModal";
-import { websiteSignup } from "../../content/email-templates/authEmails";
-import { sendEmail } from "../util/emailUtil";
+import userModel from "../../models/auth/userModel";
+import RequestForAccount from "../../models/auth/requestForAccountModal";
+import { websiteSignup } from "../../../content/email-templates/authEmails";
+import { sendEmail } from "../../util/emailUtil";
 import { v4 as keyv4 } from "uuid";
-import { clientDomain } from "../../index";
+import { clientDomain } from "../../../index";
 
 const router = express.Router();
 
