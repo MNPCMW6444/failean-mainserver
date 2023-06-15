@@ -3,6 +3,7 @@ import { WhiteOpenAIPromise } from "@failean/shared-types";
 
 const openAIPromiseModal = new mongoose.Schema(
   {
+    owner: { type: mongoose.Types.ObjectId, required: true },
     stringifiedOpenAIPromise: { type: String, required: true },
   },
   {
