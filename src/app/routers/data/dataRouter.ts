@@ -5,7 +5,7 @@ import PromptResultModel from "../../models/data/promptResultModel";
 import jsonwebtoken, { JwtPayload } from "jsonwebtoken";
 import { convertMaptoGraph } from "../../util/data/promptUtil";
 import { PromptName, PromptPart, WhiteUser } from "@failean/shared-types";
-import { callOpenAI } from "../../util/data/openaiUtil";
+import { callOpenAI } from "../../util/data/openAIUtil";
 import userModel from "../../models/auth/userModel";
 
 const router = express.Router();
