@@ -6,6 +6,84 @@ import PromptResultModel from "../models/data/promptResultModel";
 import jsonwebtoken, { JwtPayload } from "jsonwebtoken";
 import { convertMaptoGraph } from "../util/promptUtils";
 import { PromptPart } from "@failean/shared-types";
+import User from "../models/User"; // Ensure to replace with your actual User model import path
+import Token from "../models/Token"; // Ensure to replace with your actual Token model import path
+import { check, validationResult } from 'express-validator'; // We will use this for input validation
+
+
+const router = express.Router();
+
+// New routes
+router.get('/activeUsers', async (req, res) => {
+  try {
+    const activeUsersCount = await User.countDocuments({isActive: true});
+    res.json({ activeUsers: activeUsersCount });
+  } catch (error) {
+    console.error(error);
+    res.status(500).send('Server error');
+  }
+});
+
+router.get('/totalTokens', async (req, res) => {
+  try {
+    const allTokens = await Token.find();
+    let totalTokens = allTokens.reduce((total, token) => total + token.amount, 0); 
+    res.json({ totalTokens });
+  } catch (error) {
+    console.error(error);
+    res.status(500).send('Server error');
+  }
+});
+
+// Your existing routes...
+// ...
+
+// Create a new user
+router.post('/users', [
+  // Let's do some validation for our incoming requests
+  check('username', 'Username is required').not().isEmpty(),
+  check('password', 'Please enter a password with 6 or more characters').isLength({ min: 6 }),
+], async (req, res) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ errors: errors.array() });
+  }
+
+  try {
+    const user = new User(req.body);
+    await user.save();
+    res.status(201).send(user);
+  } catch (error) {
+    res.status(400).send(error);
+  }
+});
+
+// Suspend a user
+router.patch('/users/:id/suspend', async (req, res) => {
+  try {
+    const user = await User.findByIdAndUpdate(req.params.id, { active: false }, { new: true });
+    if (!user) {
+      return res.status(404).send();
+    }
+    res.send(user);
+  } catch (error) {
+    res.status(400).send(error);
+  }
+});
+
+// Delete a user
+router.delete('/users/:id', async (req, res) => {
+  try {
+    const user = await User.findByIdAndDelete(req.params.id);
+    if (!user) {
+      return res.status(404).send();
+    }
+    res.send(user);
+  } catch (error) {
+    res.status(500).send(error);
+  }
+});
+
 
 const router = express.Router();
 
@@ -244,3 +322,4 @@ router.post("/savePromptResult", async (req, res) => {
 });
 
 export default router;
+

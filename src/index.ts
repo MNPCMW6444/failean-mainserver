@@ -9,6 +9,20 @@ import dataRouter from "./app/routers/dataRouter";
 import promptMap from "./content/prompts/promptMap";
 import { convertMaptoGraph } from "./app/util/promptUtils";
 
+// index.ts
+
+// Import other required modules...
+import { startMonitoring } from './monitoring';
+
+// Setup other parts of your app...
+
+// Start monitoring
+startMonitoring();
+
+// Start your server...
+
+
+
 dotenv.config();
 
 const app = express();
@@ -19,10 +33,11 @@ let mainDbStatus = false;
 
 const connectToDBs = () => {
   try {
-    mongoose.connect("" + process.env.SAFE, {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
-    } as ConnectOptions);
+    mongoose.connect("mongodb+srv://flighter98311:AXFlvqKDPt0uEOLI@cluster0.q6edqhn.mongodb.net/faileansdfhgjkas", 
+  {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  } as ConnectOptions);
     mainDbStatus = true;
   } catch (e) {
     console.error(e);
