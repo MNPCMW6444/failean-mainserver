@@ -149,7 +149,7 @@ router.post("/runAndGetPromptResult", async (req, res) => {
 
     const prompt = promptMap[promptName];
     if (prompt) {
-      let promises = prompt.map(async (promptPart: PromptPart) => {
+      let promises = prompt.prompt.map(async (promptPart: PromptPart) => {
         if (promptPart.type === "variable" && promptPart.content !== "idea") {
           let promptRes = await PromptResultModel.find({
             owner: userId,
@@ -172,20 +172,23 @@ router.post("/runAndGetPromptResult", async (req, res) => {
         });
         let i = 0;
 
-        const constructedPrompt = prompt.map((promptPart: PromptPart) => {
-          if (promptPart.type === "static") return promptPart.content;
-          else if (promptPart.type === "variable") {
-            if (promptPart.content === "idea") return idea?.idea;
-            i++;
-            return (cleanDeps[i - 1] as any)?.x;
+        const constructedPrompt = prompt.prompt.map(
+          (promptPart: PromptPart) => {
+            if (promptPart.type === "static") return promptPart.content;
+            else if (promptPart.type === "variable") {
+              if (promptPart.content === "idea") return idea?.idea;
+              i++;
+              return (cleanDeps[i - 1] as any)?.x;
+            }
           }
-        });
+        );
 
         const user = userModel.findById(userId);
 
         const completion = callOpenAI(
           user as unknown as WhiteUser,
-          constructedPrompt.join("")
+          constructedPrompt.join(""),
+          prompt.role
         );
 
         const savedResult = new PromptResultModel({

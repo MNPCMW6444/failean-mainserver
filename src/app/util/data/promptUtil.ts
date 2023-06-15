@@ -4,7 +4,7 @@ export const convertMaptoDepGraph = (promptMap: PromptMap) => {
   let superPrompts: { name: string; deps: string[]; level: number }[] =
     Object.keys(promptMap).map((promptName) => ({
       name: promptName,
-      deps: promptMap[promptName]
+      deps: promptMap[promptName].prompt
         .filter(
           (promptPart: PromptPart) =>
             promptPart.type === "variable" && promptPart.content
