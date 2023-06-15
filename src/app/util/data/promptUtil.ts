@@ -1,4 +1,4 @@
-import { PromptMap, PromptPart } from "@failean/shared-types";
+import { PromptMap, PromptPart, GroupedPrompt } from "@failean/shared-types";
 
 export const convertMaptoDepGraph = (promptMap: PromptMap) => {
   let superPrompts: { name: string; deps: string[]; level: number }[] =
@@ -49,4 +49,73 @@ export const convertMaptoDepGraph = (promptMap: PromptMap) => {
   }
 
   return superPrompts.map(({ name, level }) => ({ name, level }));
+};
+
+export const convertMaptoDeckGraph = (promptMap: PromptMap) => {
+  let groupedResults: GroupedPrompt[] = [];
+  const promptGroups: Record<string, string[]> = {
+    ideaSummary: [
+      "refindIdea",
+      "startupName",
+      "visioStatment",
+      "missionStatments",
+      "opportunity",
+      "problemStatement",
+      "targetAudience",
+      "solution",
+    ],
+    market: [
+      "valueProposition",
+      "competitorAnalysis",
+      "marketAnalysis",
+      "marketSize",
+      "branding",
+      "slogan",
+      "channels",
+      "GtmStrategy",
+      "marketingCost",
+      "CAC",
+    ],
+    product: [
+      "IdealCustomerPersona",
+      "uniqueValueProposition",
+      "mvpUserStories",
+      "mvpFeatures",
+      "mvpRoadmap",
+      "milestines",
+      "pricing",
+      "mvpDependencies",
+      "mvpCost",
+    ],
+    business: [
+      "businessModel",
+      "unitEconomics",
+      "partnerships",
+      "operationalCosts",
+      "risksAndChallenges",
+    ],
+    financials: [
+      "salesForecastMethod",
+      "salesVolumeEstimation",
+      "revenueProjections",
+    ],
+    funding: ["fundingStrategies", "potentialInvestors"],
+  };
+
+  let level = 0;
+  for (const groupName in promptGroups) {
+    for (const promptName of promptGroups[groupName]) {
+      const prompt = promptMap[promptName];
+      if (prompt) {
+        groupedResults.push({
+          groupName,
+          prompt,
+          level,
+        });
+      }
+    }
+    level++;
+  }
+
+  return groupedResults;
 };

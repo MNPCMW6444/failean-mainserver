@@ -3,7 +3,7 @@ import ideaModel from "../../models/data/ideaModel";
 import promptMap from "../../../content/prompts/promptMap";
 import PromptResultModel from "../../models/data/promptResultModel";
 import jsonwebtoken, { JwtPayload } from "jsonwebtoken";
-import { convertMaptoGraph } from "../../util/data/promptUtil";
+import { convertMaptoDepGraph } from "../../util/data/promptUtil";
 import { PromptName, PromptPart, WhiteUser } from "@failean/shared-types";
 import { callOpenAI } from "../../util/data/openAIUtil";
 import userModel from "../../models/auth/userModel";
@@ -12,7 +12,7 @@ const router = express.Router();
 
 router.get("/getPromptGraph", async (_, res) => {
   try {
-    const graph = convertMaptoGraph(promptMap);
+    const graph = convertMaptoDepGraph(promptMap);
     return res.status(200).json({
       graph,
     });
