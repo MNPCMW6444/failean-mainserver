@@ -1,11 +1,10 @@
 import express from "express";
 import ideaModel from "../models/data/ideaModel";
-import { Configuration, OpenAIApi } from "openai";
 import promptMap from "../../content/prompts/promptMap";
 import PromptResultModel from "../models/data/promptResultModel";
 import jsonwebtoken, { JwtPayload } from "jsonwebtoken";
 import { convertMaptoGraph } from "../util/promptUtils";
-import { PromptPart } from "@failean/shared-types";
+import { PromptName, PromptPart } from "@failean/shared-types";
 
 const router = express.Router();
 
@@ -111,7 +110,7 @@ router.post("/getPromptResult", async (req, res) => {
     );
     const userId = (validatedUser as JwtPayload).id;
 
-    const { ideaId, promptName }: { ideaId: string; promptName: string } =
+    const { ideaId, promptName }: { ideaId: string; promptName: PromptName } =
       req.body;
 
     const promptResult = await PromptResultModel.find({
@@ -139,7 +138,7 @@ router.post("/runAndGetPromptResult", async (req, res) => {
     );
     const userId = (validatedUser as JwtPayload).id;
 
-    const { ideaId, promptName }: { ideaId: string; promptName: string } =
+    const { ideaId, promptName }: { ideaId: string; promptName: PromptName } =
       req.body;
 
     const idea = await ideaModel.findById(ideaId);
@@ -180,19 +179,6 @@ router.post("/runAndGetPromptResult", async (req, res) => {
           }
         });
 
-        const configuration = new Configuration({
-          apiKey: process.env.COMPANY_OPENAI_KEY,
-        });
-
-        const openai = new OpenAIApi(configuration);
-
-        const completion = await openai.createChatCompletion({
-          model: "gpt-3.5-turbo",
-          messages: [
-            { role: "system", content: "You are a professional who knows anything relevant for startups, business, innovation, product, marketing and financials and more. your tone of voice is professional, decisive and innovative like you are responding to a potential investor. You will first get instructions and then relevant information about our startup that you should consider in order to output the best possible answer. make sure there are no contradictions between your answer and the information provided. stay consistent but do not repeat yourself to much. do not finish answering until you fully completed your task. do not answer general information only information relevant to our startup. First, analyze the information provided and try to find how the information provided can be used in your answer. then execute all your instructions do not spare anything. You always answer straight to the point, do not conclude your answer or start it with referring to the information provided or your task. You will always refer to the startup as 'our' and  'We' for example 'We will target (target audience X) using channels Y to get 100 first early adopters for our startup'. The startups you will work with are all on the idea stage. do not say anything you don't know about what the startup did on the past only about the future and present. " },          
-            { role: "user", content: constructedPrompt.join("") },
-          ],
-        });
         const savedResult = new PromptResultModel({
           owner: userId,
           ideaId,
@@ -225,7 +211,7 @@ router.post("/savePromptResult", async (req, res) => {
       ideaId,
       promptName,
       data,
-    }: { ideaId: string; promptName: string; data: string } = req.body;
+    }: { ideaId: string; promptName: PromptName; data: string } = req.body;
 
     const savedPromptResukt = new PromptResultModel({
       owner: userId,
