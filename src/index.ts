@@ -7,7 +7,7 @@ import authRouter from "./app/routers/auth/authRouter";
 import websiteRouter from "./app/routers/website/websiteRouter";
 import dataRouter from "./app/routers/data/dataRouter";
 import promptMap from "./content/prompts/promptMap";
-import { convertMaptoGraph } from "./app/util/data/promptUtil";
+import { convertMaptoDepGraph } from "./app/util/data/promptUtil";
 
 dotenv.config();
 
@@ -60,10 +60,3 @@ app.get("/areyoualive", (_, res) => {
 app.use("/auth", authRouter);
 app.use("/website", websiteRouter);
 app.use("/data", dataRouter);
-
-try {
-  if (process.env.YOAD_FLAG === "dflkgmgj") {
-    const tree = convertMaptoGraph(promptMap);
-    console.log(tree);
-  }
-} catch (e) {}
