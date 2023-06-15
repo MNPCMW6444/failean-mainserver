@@ -1,10 +1,12 @@
 import express from "express";
-import ideaModel from "../models/data/ideaModel";
-import promptMap from "../../content/prompts/promptMap";
-import PromptResultModel from "../models/data/promptResultModel";
+import ideaModel from "../../models/data/ideaModel";
+import promptMap from "../../../content/prompts/promptMap";
+import PromptResultModel from "../../models/data/promptResultModel";
 import jsonwebtoken, { JwtPayload } from "jsonwebtoken";
-import { convertMaptoGraph } from "../util/promptUtils";
-import { PromptName, PromptPart } from "@failean/shared-types";
+import { convertMaptoGraph } from "../../util/data/promptUtil";
+import { PromptName, PromptPart, WhiteUser } from "@failean/shared-types";
+import { callOpenAI } from "../../util/data/openaiUtil";
+import userModel from "../../models/auth/userModel";
 
 const router = express.Router();
 
@@ -179,11 +181,18 @@ router.post("/runAndGetPromptResult", async (req, res) => {
           }
         });
 
+        const user = userModel.findById(userId);
+
+        const completion = callOpenAI(
+          user as unknown as WhiteUser,
+          constructedPrompt.join("")
+        );
+
         const savedResult = new PromptResultModel({
           owner: userId,
           ideaId,
           promptName,
-          data: completion.data.choices[0].message?.content,
+          data: (completion as any).data.choices[0].message?.content,
         });
         await savedResult.save();
         return res.status(200).json({
