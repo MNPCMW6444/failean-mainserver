@@ -1,6 +1,6 @@
 import { PromptMap, PromptPart } from "@failean/shared-types";
 
-export const convertMaptoGraph = (promptMap: PromptMap) => {
+export const convertMaptoDepGraph = (promptMap: PromptMap) => {
   let superPrompts: { name: string; deps: string[]; level: number }[] =
     Object.keys(promptMap).map((promptName) => ({
       name: promptName,
