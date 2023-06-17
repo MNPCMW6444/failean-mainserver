@@ -1,13 +1,12 @@
 import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
+import path from "path";
 import mongoose, { ConnectOptions } from "mongoose";
 import cookieParser from "cookie-parser";
 import authRouter from "./app/routers/auth/authRouter";
 import websiteRouter from "./app/routers/website/websiteRouter";
 import dataRouter from "./app/routers/data/dataRouter";
-import promptMap from "./content/prompts/promptMap";
-import { convertMaptoDepGraph } from "./app/util/data/promptUtil";
 
 dotenv.config();
 
@@ -59,4 +58,9 @@ app.get("/areyoualive", (_, res) => {
 
 app.use("/auth", authRouter);
 app.use("/website", websiteRouter);
+app.use(
+  "/renderWebsite",
+  express.static(path.join(__dirname, "content/website"))
+);
+
 app.use("/data", dataRouter);

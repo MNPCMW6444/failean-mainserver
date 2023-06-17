@@ -17,7 +17,7 @@ import { clientDomain } from "../../../index";
 const router = express.Router();
 const MIN_PASSWORD_STRENGTH = 3;
 
-router.post("/signupreq", async (req, res) => {
+router.post<any, any>("/signupreq", async (req, res) => {
   try {
     const { email, idea } = req.body;
     if (!email)
@@ -58,7 +58,7 @@ router.post("/signupreq", async (req, res) => {
   }
 });
 
-router.post("/signupfin", async (req, res) => {
+router.post<any, any>("/signupfin", async (req, res) => {
   try {
     const { key, fullname, password, passwordagain } = req.body;
     if (!key || !fullname || !password || !passwordagain)
@@ -139,7 +139,7 @@ router.post("/signupfin", async (req, res) => {
   }
 });
 
-router.post("/signin", async (req, res) => {
+router.post<any, any>("/signin", async (req, res) => {
   try {
     const { email, password } = req.body;
     if (!email || !password)
@@ -189,7 +189,7 @@ router.post("/signin", async (req, res) => {
   }
 });
 
-router.post("/updatename", async (req, res) => {
+router.post<any, any>("/updatename", async (req, res) => {
   try {
     const token = req.cookies.jsonwebtoken;
     const { name } = req.body;
@@ -208,7 +208,7 @@ router.post("/updatename", async (req, res) => {
   }
 });
 
-router.post("/updatepassword", async (req, res) => {
+router.post<any, any>("/updatepassword", async (req, res) => {
   try {
     const token = req.cookies.jsonwebtoken;
     const { password } = req.body;
@@ -235,7 +235,7 @@ router.post("/updatepassword", async (req, res) => {
   }
 });
 
-router.get("/signout", async (req, res) => {
+router.get<any, any>("/signout", async (req, res) => {
   try {
     res
       .cookie("jsonwebtoken", "", {
@@ -258,7 +258,7 @@ router.get("/signout", async (req, res) => {
   }
 });
 
-router.post("/passresreq", async (req, res) => {
+router.post<any, any>("/passresreq", async (req, res) => {
   try {
     const { email } = req.body;
     if (!email)
@@ -295,7 +295,7 @@ router.post("/passresreq", async (req, res) => {
   }
 });
 
-router.post("/passresfin", async (req, res) => {
+router.post<any, any>("/passresfin", async (req, res) => {
   try {
     const { email, key, password, passwordagain } = req.body;
     if (!email || !key || !password || !passwordagain)
@@ -335,7 +335,7 @@ router.post("/passresfin", async (req, res) => {
   }
 });
 
-router.post("/updaten", async (req, res) => {
+router.post<any, any>("/updaten", async (req, res) => {
   try {
     const { notifications, newsletter } = req.body;
     if (
@@ -364,7 +364,7 @@ router.post("/updaten", async (req, res) => {
   }
 });
 
-router.get("/signedin", async (req, res) => {
+router.get<any, any>("/signedin", async (req, res) => {
   try {
     const token = req.cookies.jsonwebtoken;
     if (!token) return res.status(401).json({ clientMessage: "Unauthorized" });

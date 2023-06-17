@@ -39,7 +39,7 @@ router.post("/signupreq", async (req, res) => {
       .then(() => console.log("sent registration email"))
       .catch((err) => console.error(err));
 
-    res.status(200).send();
+    res.redirect("/checkemail");
   } catch (err) {
     console.error(err);
     res.json({ result: "email successfully sent to " });
