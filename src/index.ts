@@ -7,6 +7,12 @@ import cookieParser from "cookie-parser";
 import authRouter from "./app/routers/auth/authRouter";
 import websiteRouter from "./app/routers/website/websiteRouter";
 import dataRouter from "./app/routers/data/dataRouter";
+import { ApolloServer } from "apollo-server-express";
+import typeDefs from "./app/typeDefs";
+import Query from "./app/resolvers/Query";
+import Mutation from "./app/resolvers/Mutation";
+import Subscription from "./app/resolvers/Subscription";
+import { RedisPubSub } from "graphql-redis-subscriptions";
 
 dotenv.config();
 
@@ -50,7 +56,19 @@ app.use(
   })
 );
 
-app.listen(port, () => console.log(`Server started on port: ${port}`));
+const pubsub = new RedisPubSub();
+
+const resolvers = {
+  Query,
+  Mutation,
+  Subscription,
+};
+
+const server = new ApolloServer({
+  typeDefs,
+  resolvers,
+  context: ({ req, res }) => ({ req, res, pubsub }),
+});
 
 app.get("/areyoualive", (_, res) => {
   res.json({ answer: "yes", version: process.env.npm_package_version });
@@ -58,9 +76,9 @@ app.get("/areyoualive", (_, res) => {
 
 app.use("/auth", authRouter);
 app.use("/website", websiteRouter);
-app.use(
-  "/renderWebsite",
-  express.static(path.join(__dirname, "content/website"))
-);
 
 app.use("/data", dataRouter);
+
+await app.listen(port, () => console.log(`Server started on port: ${port}`));
+
+server.applyMiddleware({ app });

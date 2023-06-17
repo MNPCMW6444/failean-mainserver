@@ -1,5 +1,5 @@
 import { WhiteUser } from "@failean/shared-types";
-import tokenModal from "src/app/models/accounts/tokenModal";
+import tokenModal from "src/app/mongo-models/accounts/tokenModal";
 
 export const amendTokens = async (
   user: WhiteUser,

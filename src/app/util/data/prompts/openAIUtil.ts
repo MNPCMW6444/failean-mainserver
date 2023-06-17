@@ -1,5 +1,5 @@
 import { Configuration, OpenAIApi, ChatCompletionRequestMessage } from "openai";
-import { roleMap } from "../../../content/prompts/roleMap";
+import { roleMap } from "../../../../content/prompts/roleMap";
 import { RoleMap, WhiteOpenAIPromise, WhiteUser } from "@failean/shared-types";
 
 export const callOpenAI = (

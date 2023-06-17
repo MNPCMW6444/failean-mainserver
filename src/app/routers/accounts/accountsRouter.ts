@@ -1,6 +1,6 @@
 import express from "express";
 import jsonwebtoken from "jsonwebtoken";
-import tokenModal from "../../models/accounts/tokenModal";
+import tokenModal from "../../mongo-models/accounts/tokenModal";
 import { API } from "@failean/shared-types";
 
 const router = express.Router();
