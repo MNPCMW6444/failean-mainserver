@@ -1,3 +1,4 @@
+import { WhitePromptResult } from "@failean/shared-types";
 import mongoose from "mongoose";
 
 const promptResultModal = new mongoose.Schema(
@@ -15,4 +16,7 @@ const promptResultModal = new mongoose.Schema(
   }
 );
 
-export default mongoose.model("promptResult", promptResultModal);
+export default mongoose.model<WhitePromptResult>(
+  "promptResult",
+  promptResultModal
+);

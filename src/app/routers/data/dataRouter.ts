@@ -140,8 +140,11 @@ router.post("/runAndGetPromptResult", async (req, res) => {
     );
     const userId = (validatedUser as JwtPayload).id;
 
-    const { ideaId, promptName }: { ideaId: string; promptName: PromptName } =
-      req.body;
+    const {
+      ideaId,
+      promptName,
+      feedback,
+    }: { ideaId: string; promptName: PromptName; feedback?: string } = req.body;
 
     const idea = await ideaModel.findById(ideaId);
 
@@ -185,10 +188,29 @@ router.post("/runAndGetPromptResult", async (req, res) => {
 
         const user = userModel.findById(userId);
 
+        const promptResult =
+          feedback?.length &&
+          feedback?.length > 1 &&
+          (await PromptResultModel.find({
+            owner: userId,
+            ideaId,
+            promptName,
+          }));
+
         const completion = callOpenAI(
           user as unknown as WhiteUser,
-          constructedPrompt.join(""),
-          prompt.role
+          prompt.role,
+          promptResult && [promptResult.length - 1] &&
+            promptResult[promptResult.length - 1].data
+            ? [
+                { role: "user", content: constructedPrompt.join("") },
+                {
+                  role: "assistant",
+                  content: promptResult[promptResult.length - 1].data,
+                },
+                { role: "user", content: feedback },
+              ]
+            : [{ role: "user", content: constructedPrompt.join("") }]
         );
 
         const savedResult = new PromptResultModel({
@@ -225,15 +247,15 @@ router.post("/savePromptResult", async (req, res) => {
       data,
     }: { ideaId: string; promptName: PromptName; data: string } = req.body;
 
-    const savedPromptResukt = new PromptResultModel({
+    const savedPromptResult = new PromptResultModel({
       owner: userId,
       ideaId,
       promptName,
       data,
     });
-    await savedPromptResukt.save();
+    await savedPromptResult.save();
     return res.status(200).json({
-      response: savedPromptResukt.data,
+      response: savedPromptResult.data,
     });
   } catch (err) {
     console.error(err);

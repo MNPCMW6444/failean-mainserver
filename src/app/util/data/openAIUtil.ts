@@ -1,11 +1,11 @@
-import { Configuration, OpenAIApi } from "openai";
+import { Configuration, OpenAIApi, ChatCompletionRequestMessage } from "openai";
 import { roleMap } from "../../../content/prompts/roleMap";
 import { RoleMap, WhiteOpenAIPromise, WhiteUser } from "@failean/shared-types";
 
 export const callOpenAI = (
   user: WhiteUser,
-  prompt: string,
-  roleName: keyof RoleMap
+  roleName: keyof RoleMap,
+  chat: Array<ChatCompletionRequestMessage>
 ): -1 | WhiteOpenAIPromise => {
   const role = roleMap[roleName];
   if (user.subscription === "free") {
@@ -30,7 +30,7 @@ export const callOpenAI = (
           role: "system",
           content: role,
         },
-        { role: "user", content: prompt },
+        ...chat,
       ],
     });
     return -1;
