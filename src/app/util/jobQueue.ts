@@ -1,10 +1,10 @@
 import Queue from "bull";
-import myJob from "../jobs/myJob";
+import "../jobs/callOpenAI";
 
 // Create a new Bull queue
-const myQueue = new Queue("myQueue");
+const openAIQueue = new Queue("openAIQueue");
 
 // Process jobs using the myJob function
-myQueue.process(myJob);
+openAIQueue.process(myJob);
 
-export default myQueue;
+export default openAIQueue;
