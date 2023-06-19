@@ -3,7 +3,7 @@ import express from "express";
 import { pubsub } from "../../index";
 import openAIQueue from "../util/openAIQueue";
 import { Configuration, OpenAIApi } from "openai";
-import { roleMap } from "src/content/prompts/roleMap";
+import { roleMap } from "../../content/prompts/roleMap";
 
 const configuration = new Configuration({
   apiKey: process.env.COMPANY_OPENAI_KEY,

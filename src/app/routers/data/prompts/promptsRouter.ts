@@ -1,12 +1,12 @@
 import express from "express";
 import PromptResultModel from "../../../mongo-models/data/prompts/promptResultModel";
 import jsonwebtoken, { JwtPayload } from "jsonwebtoken";
-import { PromptName, PromptPart } from "@failean/shared-types";
+import { PromptName } from "@failean/shared-types";
 import openAIQueue from "../../../util/openAIQueue";
 import { convertMaptoDepGraph } from "../../../util/data/prompts/promptUtil";
 import promptMap from "../../../../content/prompts/promptMap";
-import ideaModel from "src/app/mongo-models/data/ideas/ideaModel";
-import userModel from "src/app/mongo-models/auth/userModel";
+import { authUser } from "../../../util/authUtil";
+import { API } from "@failean/shared-types";
 
 const router = express.Router();
 
@@ -51,19 +51,11 @@ router.post("/getPromptResult", async (req, res) => {
 });
 
 router.post("/runAndGetPromptResult", async (req, res) => {
-  const token = req.cookies.jsonwebtoken;
-  if (!token) return res.status(401).json({ clientMessage: "Unauthorized" });
-  const validatedUser = jsonwebtoken.verify(
-    token,
-    process.env.JWT_SECRET as string
-  );
-  const user = await userModel.findById((validatedUser as JwtPayload).id);
+  const user = await authUser(req.cookies.jsonwebtoken);
+  !user && res.status(401).json({ clientMessage: "Unauthorized" });
 
-  const {
-    ideaId,
-    promptName,
-    feedback,
-  }: { ideaId: string; promptName: PromptName; feedback?: string } = req.body;
+  const { ideaId, promptName, feedback }: API.Data.RunAndGetPromptResult.Req =
+    req.body;
 
   const job = await openAIQueue.add({ user, ideaId, promptName, feedback });
   res.status(200).json({ jobId: job.id });
