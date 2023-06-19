@@ -56,7 +56,7 @@ app.use(
   })
 );
 
-const pubsub = new RedisPubSub({
+export const pubsub = new RedisPubSub({
   connection: process.env.REDIS + "",
 });
 
