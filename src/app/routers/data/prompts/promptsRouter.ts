@@ -2,7 +2,7 @@ import express from "express";
 import PromptResultModel from "../../../mongo-models/data/prompts/promptResultModel";
 import jsonwebtoken, { JwtPayload } from "jsonwebtoken";
 import { PromptName } from "@failean/shared-types";
-import openAIQueue from "../../../util/openAIQueue";
+import openAIQueue from "../../../jobs/openAIQueue";
 import { convertMaptoDepGraph } from "../../../util/data/prompts/promptUtil";
 import promptMap from "../../../../content/prompts/promptMap";
 import { authUser } from "../../../util/authUtil";
@@ -51,14 +51,25 @@ router.post("/getPromptResult", async (req, res) => {
 });
 
 router.post("/runAndGetPromptResult", async (req, res) => {
-  const user = await authUser(req.cookies.jsonwebtoken);
-  !user && res.status(401).json({ clientMessage: "Unauthorized" });
+  try {
+    const user = await authUser(req.cookies.jsonwebtoken);
 
-  const { ideaId, promptName, feedback }: API.Data.RunAndGetPromptResult.Req =
-    req.body;
+    if (!user) {
+      return res.status(401).json({ clientMessage: "Unauthorized" });
+    }
 
-  const job = await openAIQueue.add({ user, ideaId, promptName, feedback });
-  res.status(200).json({ jobId: job.id });
+    const { ideaId, promptName, feedback }: API.Data.RunAndGetPromptResult.Req =
+      req.body;
+
+    console.log("About to add job to queue");
+    const job = await openAIQueue.add({ user, ideaId, promptName, feedback });
+    console.log("Job added to queue", job);
+
+    return res.status(200).json({ jobId: job.id });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ clientMessage: "An error occurred" });
+  }
 });
 
 router.post("/savePromptResult", async (req, res) => {
