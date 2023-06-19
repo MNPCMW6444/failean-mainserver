@@ -56,7 +56,9 @@ app.use(
   })
 );
 
-const pubsub = new RedisPubSub();
+const pubsub = new RedisPubSub({
+  connection: process.env.REDIS + "",
+});
 
 const resolvers = {
   Query,
@@ -79,6 +81,12 @@ app.use("/website", websiteRouter);
 
 app.use("/data", dataRouter);
 
-await app.listen(port, () => console.log(`Server started on port: ${port}`));
+const startApolloServer = async () => {
+  await server.start();
+  server.applyMiddleware({ app });
+};
 
-server.applyMiddleware({ app });
+// Call the async function
+startApolloServer().catch((error) => console.error(error));
+
+app.listen(port, () => console.log(`Server started on port: ${port}`));
