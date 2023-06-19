@@ -3,8 +3,22 @@ import PromptResultModel from "../../../mongo-models/data/prompts/promptResultMo
 import jsonwebtoken, { JwtPayload } from "jsonwebtoken";
 import { PromptName } from "@failean/shared-types";
 import openAIQueue from "../../../util/openAIQueue";
+import { convertMaptoDepGraph } from "../../../util/data/prompts/promptUtil";
+import promptMap from "../../../../content/prompts/promptMap";
 
 const router = express.Router();
+
+router.get("/getPromptGraph", async (_, res) => {
+  try {
+    const graph = convertMaptoDepGraph(promptMap);
+    return res.status(200).json({
+      graph,
+    });
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({ errorMessage: JSON.stringify(err) });
+  }
+});
 
 router.post("/getPromptResult", async (req, res) => {
   try {
@@ -39,7 +53,7 @@ router.post("/runAndGetPromptResult", async (req, res) => {
 
   const job = await openAIQueue.add({ user, roleName, chat });
 
-  res.json({ jobId: job.id });
+  res.status(200).json({ jobId: job.id });
 
   // try {
   //   const token = req.cookies.jsonwebtoken;
