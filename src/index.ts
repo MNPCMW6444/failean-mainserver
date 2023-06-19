@@ -1,7 +1,6 @@
 import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
-import path from "path";
 import mongoose, { ConnectOptions } from "mongoose";
 import cookieParser from "cookie-parser";
 import authRouter from "./app/routers/auth/authRouter";
@@ -9,10 +8,10 @@ import websiteRouter from "./app/routers/website/websiteRouter";
 import dataRouter from "./app/routers/data/dataRouter";
 import { ApolloServer } from "apollo-server-express";
 import typeDefs from "./app/typeDefs";
-import Query from "./app/resolvers/Query";
-import Mutation from "./app/resolvers/Mutation";
-import Subscription from "./app/resolvers/Subscription";
 import { RedisPubSub } from "graphql-redis-subscriptions";
+import Query from "./app/resolvers/query";
+import Mutation from "./app/resolvers/mutation";
+import Subscription from "./app/resolvers/subscription";
 
 dotenv.config();
 
