@@ -6,8 +6,19 @@ import jsonwebtoken, { JwtPayload } from "jsonwebtoken";
 import { PromptName, PromptPart, WhiteUser } from "@failean/shared-types";
 import { callOpenAI } from "../../../util/data/prompts/openAIUtil";
 import userModel from "../../../mongo-models/auth/userModel";
+import myQueue from "../../../util/jobQueue";
 
 const router = express.Router();
+
+router.post("/chat", async (req, res) => {
+  const { user, roleName, chat } = req.body;
+
+  // Add a new job to the queue
+  const job = await myQueue.add({ user, roleName, chat });
+
+  // Respond to the client with the job's ID
+  res.json({ jobId: job.id });
+});
 
 router.post("/getPromptResult", async (req, res) => {
   try {

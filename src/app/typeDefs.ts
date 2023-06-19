@@ -17,7 +17,7 @@ const typeDefs = gql`
   }
 
   type Subscription {
-    userCreated: User
+    jobUpdated: User
   }
 `;
 

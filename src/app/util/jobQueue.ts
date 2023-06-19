@@ -1,3 +1,10 @@
 import Queue from "bull";
+import myJob from "../jobs/myJob";
 
-export const myJobQueue = new Queue("myJobQueue");
+// Create a new Bull queue
+const myQueue = new Queue("myQueue");
+
+// Process jobs using the myJob function
+myQueue.process(myJob);
+
+export default myQueue;
