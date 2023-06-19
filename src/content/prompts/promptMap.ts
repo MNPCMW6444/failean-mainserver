@@ -1329,6 +1329,11 @@ const promptMap: PromptMap = {
         content: "---\n",
       },
       { type: "variable", content: "businessModel" },
+      {
+        type: "static",
+        content: "---\n",
+      },
+      { type: "variable", content: "competitorAnalysis" },
     ],
   },
   OnePager: {
