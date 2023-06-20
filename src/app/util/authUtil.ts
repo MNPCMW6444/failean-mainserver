@@ -1,6 +1,7 @@
 import jsonwebtoken, { JwtPayload } from "jsonwebtoken";
 import userModel from "../mongo-models/auth/userModel";
-import { WhiteUser } from "@failean/shared-types";
+import { WhiteModels } from "@failean/shared-types";
+type WhiteUser = WhiteModels.Auth.WhiteUser;
 
 export const authUser = async (token: any): Promise<WhiteUser | null> => {
   try {

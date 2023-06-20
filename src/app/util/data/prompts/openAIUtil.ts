@@ -1,6 +1,7 @@
-import { RoleMap, WhiteUser } from "@failean/shared-types";
+import { RoleMap, WhiteModels } from "@failean/shared-types";
 import { Configuration, OpenAIApi, ChatCompletionRequestMessage } from "openai";
 import { roleMap } from "../../../../content/prompts/roleMap";
+type WhiteUser = WhiteModels.Auth.WhiteUser;
 
 export const callOpenAI = async (
   user: WhiteUser,

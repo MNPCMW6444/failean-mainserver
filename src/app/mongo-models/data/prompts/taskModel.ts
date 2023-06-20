@@ -1,14 +1,13 @@
+import { WhiteTask } from "@failean/shared-types";
 import mongoose from "mongoose";
-import { WhiteModels } from "@failean/shared-types";
-type WhitePromptResult = WhiteModels.Data.Prompts.WhitePromptResult;
 
-const promptResultModal = new mongoose.Schema(
+const taskModal = new mongoose.Schema(
   {
     owner: { type: mongoose.Schema.Types.ObjectId, required: true },
     ideaId: { type: mongoose.Schema.Types.ObjectId, required: true },
     promptName: { type: String, required: true },
-    data: {
-      type: String,
+    taskId: {
+      type: Number,
       required: true,
     },
   },
@@ -17,7 +16,4 @@ const promptResultModal = new mongoose.Schema(
   }
 );
 
-export default mongoose.model<WhitePromptResult>(
-  "promptResult",
-  promptResultModal
-);
+export default mongoose.model<WhiteTask>("task", taskModal);

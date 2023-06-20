@@ -2,9 +2,10 @@ import Queue from "bull";
 import { pubsub } from "../../index";
 import ideaModel from "../mongo-models/data/ideas/ideaModel";
 import promptMap from "../../content/prompts/promptMap";
-import { PromptPart, WhiteUser } from "@failean/shared-types";
+import { PromptPart, WhiteModels } from "@failean/shared-types";
 import PromptResultModel from "../mongo-models/data/prompts/promptResultModel";
 import { callOpenAI } from "../util/data/prompts/openAIUtil";
+type WhiteUser = WhiteModels.Auth.WhiteUser;
 
 // Create a new Bull queue
 const openAIQueue = new Queue("openAIQueue", process.env.REDIS || "");

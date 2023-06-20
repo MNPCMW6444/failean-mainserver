@@ -1,5 +1,6 @@
 import mongoose, { Schema } from "mongoose";
-import { WhiteUser } from "@failean/shared-types";
+import { WhiteModels } from "@failean/shared-types";
+type WhiteUser = WhiteModels.Auth.WhiteUser;
 
 const UserSchema = new Schema(
   {
