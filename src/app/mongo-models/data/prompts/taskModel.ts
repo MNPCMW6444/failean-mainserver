@@ -1,5 +1,6 @@
-import { WhiteTask } from "@failean/shared-types";
 import mongoose from "mongoose";
+import { WhiteModels } from "@failean/shared-types";
+type WhiteTask = WhiteModels.Data.Prompts.WhiteTask;
 
 const taskModal = new mongoose.Schema(
   {
