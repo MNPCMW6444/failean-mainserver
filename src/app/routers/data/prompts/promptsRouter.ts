@@ -59,9 +59,7 @@ router.post("/runAndGetPromptResult", async (req, res) => {
     const { ideaId, promptName, feedback }: API.Data.RunAndGetPromptResult.Req =
       req.body;
 
-    console.log("About to add job to queue");
     const job = await openAIQueue.add({ user, ideaId, promptName, feedback });
-    console.log("Job added to queue", job);
 
     return res.status(200).json({ jobId: job.id });
   } catch (error) {
