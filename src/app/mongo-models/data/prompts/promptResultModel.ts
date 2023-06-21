@@ -7,6 +7,11 @@ const promptResultModal = new mongoose.Schema(
     owner: { type: mongoose.Schema.Types.ObjectId, required: true },
     ideaId: { type: mongoose.Schema.Types.ObjectId, required: true },
     promptName: { type: String, required: true },
+    reason: {
+      type: String,
+      enum: ["run", "feedback", "save"],
+      required: true,
+    },
     data: {
       type: String,
       required: true,
