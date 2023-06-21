@@ -13,6 +13,7 @@ import { sendEmail } from "../../util/emailUtil";
 import { v4 as keyv4 } from "uuid";
 import ideaModel from "../../mongo-models/data/ideas/ideaModel";
 import { clientDomain } from "../../../index";
+import { authUser } from "../../util/authUtil";
 
 const router = express.Router();
 const MIN_PASSWORD_STRENGTH = 3;
@@ -191,15 +192,14 @@ router.post<any, any>("/signin", async (req, res) => {
 
 router.post<any, any>("/updatename", async (req, res) => {
   try {
-    const token = req.cookies.jsonwebtoken;
+    const user = await authUser(req.cookies.jsonwebtoken);
+
+    if (!user) {
+      return res.status(401).json({ clientMessage: "Unauthorized" });
+    }
+
     const { name } = req.body;
-    if (!token) return res.status(401).json({ clientMessage: "Unauthorized" });
-    const validatedUser = jsonwebtoken.verify(
-      token,
-      process.env.JWT_SECRET as string
-    );
-    const userId = (validatedUser as JwtPayload).id;
-    const user = await userModel.findById(userId);
+
     if (user) user.name = name;
     await user?.save();
     res.json(user);
@@ -210,7 +210,12 @@ router.post<any, any>("/updatename", async (req, res) => {
 
 router.post<any, any>("/updatepassword", async (req, res) => {
   try {
-    const token = req.cookies.jsonwebtoken;
+    const user = await authUser(req.cookies.jsonwebtoken);
+
+    if (!user) {
+      return res.status(401).json({ clientMessage: "Unauthorized" });
+    }
+
     const { password } = req.body;
     const passwordStrength = zxcvbn(password);
     if (passwordStrength.score < MIN_PASSWORD_STRENGTH)
@@ -218,13 +223,7 @@ router.post<any, any>("/updatepassword", async (req, res) => {
         clientError:
           "Password isn't strong enough, the value is" + passwordStrength.score,
       });
-    if (!token) return res.status(401).json({ clientMessage: "Unauthorized" });
-    const validatedUser = jsonwebtoken.verify(
-      token,
-      process.env.JWT_SECRET as string
-    );
-    const userId = (validatedUser as JwtPayload).id;
-    const user = await userModel.findById(userId);
+
     const salt = await bcrypt.genSalt();
     const passwordHash = await bcrypt.hash(password, salt);
     if (user) user.passwordHash = passwordHash;
@@ -346,14 +345,12 @@ router.post<any, any>("/updaten", async (req, res) => {
         clientError: "At least one of the fields are missing",
       });
 
-    const token = req.cookies.jsonwebtoken;
-    if (!token) return res.status(401).json({ clientMessage: "Unauthorized" });
-    const validatedUser = jsonwebtoken.verify(
-      token,
-      process.env.JWT_SECRET as string
-    );
-    const userId = (validatedUser as JwtPayload).id;
-    const user = (await userModel.find({ userId }))[0];
+    const user = await authUser(req.cookies.jsonwebtoken);
+
+    if (!user) {
+      return res.status(401).json({ clientMessage: "Unauthorized" });
+    }
+
     await user.save();
     res.json({ changed: "yes" });
   } catch (err) {
@@ -366,14 +363,13 @@ router.post<any, any>("/updaten", async (req, res) => {
 
 router.get<any, any>("/signedin", async (req, res) => {
   try {
-    const token = req.cookies.jsonwebtoken;
-    if (!token) return res.status(401).json({ clientMessage: "Unauthorized" });
-    const validatedUser = jsonwebtoken.verify(
-      token,
-      process.env.JWT_SECRET as string
-    );
-    const userId = (validatedUser as JwtPayload).id;
-    res.json(await userModel.findById(userId));
+    const user = await authUser(req.cookies.jsonwebtoken);
+
+    if (!user) {
+      return res.status(401).json({ clientMessage: "Unauthorized" });
+    }
+
+    res.json(await userModel.findById(user._id));
   } catch (err) {
     return res.status(401).json({ errorMessage: "Unauthorized." });
   }

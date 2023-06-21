@@ -24,19 +24,17 @@ router.get("/getPromptGraph", async (_, res) => {
 
 router.post("/getPromptResult", async (req, res) => {
   try {
-    const token = req.cookies.jsonwebtoken;
-    if (!token) return res.status(401).json({ clientMessage: "Unauthorized" });
-    const validatedUser = jsonwebtoken.verify(
-      token,
-      process.env.JWT_SECRET as string
-    );
-    const userId = (validatedUser as JwtPayload).id;
+    const user = await authUser(req.cookies.jsonwebtoken);
+
+    if (!user) {
+      return res.status(401).json({ clientMessage: "Unauthorized" });
+    }
 
     const { ideaId, promptName }: { ideaId: string; promptName: PromptName } =
       req.body;
 
     const promptResult = await PromptResultModel.find({
-      owner: userId,
+      owner: user._id,
       ideaId,
       promptName,
     });
@@ -74,13 +72,11 @@ router.post("/runAndGetPromptResult", async (req, res) => {
 
 router.post("/savePromptResult", async (req, res) => {
   try {
-    const token = req.cookies.jsonwebtoken;
-    if (!token) return res.status(401).json({ clientMessage: "Unauthorized" });
-    const validatedUser = jsonwebtoken.verify(
-      token,
-      process.env.JWT_SECRET as string
-    );
-    const userId = (validatedUser as JwtPayload).id;
+    const user = await authUser(req.cookies.jsonwebtoken);
+
+    if (!user) {
+      return res.status(401).json({ clientMessage: "Unauthorized" });
+    }
 
     const {
       ideaId,
@@ -89,7 +85,7 @@ router.post("/savePromptResult", async (req, res) => {
     }: { ideaId: string; promptName: PromptName; data: string } = req.body;
 
     const savedPromptResult = new PromptResultModel({
-      owner: userId,
+      owner: user._id,
       ideaId,
       promptName,
       data,
