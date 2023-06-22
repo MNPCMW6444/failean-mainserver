@@ -59,7 +59,7 @@ const processJob = async (job: any) => {
             promptName: promptPart.content,
           });
           return {
-            x: promptRes[promptRes.length - 1].data,
+            x: promptRes[promptRes.length - 1]?.data,
           };
         }
       });
