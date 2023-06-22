@@ -11,9 +11,8 @@ const signupreq = (url: string) => ({
   <body>
       <div style="font-family: Helvetica, Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border-radius: 5px; box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2); background-color: #003399; color: #ffffff;">
           <h2>Welcome to Failean!</h2>
-          <p>Hey [Recipient's Name],</p>
-  
-          <p>Congratulations on taking the first step towards epic fails and even more epic comebacks with Failean! We're thrilled to have you on board.</p>
+
+          <p>Hey! Congratulations on taking the first step towards epic fails and even more epic comebacks with Failean! We're thrilled to have you on board.</p>
   
           <p>Failean is designed to take your ideas, churn them through the wringer, and spit out a business plan that's been through the school of hard knocks. Market research, competitor analysis, problem and solution identification – we've got it all covered.</p>
   
