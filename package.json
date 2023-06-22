@@ -25,6 +25,7 @@
     "exec": "./node_modules/.bin/ts-node ./src"
   },
   "dependencies": {
+    "@bull-board/express": "^5.5.1",
     "@failean/shared-types": "^2.9.130",
     "@sendgrid/mail": "^7.7.0",
     "@types/bcrypt": "^5.0.0",

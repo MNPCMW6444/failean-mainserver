@@ -1,6 +1,5 @@
 import express from "express";
 import PromptResultModel from "../../../mongo-models/data/prompts/promptResultModel";
-import jsonwebtoken, { JwtPayload } from "jsonwebtoken";
 import { PromptName } from "@failean/shared-types";
 import openAIQueue from "../../../jobs/openAIQueue";
 import { convertMaptoDepGraph } from "../../../util/data/prompts/promptUtil";

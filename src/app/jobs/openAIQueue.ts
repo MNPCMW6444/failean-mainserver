@@ -5,13 +5,35 @@ import promptMap from "../../content/prompts/promptMap";
 import { PromptPart, WhiteModels } from "@failean/shared-types";
 import PromptResultModel from "../mongo-models/data/prompts/promptResultModel";
 import { callOpenAI } from "../util/data/prompts/openAIUtil";
+import { createBullBoard } from "@bull-board/api";
+import { BullAdapter } from "@bull-board/api/bullAdapter";
+import { ExpressAdapter } from "@bull-board/express";
+import express from "express";
+
 type WhiteUser = WhiteModels.Auth.WhiteUser;
 
 // Create a new Bull queue
 const openAIQueue = new Queue("openAIQueue", process.env.REDIS || "");
 
+const serverAdapter = new ExpressAdapter();
+serverAdapter.setBasePath("/admin/queues");
+
 openAIQueue.on("error", (error) => {
   console.error(`A queue error happened: ${error}`);
+});
+
+createBullBoard({
+  queues: [new BullAdapter(openAIQueue)],
+  serverAdapter: serverAdapter,
+});
+
+const app = express();
+
+app.use("/admin/queues", serverAdapter.getRouter());
+
+app.listen(3000, () => {
+  console.log("Bull Dashbaord is Running on port 3000...");
+  console.log("For the UI, open http://localhost:3000/admin/queues");
 });
 
 // Define your job processing function
@@ -41,6 +63,7 @@ const processJob = async (job: any) => {
           };
         }
       });
+
       Promise.all(promises).then(async (updatedPropmtResult) => {
         dependencies = updatedPropmtResult.map((r: any) => {
           return r;
@@ -92,7 +115,8 @@ const processJob = async (job: any) => {
           owner: user._id,
           ideaId,
           promptName,
-          data: (completion as any).data.choices[0].message?.content,
+          data: completion.data.choices[0].message?.content,
+          reason: feedback?.length && feedback?.length > 1 ? "feedback" : "run",
         });
         await savedResult.save();
       });
