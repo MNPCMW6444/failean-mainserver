@@ -40,15 +40,11 @@ app.listen(3000, () => {
 const processJob = async (job: any) => {
   try {
     const { user, ideaId, promptName, feedback } = job.data;
-
     if (user.subscription !== "tokens") {
       return;
     }
-
     const idea = await ideaModel.findById(ideaId);
-
     let dependencies: string[];
-
     const prompt = promptMap[promptName];
     if (prompt) {
       let promises = prompt.prompt.map(async (promptPart: PromptPart) => {
@@ -75,16 +71,22 @@ const processJob = async (job: any) => {
         });
         let i = 0;
 
+        let missing = false;
+
         const constructedPrompt = prompt.prompt.map(
           (promptPart: PromptPart) => {
             if (promptPart.type === "static") return promptPart.content;
             else if (promptPart.type === "variable") {
               if (promptPart.content === "idea") return idea?.idea;
               i++;
-              return (cleanDeps[i - 1] as any)?.x;
+              const res = (cleanDeps[i - 1] as any)?.x;
+              missing = !missing && !(res?.length > 1);
+              return res;
             }
           }
         );
+
+        if (missing) throw new Error("Missing dependencies");
 
         const promptResult =
           feedback?.length &&
@@ -121,18 +123,13 @@ const processJob = async (job: any) => {
         await savedResult.save();
       });
     }
-
-    // You could set job status in Redis here
-
-    // Publish updates via GraphQL subscription
     pubsub.publish("jobUpdate", {
       jobUpdate: { id: job.id, status: "completed" },
     });
   } catch (error) {
     console.error(`An error occurred during job processing: ${error}`);
-    // If you want to notify the client about the error, you can publish it here
     pubsub.publish("jobUpdate", {
-      jobUpdate: { id: job.id, status: "error", message: error.message },
+      jobUpdate: { id: job.id, status: "error", message: error },
     });
   }
 };
