@@ -1,4 +1,6 @@
 import mongoose from "mongoose";
+import { WhiteModels } from "@failean/shared-types";
+type WhiteIdea = WhiteModels.Data.Ideas.WhiteIdea;
 
 const ideaModal = new mongoose.Schema(
   {
@@ -17,4 +19,4 @@ const ideaModal = new mongoose.Schema(
   }
 );
 
-export default mongoose.model("idea", ideaModal);
+export default mongoose.model<WhiteIdea>("idea", ideaModal);

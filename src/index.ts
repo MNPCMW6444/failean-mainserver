@@ -6,8 +6,12 @@ import cookieParser from "cookie-parser";
 import authRouter from "./app/routers/auth/authRouter";
 import websiteRouter from "./app/routers/website/websiteRouter";
 import dataRouter from "./app/routers/data/dataRouter";
-import promptMap from "./content/prompts/promptMap";
-import { convertMaptoDepGraph } from "./app/util/data/promptUtil";
+import { ApolloServer } from "apollo-server-express";
+import typeDefs from "./app/typeDefs";
+import { RedisPubSub } from "graphql-redis-subscriptions";
+import Query from "./app/resolvers/query";
+import Mutation from "./app/resolvers/mutation";
+import Subscription from "./app/resolvers/subscription";
 
 dotenv.config();
 
@@ -51,7 +55,21 @@ app.use(
   })
 );
 
-app.listen(port, () => console.log(`Server started on port: ${port}`));
+export const pubsub = new RedisPubSub({
+  connection: process.env.REDIS + "",
+});
+
+const resolvers = {
+  Query,
+  Mutation,
+  Subscription,
+};
+
+const server = new ApolloServer({
+  typeDefs,
+  resolvers,
+  context: ({ req, res }) => ({ req, res, pubsub }),
+});
 
 app.get("/areyoualive", (_, res) => {
   res.json({ answer: "yes", version: process.env.npm_package_version });
@@ -59,4 +77,15 @@ app.get("/areyoualive", (_, res) => {
 
 app.use("/auth", authRouter);
 app.use("/website", websiteRouter);
+
 app.use("/data", dataRouter);
+
+const startApolloServer = async () => {
+  await server.start();
+  server.applyMiddleware({ app });
+};
+
+// Call the async function
+startApolloServer().catch((error) => console.error(error));
+
+app.listen(port, () => console.log(`Server started on port: ${port}`));

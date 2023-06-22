@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
-import { WhiteToken } from "@failean/shared-types";
+import { WhiteModels } from "@failean/shared-types";
+type WhiteToken = WhiteModels.Accounts.WhiteToken;
 
 const tokenModal = new mongoose.Schema(
   {

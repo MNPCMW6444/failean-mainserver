@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
-import { WhiteRequestForPassChange } from "@failean/shared-types";
+import { WhiteModels } from "@failean/shared-types";
+type WhiteRequestForPassChange = WhiteModels.Auth.WhiteRequestForPassChange;
 
 const requestForPassChangeModal = new mongoose.Schema(
   {

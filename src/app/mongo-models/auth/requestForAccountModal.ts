@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
-import { WhiteRequestForAccount } from "@failean/shared-types";
+import { WhiteModels } from "@failean/shared-types";
+type WhiteRequestForAccount = WhiteModels.Auth.WhiteRequestForAccount;
 
 const requestForAccountModal = new mongoose.Schema(
   {

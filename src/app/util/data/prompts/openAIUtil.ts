@@ -1,12 +1,13 @@
-import { Configuration, OpenAIApi } from "openai";
-import { roleMap } from "../../../content/prompts/roleMap";
-import { RoleMap, WhiteOpenAIPromise, WhiteUser } from "@failean/shared-types";
+import { RoleMap, WhiteModels } from "@failean/shared-types";
+import { Configuration, OpenAIApi, ChatCompletionRequestMessage } from "openai";
+import { roleMap } from "../../../../content/prompts/roleMap";
+type WhiteUser = WhiteModels.Auth.WhiteUser;
 
-export const callOpenAI = (
+export const callOpenAI = async (
   user: WhiteUser,
-  prompt: string,
-  roleName: keyof RoleMap
-): -1 | WhiteOpenAIPromise => {
+  roleName: keyof RoleMap,
+  chat: Array<ChatCompletionRequestMessage>
+): Promise<any> => {
   const role = roleMap[roleName];
   if (user.subscription === "free") {
     return -1;
@@ -23,17 +24,16 @@ export const callOpenAI = (
 
     const openai = new OpenAIApi(configuration);
 
-    const openAIPromise = openai.createChatCompletion({
+    return await openai.createChatCompletion({
       model: "gpt-3.5-turbo",
       messages: [
         {
           role: "system",
           content: role,
         },
-        { role: "user", content: prompt },
+        ...chat,
       ],
     });
-    return -1;
   }
   return -1;
 };

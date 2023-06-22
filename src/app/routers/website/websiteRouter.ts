@@ -1,6 +1,6 @@
 import express from "express";
-import userModel from "../../models/auth/userModel";
-import RequestForAccount from "../../models/auth/requestForAccountModal";
+import userModel from "../../mongo-models/auth/userModel";
+import RequestForAccount from "../../mongo-models/auth/requestForAccountModal";
 import { websiteSignup } from "../../../content/email-templates/authEmails";
 import { sendEmail } from "../../util/emailUtil";
 import { v4 as keyv4 } from "uuid";
@@ -39,7 +39,7 @@ router.post("/signupreq", async (req, res) => {
       .then(() => console.log("sent registration email"))
       .catch((err) => console.error(err));
 
-    res.status(200).send();
+    res.redirect("/checkemail");
   } catch (err) {
     console.error(err);
     res.json({ result: "email successfully sent to " });

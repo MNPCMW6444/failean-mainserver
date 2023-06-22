@@ -1,23 +1,24 @@
 import express from "express";
-import userModel from "../../models/auth/userModel";
+import userModel from "../../mongo-models/auth/userModel";
 import bcrypt from "bcrypt";
 import jsonwebtoken, { JwtPayload } from "jsonwebtoken";
-import RequestForAccount from "../../models/auth/requestForAccountModal";
+import RequestForAccount from "../../mongo-models/auth/requestForAccountModal";
 import {
   passreset,
   signupreq,
 } from "../../../content/email-templates/authEmails";
-import RequestForPassChange from "../../models/auth/requestForPassChangeModal";
+import RequestForPassChange from "../../mongo-models/auth/requestForPassChangeModal";
 import zxcvbn from "zxcvbn";
 import { sendEmail } from "../../util/emailUtil";
 import { v4 as keyv4 } from "uuid";
-import ideaModel from "../../models/data/ideaModel";
+import ideaModel from "../../mongo-models/data/ideas/ideaModel";
 import { clientDomain } from "../../../index";
+import { authUser } from "../../util/authUtil";
 
 const router = express.Router();
 const MIN_PASSWORD_STRENGTH = 3;
 
-router.post("/signupreq", async (req, res) => {
+router.post<any, any>("/signupreq", async (req, res) => {
   try {
     const { email, idea } = req.body;
     if (!email)
@@ -58,7 +59,7 @@ router.post("/signupreq", async (req, res) => {
   }
 });
 
-router.post("/signupfin", async (req, res) => {
+router.post<any, any>("/signupfin", async (req, res) => {
   try {
     const { key, fullname, password, passwordagain } = req.body;
     if (!key || !fullname || !password || !passwordagain)
@@ -139,7 +140,7 @@ router.post("/signupfin", async (req, res) => {
   }
 });
 
-router.post("/signin", async (req, res) => {
+router.post<any, any>("/signin", async (req, res) => {
   try {
     const { email, password } = req.body;
     if (!email || !password)
@@ -189,17 +190,16 @@ router.post("/signin", async (req, res) => {
   }
 });
 
-router.post("/updatename", async (req, res) => {
+router.post<any, any>("/updatename", async (req, res) => {
   try {
-    const token = req.cookies.jsonwebtoken;
+    const user = await authUser(req.cookies.jsonwebtoken);
+
+    if (!user) {
+      return res.status(401).json({ clientMessage: "Unauthorized" });
+    }
+
     const { name } = req.body;
-    if (!token) return res.status(401).json({ clientMessage: "Unauthorized" });
-    const validatedUser = jsonwebtoken.verify(
-      token,
-      process.env.JWT_SECRET as string
-    );
-    const userId = (validatedUser as JwtPayload).id;
-    const user = await userModel.findById(userId);
+
     if (user) user.name = name;
     await user?.save();
     res.json(user);
@@ -208,9 +208,14 @@ router.post("/updatename", async (req, res) => {
   }
 });
 
-router.post("/updatepassword", async (req, res) => {
+router.post<any, any>("/updatepassword", async (req, res) => {
   try {
-    const token = req.cookies.jsonwebtoken;
+    const user = await authUser(req.cookies.jsonwebtoken);
+
+    if (!user) {
+      return res.status(401).json({ clientMessage: "Unauthorized" });
+    }
+
     const { password } = req.body;
     const passwordStrength = zxcvbn(password);
     if (passwordStrength.score < MIN_PASSWORD_STRENGTH)
@@ -218,13 +223,7 @@ router.post("/updatepassword", async (req, res) => {
         clientError:
           "Password isn't strong enough, the value is" + passwordStrength.score,
       });
-    if (!token) return res.status(401).json({ clientMessage: "Unauthorized" });
-    const validatedUser = jsonwebtoken.verify(
-      token,
-      process.env.JWT_SECRET as string
-    );
-    const userId = (validatedUser as JwtPayload).id;
-    const user = await userModel.findById(userId);
+
     const salt = await bcrypt.genSalt();
     const passwordHash = await bcrypt.hash(password, salt);
     if (user) user.passwordHash = passwordHash;
@@ -235,7 +234,7 @@ router.post("/updatepassword", async (req, res) => {
   }
 });
 
-router.get("/signout", async (req, res) => {
+router.get<any, any>("/signout", async (req, res) => {
   try {
     res
       .cookie("jsonwebtoken", "", {
@@ -258,7 +257,7 @@ router.get("/signout", async (req, res) => {
   }
 });
 
-router.post("/passresreq", async (req, res) => {
+router.post<any, any>("/passresreq", async (req, res) => {
   try {
     const { email } = req.body;
     if (!email)
@@ -295,7 +294,7 @@ router.post("/passresreq", async (req, res) => {
   }
 });
 
-router.post("/passresfin", async (req, res) => {
+router.post<any, any>("/passresfin", async (req, res) => {
   try {
     const { email, key, password, passwordagain } = req.body;
     if (!email || !key || !password || !passwordagain)
@@ -335,7 +334,7 @@ router.post("/passresfin", async (req, res) => {
   }
 });
 
-router.post("/updaten", async (req, res) => {
+router.post<any, any>("/updaten", async (req, res) => {
   try {
     const { notifications, newsletter } = req.body;
     if (
@@ -346,14 +345,12 @@ router.post("/updaten", async (req, res) => {
         clientError: "At least one of the fields are missing",
       });
 
-    const token = req.cookies.jsonwebtoken;
-    if (!token) return res.status(401).json({ clientMessage: "Unauthorized" });
-    const validatedUser = jsonwebtoken.verify(
-      token,
-      process.env.JWT_SECRET as string
-    );
-    const userId = (validatedUser as JwtPayload).id;
-    const user = (await userModel.find({ userId }))[0];
+    const user = await authUser(req.cookies.jsonwebtoken);
+
+    if (!user) {
+      return res.status(401).json({ clientMessage: "Unauthorized" });
+    }
+
     await user.save();
     res.json({ changed: "yes" });
   } catch (err) {
@@ -364,16 +361,15 @@ router.post("/updaten", async (req, res) => {
   }
 });
 
-router.get("/signedin", async (req, res) => {
+router.get<any, any>("/signedin", async (req, res) => {
   try {
-    const token = req.cookies.jsonwebtoken;
-    if (!token) return res.status(401).json({ clientMessage: "Unauthorized" });
-    const validatedUser = jsonwebtoken.verify(
-      token,
-      process.env.JWT_SECRET as string
-    );
-    const userId = (validatedUser as JwtPayload).id;
-    res.json(await userModel.findById(userId));
+    const user = await authUser(req.cookies.jsonwebtoken);
+
+    if (!user) {
+      return res.status(401).json({ clientMessage: "Unauthorized" });
+    }
+
+    res.json(await userModel.findById(user._id));
   } catch (err) {
     return res.status(401).json({ errorMessage: "Unauthorized." });
   }
