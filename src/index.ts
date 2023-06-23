@@ -43,7 +43,7 @@ app.use(express.json());
 export const clientDomain =
   process.env.NODE_ENV === "development"
     ? "http://localhost:5999"
-    : "https://dev.failean.com";
+    : "https://failean.com";
 
 app.use(
   cors({
