@@ -1,6 +1,5 @@
 import express from "express";
 import PromptResultModel from "../../../mongo-models/data/prompts/promptResultModel";
-import jsonwebtoken, { JwtPayload } from "jsonwebtoken";
 import { PromptName } from "@failean/shared-types";
 import openAIQueue from "../../../jobs/openAIQueue";
 import { convertMaptoDepGraph } from "../../../util/data/prompts/promptUtil";
@@ -59,9 +58,7 @@ router.post("/runAndGetPromptResult", async (req, res) => {
     const { ideaId, promptName, feedback }: API.Data.RunAndGetPromptResult.Req =
       req.body;
 
-    console.log("About to add job to queue");
     const job = await openAIQueue.add({ user, ideaId, promptName, feedback });
-    console.log("Job added to queue", job);
 
     return res.status(200).json({ jobId: job.id });
   } catch (error) {
