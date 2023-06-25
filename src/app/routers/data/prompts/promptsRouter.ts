@@ -12,7 +12,7 @@ const router = express.Router();
 
 router.get("/getPromptGraph", async (_, res) => {
   try {
-    const graph = convertMaptoDepGraph(promptMap);
+    const graph = convertMaptoDepGraph(aideatorPromptMap);
     return res.status(200).json({
       graph,
     });
