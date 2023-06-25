@@ -48,7 +48,7 @@ export const convertMaptoDepGraph = (promptMap: PromptMap) => {
       });
   }
 
-  return superPrompts.map(({ name, level }) => ({ name, level }));
+  return superPrompts.map(({ name, deps, level }) => ({ name, deps, level }));
 };
 
 export const convertMaptoDeckGraph = (promptMap: PromptMap) => {

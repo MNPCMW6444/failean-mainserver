@@ -1,7 +1,7 @@
 import Queue from "bull";
 import { pubsub } from "../../index";
 import ideaModel from "../mongo-models/data/ideas/ideaModel";
-import promptMap from "../../content/prompts/promptMap";
+import aideatorPromptMap from "../../content/prompts/aideatorPromptMap";
 import { PromptPart, WhiteModels } from "@failean/shared-types";
 import PromptResultModel from "../mongo-models/data/prompts/promptResultModel";
 import { callOpenAI } from "../util/data/prompts/openAIUtil";
@@ -45,7 +45,7 @@ const processJob = async (job: any) => {
     }
     const idea = await ideaModel.findById(ideaId);
     let dependencies: string[];
-    const prompt = promptMap[promptName];
+    const prompt = aideatorPromptMap[promptName];
     if (prompt) {
       let promises = prompt.prompt.map(async (promptPart: PromptPart) => {
         if (promptPart.type === "variable" && promptPart.content !== "idea") {

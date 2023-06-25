@@ -3,15 +3,16 @@ import PromptResultModel from "../../../mongo-models/data/prompts/promptResultMo
 import { PromptName } from "@failean/shared-types";
 import openAIQueue from "../../../jobs/openAIQueue";
 import { convertMaptoDepGraph } from "../../../util/data/prompts/promptUtil";
-import promptMap from "../../../../content/prompts/promptMap";
+import aideatorPromptMap from "../../../../content/prompts/aideatorPromptMap";
 import { authUser } from "../../../util/authUtil";
 import { API } from "@failean/shared-types";
+import { estimateOpenAI } from "../../../util/data/prompts/openAIUtil";
 
 const router = express.Router();
 
 router.get("/getPromptGraph", async (_, res) => {
   try {
-    const graph = convertMaptoDepGraph(promptMap);
+    const graph = convertMaptoDepGraph(aideatorPromptMap);
     return res.status(200).json({
       graph,
     });
@@ -44,6 +45,26 @@ router.post("/getPromptResult", async (req, res) => {
   } catch (err) {
     console.error(err);
     return res.status(500).json({ errorMessage: JSON.stringify(err) });
+  }
+});
+
+router.post("/preRunPrompt", async (req, res) => {
+  try {
+    const user = await authUser(req.cookies.jsonwebtoken);
+
+    if (!user) {
+      return res.status(401).json({ clientMessage: "Unauthorized" });
+    }
+
+    const { ideaId, promptName, feedback }: API.Data.RunAndGetPromptResult.Req =
+      req.body;
+
+    const price = await estimateOpenAI(user, ideaId, promptName, feedback);
+
+    return res.status(200).json({ price: ((price || 100) * 8) / 100 });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ clientMessage: "An error occurred" });
   }
 });
 

@@ -3,7 +3,7 @@ import { PromptMap } from "@failean/shared-types";
 const STATIC = "static";
 const VARIABLE = "variable";
 
-const promptMap: PromptMap = {
+const aideatorPromptMap: PromptMap = {
   refinedIdea: {
     role: "aideator",
     prompt: [
@@ -1253,7 +1253,8 @@ const promptMap: PromptMap = {
     prompt: [
       {
         type: "static",
-        content: "You are the CFO of our startup. calculate Unit Ecconomics based on the information provided",
+        content:
+          "You are the CFO of our startup. calculate Unit Ecconomics based on the information provided",
       },
 
       {
@@ -1288,7 +1289,8 @@ const promptMap: PromptMap = {
     prompt: [
       {
         type: "static",
-        content: "You are the CMO of our company and you need to build all the content and functionality for our new website. List the relevant pages needed and all the content for each page based on our branding, target audience and business information. first extrct a list of keywords based on the information provided while taking into account SEO, then list all website pages content including headings in a clear hirarchy between sections, continers and components, background images descriptions, interactions and more. Be as detailed as possible so that a UI/UX web designer will easily understand",
+        content:
+          "You are the CMO of our company and you need to build all the content and functionality for our new website. List the relevant pages needed and all the content for each page based on our branding, target audience and business information. first extrct a list of keywords based on the information provided while taking into account SEO, then list all website pages content including headings in a clear hirarchy between sections, continers and components, background images descriptions, interactions and more. Be as detailed as possible so that a UI/UX web designer will easily understand",
       },
 
       {
@@ -1344,7 +1346,8 @@ const promptMap: PromptMap = {
     prompt: [
       {
         type: "static",
-        content: "You are my co-founder. We need to create the most suitable 'One pager' for our business to attract potential investors and partners. and  You will be provided with information about our startup and your goal is to create a 'One Pager' that will give the best overview about our company.",
+        content:
+          "You are my co-founder. We need to create the most suitable 'One pager' for our business to attract potential investors and partners. and  You will be provided with information about our startup and your goal is to create a 'One Pager' that will give the best overview about our company.",
       },
 
       {
@@ -1413,8 +1416,6 @@ const promptMap: PromptMap = {
         content: "---\n",
       },
       { type: "variable", content: "revenueProjections" },
-      
-     
     ],
   },
   costsEstimation: {
@@ -1422,7 +1423,9 @@ const promptMap: PromptMap = {
     prompt: [
       {
         type: "static",
-        content: "You are the CFO of out startup. Your goal is to estimate the total costs of our startup. Based on the information below provide a 3 years costs estimation. take into account our growth as the costs below can rise significantly and add new relevant costs that are not considered below for example legal expenses, scale related expenses etc.. explain your thought process first and conclude everything in a table format",      },
+        content:
+          "You are the CFO of out startup. Your goal is to estimate the total costs of our startup. Based on the information below provide a 3 years costs estimation. take into account our growth as the costs below can rise significantly and add new relevant costs that are not considered below for example legal expenses, scale related expenses etc.. explain your thought process first and conclude everything in a table format",
+      },
 
       {
         type: "static",
@@ -1469,7 +1472,6 @@ const promptMap: PromptMap = {
         type: "static",
         content: "---\n",
       },
-     
     ],
   },
 };
@@ -1490,8 +1492,8 @@ const isValidPromptMap = (map: PromptMap): boolean => {
   return true;
 };
 
-if (!isValidPromptMap(promptMap)) {
-  throw new Error("Invalid PromptMap");
+if (!isValidPromptMap(aideatorPromptMap)) {
+  throw new Error("Invalid AIdeator PromptMap");
 }
 
-export default promptMap;
+export default aideatorPromptMap;
