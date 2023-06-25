@@ -8,7 +8,7 @@ import { Configuration, OpenAIApi, ChatCompletionRequestMessage } from "openai";
 import { roleMap } from "../../../../content/prompts/roleMap";
 import ideaModel from "../../../mongo-models/data/ideas/ideaModel";
 import PromptResultModel from "../../../mongo-models/data/prompts/promptResultModel";
-import promptMap from "../../../../content/prompts/promptMap";
+import aideatorPromptMap from "../../../../content/prompts/aideatorPromptMap";
 import { encode } from "gpt-3-encoder";
 
 type WhiteUser = WhiteModels.Auth.WhiteUser;
@@ -24,7 +24,7 @@ export const estimateOpenAI = async (
   }
   const idea = await ideaModel.findById(ideaId);
   let dependencies: string[];
-  const prompt = promptMap[promptName];
+  const prompt = aideatorPromptMap[promptName];
   if (prompt) {
     let promises = prompt.prompt.map(async (promptPart: PromptPart) => {
       if (promptPart.type === "variable" && promptPart.content !== "idea") {

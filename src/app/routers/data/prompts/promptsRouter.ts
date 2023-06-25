@@ -3,7 +3,7 @@ import PromptResultModel from "../../../mongo-models/data/prompts/promptResultMo
 import { PromptName } from "@failean/shared-types";
 import openAIQueue from "../../../jobs/openAIQueue";
 import { convertMaptoDepGraph } from "../../../util/data/prompts/promptUtil";
-import promptMap from "../../../../content/prompts/promptMap";
+import aideatorPromptMap from "../../../../content/prompts/aideatorPromptMap";
 import { authUser } from "../../../util/authUtil";
 import { API } from "@failean/shared-types";
 import { estimateOpenAI } from "../../../util/data/prompts/openAIUtil";
