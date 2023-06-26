@@ -14,6 +14,11 @@ import Query from "./app/resolvers/query";
 import Mutation from "./app/resolvers/mutation";
 import Subscription from "./app/resolvers/subscription";
 import { ApolloServerPluginLandingPageDisabled } from "apollo-server-core";
+import { createServer } from "http";
+import { execute, subscribe } from "graphql";
+import { useServer } from "graphql-ws/lib/use/ws";
+import { makeExecutableSchema } from "@graphql-tools/schema";
+import { Server } from "ws";
 
 dotenv.config();
 
@@ -67,13 +72,17 @@ const resolvers = {
   Subscription,
 };
 
-const serverConfig = {
+const schema = makeExecutableSchema({
   typeDefs,
   resolvers,
+});
+
+const serverConfig = {
+  schema,
   context: ({ req, res }: any) => ({ req, res, pubsub }),
 };
 
-const server = new ApolloServer(
+const apolloServer = new ApolloServer(
   process.env.NODE_ENV === "production"
     ? { ...serverConfig, plugins: [ApolloServerPluginLandingPageDisabled()] }
     : serverConfig
@@ -85,17 +94,29 @@ app.get("/areyoualive", (_, res) => {
 
 app.use("/auth", authRouter);
 app.use("/website", websiteRouter);
-
 app.use("/data", dataRouter);
 
 const startApolloServer = async () => {
-  await server.start();
-  server.applyMiddleware({ app });
+  await apolloServer.start();
+  apolloServer.applyMiddleware({ app });
+
+  const httpServer = createServer(app);
+
+  const wsServer = new Server({
+    server: httpServer,
+    path: "/graphql",
+  });
+  useServer({ schema, execute, subscribe }, wsServer);
+
+  httpServer.listen(port, () => {
+    console.log(
+      `Server is ready at http://localhost:${port}${apolloServer.graphqlPath}`
+    );
+    console.log(`Subscriptions ready at ws://localhost:${port}/graphql`);
+  });
 };
 
 // Call the async function
 startApolloServer().catch((error) => console.error(error));
-
-app.listen(port, () => console.log(`Server started on port: ${port}`));
 
 app.use("/gql", gqlRouter);
