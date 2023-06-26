@@ -6,6 +6,7 @@ import cookieParser from "cookie-parser";
 import authRouter from "./app/routers/auth/authRouter";
 import websiteRouter from "./app/routers/website/websiteRouter";
 import dataRouter from "./app/routers/data/dataRouter";
+import gqlRouter from "./app/routers/gqlRouter";
 import { ApolloServer } from "apollo-server-express";
 import typeDefs from "./app/typeDefs";
 import { RedisPubSub } from "graphql-redis-subscriptions";
@@ -73,7 +74,7 @@ const serverConfig = {
 };
 
 const server = new ApolloServer(
-  process.env.NODE_ENV === "porduction"
+  process.env.NODE_ENV === "production"
     ? { ...serverConfig, plugins: [ApolloServerPluginLandingPageDisabled()] }
     : serverConfig
 );
@@ -96,3 +97,5 @@ const startApolloServer = async () => {
 startApolloServer().catch((error) => console.error(error));
 
 app.listen(port, () => console.log(`Server started on port: ${port}`));
+
+app.use("/gql", gqlRouter);
