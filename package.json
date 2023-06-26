@@ -57,11 +57,17 @@
     "openai": "^3.3.0",
     "ts-node": "^10.9.1",
     "uuid": "^9.0.0",
+    "ws": "^8.13.0",
     "zxcvbn": "^4.4.2"
   },
   "main": "index.js",
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "description": ""
+  "description": "",
+  "devDependencies": {
+    "@types/ws": "^8.5.5",
+    "i": "^0.3.7",
+    "npm": "^9.7.2"
+  }
 }
