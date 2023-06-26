@@ -12,6 +12,7 @@ import { RedisPubSub } from "graphql-redis-subscriptions";
 import Query from "./app/resolvers/query";
 import Mutation from "./app/resolvers/mutation";
 import Subscription from "./app/resolvers/subscription";
+import { ApolloServerPluginLandingPageDisabled } from "apollo-server-core";
 
 dotenv.config();
 
@@ -65,11 +66,17 @@ const resolvers = {
   Subscription,
 };
 
-const server = new ApolloServer({
+const serverConfig = {
   typeDefs,
   resolvers,
-  context: ({ req, res }) => ({ req, res, pubsub }),
-});
+  context: ({ req, res }: any) => ({ req, res, pubsub }),
+};
+
+const server = new ApolloServer(
+  process.env.NODE_ENV === "porduction"
+    ? { ...serverConfig, plugins: [ApolloServerPluginLandingPageDisabled()] }
+    : serverConfig
+);
 
 app.get("/areyoualive", (_, res) => {
   res.json({ answer: "yes", version: process.env.npm_package_version });
