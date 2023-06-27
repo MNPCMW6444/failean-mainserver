@@ -129,7 +129,4 @@ const startApolloServer = async () => {
 
 startApolloServer().catch((error) => console.error(error));
 
-// Call the async function
-startApolloServer().catch((error) => console.error(error));
-
 app.use("/gql", gqlRouter);

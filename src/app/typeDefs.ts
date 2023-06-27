@@ -22,7 +22,7 @@ const typeDefs = gql`
   }
 
   type Subscription {
-    jobUpdated: JobUpdate
+    JobUpdated: JobUpdate
   }
 `;
 
