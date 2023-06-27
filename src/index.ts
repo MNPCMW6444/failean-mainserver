@@ -106,7 +106,18 @@ const startApolloServer = async () => {
     server: httpServer,
     path: "/graphql",
   });
-  useServer({ schema, execute, subscribe }, wsServer);
+
+  useServer(
+    {
+      schema,
+      execute,
+      subscribe,
+      onOperation: ((message: any, params: any, webSocket: any) => {
+        return { ...params, context: { ...(params as any).context, pubsub } };
+      }) as any,
+    },
+    wsServer
+  );
 
   httpServer.listen(port, () => {
     console.log(
@@ -115,6 +126,8 @@ const startApolloServer = async () => {
     console.log(`Subscriptions ready at ws://localhost:${port}/graphql`);
   });
 };
+
+startApolloServer().catch((error) => console.error(error));
 
 // Call the async function
 startApolloServer().catch((error) => console.error(error));
