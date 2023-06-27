@@ -123,13 +123,13 @@ const processJob = async (job: any) => {
         await savedResult.save();
       });
     }
-    pubsub.publish("jobUpdate", {
-      jobUpdate: { id: job.id, status: "completed" },
+    pubsub.publish("asd", {
+      asd: { id: job.id, status: "completed" },
     });
   } catch (error) {
     console.error(`An error occurred during job processing: ${error}`);
-    pubsub.publish("jobUpdate", {
-      jobUpdate: { id: job.id, status: "error", message: error },
+    pubsub.publish("asd", {
+      asd: { id: job.id, status: "error", message: error },
     });
   }
 };

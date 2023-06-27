@@ -16,13 +16,13 @@ const typeDefs = gql`
     createUser(username: String!, email: String!, password: String!): User
   }
 
-  type JobUpdate {
+  type asd {
     id: ID!
     status: String!
   }
 
   type Subscription {
-    JobUpdated: JobUpdate
+    asd: asd
   }
 `;
 
