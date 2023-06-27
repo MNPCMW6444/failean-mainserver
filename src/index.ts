@@ -66,6 +66,22 @@ export const pubsub = new RedisPubSub({
   connection: process.env.REDIS + "",
 });
 
+pubsub.getSubscriber().on("connect", () => {
+  console.log("Subscriber connected to Redis");
+});
+
+pubsub.getSubscriber().on("error", (error) => {
+  console.log("Subscriber failed to connect to Redis", error);
+});
+
+pubsub.getPublisher().on("connect", () => {
+  console.log("Publisher connected to Redis");
+});
+
+pubsub.getPublisher().on("error", (error) => {
+  console.log("Publisher failed to connect to Redis", error);
+});
+
 const resolvers = {
   Query,
   Mutation,
