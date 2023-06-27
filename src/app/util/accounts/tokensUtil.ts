@@ -1,4 +1,4 @@
-import tokenModal from "../../mongo-models/accounts/tokenModal";
+import tokenModal from "../../mongo-models/accounts/tokenModel";
 import { WhiteModels } from "@failean/shared-types";
 type WhiteUser = WhiteModels.Auth.WhiteUser;
 
