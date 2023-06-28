@@ -1,12 +1,20 @@
 const Mutation = {
-  createUser: async (
+  saveCritiqAnswers: async (
     _: any,
-    { username, email, password }: any,
-    context: any
+    { ideaId, critiqAnswers }: any,
+    { models }: any
   ) => {
-    // your logic to create a user goes here
-    // for instance, use bcrypt to hash the password and mongoose to save the user to MongoDB
+    try {
+      await models.Critiq.create({
+        owner: ideaId,
+        steps: critiqAnswers,
+      });
+
+      return { success: true };
+    } catch (error) {
+      console.error(error);
+      throw new Error("Failed to save Critiq answers");
+    }
   },
 };
-
 export default Mutation;
