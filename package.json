@@ -1,11 +1,11 @@
 {
   "name": "failean-mainserver",
-  "version": "3.0.74",
+  "version": "3.0.84",
   "scripts": {
     "clean": "rm -rf node_modules package-lock.json",
     "build": "npx ts-node build.ts",
     "update": "npm i",
-    "pre": "npx npm-check-updates -u",
+    "preupdate": "npx npm-check-updates -u",
     "lint": "eslint . --ext .ts",
     "prestart": "npm run build",
     "start": "node ./dist --env=production",
@@ -27,8 +27,8 @@
     "exec": "./node_modules/.bin/ts-node ./src"
   },
   "dependencies": {
-    "@bull-board/express": "^5.5.3",
-    "@failean/shared-types": "^2.9.132",
+    "@bull-board/express": "^5.6.0",
+    "@failean/shared-types": "^2.9.141",
     "@sendgrid/mail": "^7.7.0",
     "@types/bcrypt": "^5.0.0",
     "@types/cookie-parser": "^1.4.3",
@@ -59,13 +59,11 @@
     "uuid": "^9.0.0",
     "ws": "^8.13.0",
     "zxcvbn": "^4.4.2",
-        "@types/ws": "^8.5.5"
-
+    "@types/ws": "^8.5.5"
   },
   "main": "index.js",
   "keywords": [],
   "author": "",
   "license": "ISC",
   "description": ""
-
 }
