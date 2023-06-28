@@ -102,9 +102,63 @@ export const convertMaptoDeckGraph = (promptMap: PromptMap) => {
     funding: ["fundingStrategies", "potentialInvestors"],
   };
 
+  const critiqPromptGroup: Record<string, string[]> = {
+    valueValidation: [
+      "refindIdea",
+      "valueProposition",
+      "uniqueValueProposition",
+      "IdealCustomerPersona",
+      "pricing",
+      "mvpUserStories",
+      "mvpFeatures",
+    ],
+    marketValidation: [
+      "refindIdea",
+      "marketAnalysis",
+      "marketSize",
+      "competitorAnalysis",
+      "targetAudience",
+      "channels",
+    ],
+    businessValidation: [
+      "refindIdea",
+      "pricing",
+      "businessModel",
+      "unitEconomics",
+      "partnerships",
+      "operationalCosts",
+      "risksAndChallenges",
+    ],
+    teamValidation: ["refindIdea", "teamComposition"],
+
+    economicValidation: [
+      "salesVolumeEstimation",
+      "revenueProjections",
+      "unitEconomics",
+      "mvpCost",
+      "marketingCost",
+      "CAC",
+    ],
+    legalValidation: ["compliance", "legal", "compliancePrompt3"],
+  };
+
   let level = 0;
   for (const groupName in promptGroups) {
     for (const promptName of promptGroups[groupName]) {
+      const prompt = promptMap[promptName];
+      if (prompt) {
+        groupedResults.push({
+          groupName,
+          prompt,
+          level,
+        });
+      }
+    }
+    level++;
+  }
+
+  for (const groupName in critiqPromptGroup) {
+    for (const promptName of critiqPromptGroup[groupName]) {
       const prompt = promptMap[promptName];
       if (prompt) {
         groupedResults.push({
