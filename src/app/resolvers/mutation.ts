@@ -1,20 +1,7 @@
-const Mutation = {
-  saveCritiqAnswers: async (
-    _: any,
-    { ideaId, critiqAnswers }: any,
-    { models }: any
-  ) => {
-    try {
-      await models.Critiq.create({
-        owner: ideaId,
-        steps: critiqAnswers,
-      });
+import saveCritiqAnswers from "./critiq/critiqMutation";
 
-      return { success: true };
-    } catch (error) {
-      console.error(error);
-      throw new Error("Failed to save Critiq answers");
-    }
-  },
+const Mutation = {
+  saveCritiqAnswers,
 };
+
 export default Mutation;
