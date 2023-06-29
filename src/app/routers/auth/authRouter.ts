@@ -40,12 +40,13 @@ router.post<any, any>("/signupreq", async (req, res) => {
     }).save();
 
     const url = `${clientDomain}/register?key=${key}`;
-
+    console.log("ggg", url);
     const { subject, body } = signupreq(url);
 
     sendEmail(email, subject, body)
       .then(() => console.log("sent registration email"))
       .catch((err) => console.error(err));
+      console.log("ggg", url);
 
     res.json({ result: "email successfully sent to " + email });
   } catch (err) {
@@ -278,7 +279,6 @@ router.post<any, any>("/passresreq", async (req, res) => {
     }).save();
 
     const url = `${clientDomain}/reset?key=${key}`;
-
     const { subject, body } = passreset(url);
 
     sendEmail(email, subject, body)
@@ -286,6 +286,7 @@ router.post<any, any>("/passresreq", async (req, res) => {
       .catch((err) => console.error(err));
 
     res.json({ result: "email successfully sent to " + email });
+    console.log("ggg", url);
   } catch (err) {
     console.error(err);
     res

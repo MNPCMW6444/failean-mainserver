@@ -33,7 +33,7 @@ app.use("/admin/queues", serverAdapter.getRouter());
 
 app.listen(3000, () => {
   console.log("Bull Dashbaord is Running on port 3000...");
-  console.log("For the UI, open http://localhost:3000/admin/queues");
+  console.log("For the UI, open http://localhost:3005/admin/queues");
 });
 
 // Define your job processing function
