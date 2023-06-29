@@ -17,12 +17,11 @@ const typeDefs = gql`
   }
 
   type Subscription {
-    jobCompleted: Job
+    jobCompleted: String
   }
 
-  type Job {
-    id: ID!
-    name: String
+  type Subscription {
+    jobCompleted2: String
   }
 `;
 
