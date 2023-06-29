@@ -1,7 +1,7 @@
 import express from "express";
 import PromptResultModel from "../../../mongo-models/data/prompts/promptResultModel";
 import { PromptName } from "@failean/shared-types";
-import openAIQueue from "../../../jobs/openAIQueue";
+import openAIQueue, { addJobsToQueue } from "../../../jobs/openAIQueue";
 import { convertMaptoDepGraph } from "../../../util/data/prompts/promptUtil";
 import aideatorPromptMap from "../../../../content/prompts/aideatorPromptMap";
 import { authUser } from "../../../util/authUtil";
@@ -56,10 +56,22 @@ router.post("/preRunPrompt", async (req, res) => {
       return res.status(401).json({ clientMessage: "Unauthorized" });
     }
 
-    const { ideaId, promptName, feedback }: API.Data.RunAndGetPromptResult.Req =
-      req.body;
+    const {
+      ideaId,
+      promptNames,
+      feedback,
+    }: API.Data.RunAndGetPromptResult.Req = req.body;
 
-    const price = await estimateOpenAI(user, ideaId, promptName, feedback);
+    const price = await Promise.all(
+      promptNames.map((promptName) =>
+        estimateOpenAI(user, ideaId, promptName, feedback)
+      )
+    ).then((results) =>
+      results.reduce(
+        (total, number) => (total || 99999999) + (number || 99999999),
+        0
+      )
+    );
 
     return res.status(200).json({ price: ((price || 100) * 8) / 100 });
   } catch (error) {
@@ -76,12 +88,15 @@ router.post("/runAndGetPromptResult", async (req, res) => {
       return res.status(401).json({ clientMessage: "Unauthorized" });
     }
 
-    const { ideaId, promptName, feedback }: API.Data.RunAndGetPromptResult.Req =
-      req.body;
+    const {
+      ideaId,
+      promptNames,
+      feedback,
+    }: API.Data.RunAndGetPromptResult.Req = req.body;
 
-    const job = await openAIQueue.add({ user, ideaId, promptName, feedback });
+    await addJobsToQueue(user, ideaId, promptNames, feedback);
 
-    return res.status(200).json({ jobId: job.id });
+    return res.status(200).json({ addedJobSequence: true });
   } catch (error) {
     console.error(error);
     return res.status(500).json({ clientMessage: "An error occurred" });

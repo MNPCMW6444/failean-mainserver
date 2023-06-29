@@ -2,7 +2,12 @@ import Queue from "bull";
 import { pubsub } from "../../index";
 import ideaModel from "../mongo-models/data/ideas/ideaModel";
 import aideatorPromptMap from "../../content/prompts/aideatorPromptMap";
-import { PromptPart, WhiteModels } from "@failean/shared-types";
+import {
+  API,
+  PromptName,
+  PromptPart,
+  WhiteModels,
+} from "@failean/shared-types";
 import PromptResultModel from "../mongo-models/data/prompts/promptResultModel";
 import { callOpenAI } from "../util/data/prompts/openAIUtil";
 import { createBullBoard } from "@bull-board/api";
@@ -60,7 +65,7 @@ const processJob = async (job: any) => {
         }
       });
 
-      Promise.all(promises).then(async (updatedPropmtResult) => {
+      await Promise.all(promises).then(async (updatedPropmtResult) => {
         dependencies = updatedPropmtResult.map((r: any) => {
           return r;
         });
@@ -139,5 +144,35 @@ const processJob = async (job: any) => {
 
 // Process jobs using the processJob function
 openAIQueue.process(processJob);
+
+export const addJobsToQueue = async (
+  user: WhiteModels.Auth.WhiteUser,
+  ideaId: string,
+  promptNames: PromptName[],
+  feedback: API.Data.RunAndGetPromptResult.Req["feedback"]
+) => {
+  const addJobToQueue = async (
+    user: WhiteModels.Auth.WhiteUser,
+    ideaId: string,
+    promptName: PromptName,
+    feedback: API.Data.RunAndGetPromptResult.Req["feedback"]
+  ) => {
+    await openAIQueue
+      .add({ user, ideaId, promptName, feedback })
+      .then((job) => {
+        job.finished().then(() => {
+          promptNames.shift();
+          if (promptNames[0] === "idea") promptNames.shift();
+          if (promptNames.length > 0) {
+            addJobToQueue(user, ideaId, promptNames[0], feedback);
+          }
+        });
+      });
+  };
+
+  if (promptNames.length > 0) {
+    await addJobToQueue(user, ideaId, promptNames[0], feedback);
+  }
+};
 
 export default openAIQueue;
