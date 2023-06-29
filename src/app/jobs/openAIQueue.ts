@@ -65,7 +65,7 @@ const processJob = async (job: any) => {
         }
       });
 
-      Promise.all(promises).then(async (updatedPropmtResult) => {
+      await Promise.all(promises).then(async (updatedPropmtResult) => {
         dependencies = updatedPropmtResult.map((r: any) => {
           return r;
         });
@@ -145,30 +145,33 @@ const processJob = async (job: any) => {
 // Process jobs using the processJob function
 openAIQueue.process(processJob);
 
-export const addJobsToQueue = (
+export const addJobsToQueue = async (
   user: WhiteModels.Auth.WhiteUser,
   ideaId: string,
   promptNames: PromptName[],
   feedback: API.Data.RunAndGetPromptResult.Req["feedback"]
 ) => {
-  const addJobToQueue = (
+  const addJobToQueue = async (
     user: WhiteModels.Auth.WhiteUser,
     ideaId: string,
     promptName: PromptName,
     feedback: API.Data.RunAndGetPromptResult.Req["feedback"]
   ) => {
-    openAIQueue.add({ user, ideaId, promptName, feedback }).then((job) => {
-      job.finished().then(() => {
-        promptNames.shift();
-        if (promptNames.length > 0) {
-          addJobToQueue(user, ideaId, promptNames[0], feedback);
-        }
+    await openAIQueue
+      .add({ user, ideaId, promptName, feedback })
+      .then((job) => {
+        job.finished().then(() => {
+          promptNames.shift();
+          if (promptNames[0] === "idea") promptNames.shift();
+          if (promptNames.length > 0) {
+            addJobToQueue(user, ideaId, promptNames[0], feedback);
+          }
+        });
       });
-    });
   };
 
   if (promptNames.length > 0) {
-    addJobToQueue(user, ideaId, promptNames[0], feedback);
+    await addJobToQueue(user, ideaId, promptNames[0], feedback);
   }
 };
 
