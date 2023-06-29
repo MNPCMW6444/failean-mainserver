@@ -2,10 +2,10 @@ import { pubsub } from "../../index";
 
 const Subscription = {
   jobCompleted: {
-    subscribe: () => pubsub.asyncIterator("JOB_COMPLETED"),
-  },
-  jobCompleted2: {
-    subscribe: () => pubsub.asyncIterator("JOB_COMPLETED"),
+    subscribe: () => {
+      console.log("Subscription to JOB_COMPLETED started");
+      return pubsub.asyncIterator("JOB_COMPLETED");
+    },
   },
 };
 

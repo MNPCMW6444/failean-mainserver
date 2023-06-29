@@ -124,11 +124,13 @@ const processJob = async (job: any) => {
       });
     }
     pubsub.publish("JOB_COMPLETED", { jobCompleted: (job?.id || "8765") + "" });
-    console.log("Update published for job ", job.id);
+    console.log("Published update for job ", job.id);
   } catch (error) {
     console.error(`An error occurred during job processing: ${error}`);
-    pubsub.publish("asd", {
-      asd: { id: job.id, status: "error", message: error },
+    pubsub.publish("JOB_COMPLETED", {
+      jobCompleted: (job?.id || "8765") + "",
+      status: "error",
+      message: error,
     });
   }
 };

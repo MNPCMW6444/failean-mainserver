@@ -19,10 +19,6 @@ const typeDefs = gql`
   type Subscription {
     jobCompleted: String
   }
-
-  type Subscription {
-    jobCompleted2: String
-  }
 `;
 
 export default typeDefs;
