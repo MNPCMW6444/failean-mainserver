@@ -1,5 +1,8 @@
 import { PromptMap, PromptPart, GroupedPrompt } from "@failean/shared-types";
 
+export const STATIC = "static";
+export const VARIABLE = "variable";
+
 export const convertMaptoDepGraph = (promptMap: PromptMap) => {
   let superPrompts: { name: string; deps: string[]; level: number }[] =
     Object.keys(promptMap).map((promptName) => ({
@@ -177,4 +180,20 @@ export const convertMaptocritiqGraph = (promptMap: PromptMap) => {
   }
 
   return critiqResults;
+};
+
+export const validateMap = (map: PromptMap): boolean => {
+  for (let key in map) {
+    for (let part of map[key].prompt) {
+      if (
+        part.type === "variable" &&
+        part.content !== "idea" &&
+        !(part.content in map)
+      ) {
+        console.log(`Invalid content "${part.content}" in prompt "${key}"`);
+        return false;
+      }
+    }
+  }
+  return true;
 };
