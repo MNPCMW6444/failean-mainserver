@@ -13,11 +13,16 @@ const typeDefs = gql`
   }
 
   type Mutation {
-    createUser(username: String!, email: String!, password: String!): User
+    saveCritiqAnswers(ideaId: String!, critiqAnswers: String!): User!
+  }
+
+  type Asd {
+    id: ID!
+    status: String!
   }
 
   type Subscription {
-    jobCompleted: String
+    asd: Asd
   }
 `;
 
