@@ -128,6 +128,12 @@ const startApolloServer = async () => {
       schema,
       execute,
       subscribe,
+      onConnect: (ctx) => {
+        console.log("Client connected");
+      },
+      onSubscribe: (ctx, msg) => {
+        console.log("Received new subscription");
+      },
       onOperation: ((message: any, params: any, webSocket: any) => {
         return { ...params, context: { ...(params as any).context, pubsub } };
       }) as any,

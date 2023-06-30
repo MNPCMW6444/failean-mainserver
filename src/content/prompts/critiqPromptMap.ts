@@ -1,7 +1,9 @@
 import { PromptMap } from "@failean/shared-types";
-
-const STATIC = "static";
-const VARIABLE = "variable";
+import {
+  validateMap,
+  STATIC,
+  VARIABLE,
+} from "../../app/util/data/prompts/promptUtil";
 
 export const critiqAngelPromptMap: PromptMap = {
   valueValidation: {
@@ -155,25 +157,17 @@ export const critiqLawyerPromptMap: PromptMap = {
     ],
   },
 };
-const isValidPromptMap = (map: PromptMap): boolean => {
-  for (let key in map) {
-    for (let part of map[key].prompt) {
-      if (
-        part.type === "variable" &&
-        part.content !== "idea" &&
-        !(part.content in map)
-      ) {
-        console.log(`Invalid content "${part.content}" in prompt "${key}"`);
-        return false;
-      }
-    }
-  }
-  return true;
-};
 
-if (
-  !isValidPromptMap(critiqAngelPromptMap) ||
-  !isValidPromptMap(critiqVCPromptMap)
-) {
-  throw new Error("Invalid CritIQ PromptMap");
+if (!validateMap(critiqAngelPromptMap)) {
+  throw new Error("Invalid CritiQ - critiqAngelPromptMap");
+}
+
+if (!validateMap(critiqVCPromptMap)) {
+  throw new Error("Invalid CritiQ - critiqVCPromptMap");
+}
+if (!validateMap(critiqTechWhizPromptMap)) {
+  throw new Error("Invalid CritiQ - critiqTechWhizPromptMap");
+}
+if (!validateMap(critiqLawyerPromptMap)) {
+  throw new Error("Invalid CritiQ - critiqLawyerPromptMap");
 }

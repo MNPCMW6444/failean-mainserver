@@ -1,7 +1,9 @@
 import { PromptMap } from "@failean/shared-types";
-
-const STATIC = "static";
-const VARIABLE = "variable";
+import {
+  validateMap,
+  STATIC,
+  VARIABLE,
+} from "../../app/util/data/prompts/promptUtil";
 
 const aideatorPromptMap: PromptMap = {
   refinedIdea: {
@@ -1476,23 +1478,7 @@ const aideatorPromptMap: PromptMap = {
   },
 };
 
-const isValidPromptMap = (map: PromptMap): boolean => {
-  for (let key in map) {
-    for (let part of map[key].prompt) {
-      if (
-        part.type === "variable" &&
-        part.content !== "idea" &&
-        !(part.content in map)
-      ) {
-        console.log(`Invalid content "${part.content}" in prompt "${key}"`);
-        return false;
-      }
-    }
-  }
-  return true;
-};
-
-if (!isValidPromptMap(aideatorPromptMap)) {
+if (!validateMap(aideatorPromptMap)) {
   throw new Error("Invalid AIdeator PromptMap");
 }
 
