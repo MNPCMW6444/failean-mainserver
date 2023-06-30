@@ -2,7 +2,10 @@ import express from "express";
 import PromptResultModel from "../../../mongo-models/data/prompts/promptResultModel";
 import { PromptName } from "@failean/shared-types";
 import openAIQueue, { addJobsToQueue } from "../../../jobs/openAIQueue";
-import { convertMaptoDepGraph } from "../../../util/data/prompts/promptUtil";
+import {
+  convertMaptoDeckGraph,
+  convertMaptoDepGraph,
+} from "../../../util/data/prompts/promptUtil";
 import aideatorPromptMap from "../../../../content/prompts/aideatorPromptMap";
 import { authUser } from "../../../util/authUtil";
 import { API } from "@failean/shared-types";
@@ -13,6 +16,18 @@ const router = express.Router();
 router.get("/getPromptGraph", async (_, res) => {
   try {
     const graph = convertMaptoDepGraph(aideatorPromptMap);
+    return res.status(200).json({
+      graph,
+    });
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({ errorMessage: JSON.stringify(err) });
+  }
+});
+
+router.get("/getDeckPromptGraph", async (_, res) => {
+  try {
+    const graph = convertMaptoDeckGraph();
     return res.status(200).json({
       graph,
     });

@@ -54,8 +54,7 @@ export const convertMaptoDepGraph = (promptMap: PromptMap) => {
   return superPrompts.map(({ name, deps, level }) => ({ name, deps, level }));
 };
 
-export const convertMaptoDeckGraph = (promptMap: PromptMap) => {
-  let groupedResults: GroupedPrompt[] = [];
+export const convertMaptoDeckGraph = () => {
   const promptGroups: Record<string, string[]> = {
     ideaSummary: [
       "refindIdea",
@@ -104,24 +103,9 @@ export const convertMaptoDeckGraph = (promptMap: PromptMap) => {
     ],
     funding: ["fundingStrategies", "potentialInvestors"],
   };
-
-  let level = 0;
-  for (const groupName in promptGroups) {
-    for (const promptName of promptGroups[groupName]) {
-      const prompt = promptMap[promptName];
-      if (prompt) {
-        groupedResults.push({
-          groupName,
-          prompt,
-          level,
-        });
-      }
-    }
-    level++;
-  }
-
-  return groupedResults;
+  return promptGroups;
 };
+
 export const convertMaptocritiqGraph = (promptMap: PromptMap) => {
   let critiqResults: GroupedPrompt[] = [];
   const critiqPromptGroup: Record<string, string[]> = {
