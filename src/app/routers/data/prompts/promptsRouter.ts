@@ -94,12 +94,16 @@ router.post("/preRunPrompt", async (req, res) => {
       )
     ).then((results) =>
       results.reduce(
-        (total, number) => (total || 99999999) + (number || 99999999),
+        (total, number) =>
+          (total !== null && total !== undefined ? total : 99999999) +
+          (number !== null && number !== undefined ? number : 99999999),
         0
       )
     );
 
-    return res.status(200).json({ price: ((price || 100) * 8) / 100 });
+    return res
+      .status(200)
+      .json({ price: Math.floor(((price || 100) * 8) / 100) });
   } catch (error) {
     console.error(error);
     return res.status(500).json({ clientMessage: "An error occurred" });

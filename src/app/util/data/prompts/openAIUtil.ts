@@ -18,10 +18,7 @@ export const estimateOpenAI = async (
   ideaId: string,
   promptName: keyof PromptMap,
   feedback?: string
-): Promise<number | undefined> => {
-  if (user.subscription !== "tokens") {
-    return;
-  }
+): Promise<undefined | number> => {
   const idea = await ideaModel.findById(ideaId);
   let dependencies: string[];
   const prompt = aideatorPromptMap[promptName];
@@ -39,7 +36,7 @@ export const estimateOpenAI = async (
       }
     });
 
-    Promise.all(promises).then(async (updatedPropmtResult) => {
+    return Promise.all(promises).then(async (updatedPropmtResult) => {
       dependencies = updatedPropmtResult.map((r: any) => {
         return r;
       });
@@ -87,7 +84,6 @@ export const estimateOpenAI = async (
             ]
           : [{ role: "user", content: constructedPrompt.join("") }]
       );
-
       return encode(input).length;
     });
   }
