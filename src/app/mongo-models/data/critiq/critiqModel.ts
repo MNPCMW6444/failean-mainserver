@@ -1,4 +1,4 @@
-import mongoose, { Schema } from "mongoose";
+import mongoose, { Schema, Document } from "mongoose";
 import { WhiteModels } from "@failean/shared-types";
 
 type WhiteCritiq = WhiteModels.Data.Critiq.WhiteCritiq;
@@ -6,7 +6,8 @@ type WhiteCritiq = WhiteModels.Data.Critiq.WhiteCritiq;
 interface Answer {
   question: string;
   selectedOption: string;
-  additionalDetail?: string;
+  failingScore: number;
+  leanScore: number;
 }
 
 interface Step {
@@ -14,11 +15,16 @@ interface Step {
   answers: Answer[];
 }
 
+interface CritiqDocument extends Document, WhiteCritiq {
+  steps: Step[];
+}
+
 const answerSchema = new mongoose.Schema<Answer>(
   {
     question: { type: String, required: true },
     selectedOption: { type: String, required: true },
-    additionalDetail: String,
+    failingScore: { type: Number, required: true },
+    leanScore: { type: Number, required: true },
   },
   { _id: false }
 );
@@ -31,7 +37,7 @@ const stepSchema = new mongoose.Schema<Step>(
   { _id: false }
 );
 
-const critiqSchema = new mongoose.Schema<WhiteCritiq>(
+const critiqSchema = new mongoose.Schema<CritiqDocument>(
   {
     owner: { type: Schema.Types.ObjectId, required: true },
     steps: [stepSchema],
@@ -42,4 +48,4 @@ const critiqSchema = new mongoose.Schema<WhiteCritiq>(
   }
 );
 
-export default mongoose.model<WhiteCritiq>("Critiq", critiqSchema);
+export default mongoose.model<CritiqDocument>("Critiq", critiqSchema);
