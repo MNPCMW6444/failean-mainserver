@@ -48,6 +48,17 @@ router.post("/getPromptResult", async (req, res) => {
     const { ideaId, promptName }: { ideaId: string; promptName: PromptName } =
       req.body;
 
+    if (promptName === "all") {
+      const promptResults = await PromptResultModel.find({
+        owner: user._id,
+        ideaId,
+      });
+
+      return res.status(200).json({
+        promptResult: promptResults,
+      });
+    }
+
     const promptResult = await PromptResultModel.find({
       owner: user._id,
       ideaId,
