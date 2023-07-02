@@ -57,11 +57,9 @@ export const estimateOpenAI = async (
           i++;
           const res = (cleanDeps[i - 1] as any)?.x;
           missing = !missing && !(res?.length > 1);
-          return res;
+          return missing ? "a".repeat(3000) : res;
         }
       });
-
-      if (missing) throw new Error("Missing dependencies");
 
       const promptResult =
         feedback?.length &&
