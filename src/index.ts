@@ -50,7 +50,7 @@ app.use(express.json());
 export const ocURL =
   process.env.NODE_ENV === "development"
     ? "http://localhost:6777"
-    : "https://ocserver.failean.com";
+    : "https://tstocserver.failean.com";
 
 export const clientDomain =
   process.env.NODE_ENV === "development"
