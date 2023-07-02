@@ -1,7 +1,6 @@
 import express from "express";
-import answerModel, {
-  CritiqDocument,
-} from "../../../mongo-models/data/critiq/critiqModel";
+import answerModel from /*   CritiqDocument,
+ */ "../../../mongo-models/data/critiq/critiqModel";
 import jsonwebtoken from "jsonwebtoken";
 
 const router = express.Router();
@@ -19,10 +18,10 @@ router.get("/data/critiqQuestionire/:ideaId", async (req, res) => {
       ideaId: req.params.ideaId,
       owner: (validatedUser as any).id,
     });
-
+    /* 
     return res
       .status(200)
-      .json(ideacritiqQuestionire.map((answer: CritiqDocument) => answer._doc));
+      .json(ideacritiqQuestionire.map((answer: CritiqDocument) => answer._doc)); */
   } catch (err) {
     console.log(err);
     return res.status(500).json({ errorMessage: JSON.stringify(err) });
@@ -55,8 +54,8 @@ router.post("/data/critiqQuestionire/update", async (req, res) => {
         owner: (validatedUser as any).id,
       }).save();
     } else {
-      answerToUpdate.answer = answer;
-      answerToUpdate.score = score;
+      /*  answerToUpdate.answer = answer;
+      answerToUpdate.score = score; */
       await answerToUpdate.save();
     }
 
