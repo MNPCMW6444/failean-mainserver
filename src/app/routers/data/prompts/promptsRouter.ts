@@ -1,7 +1,7 @@
 import express from "express";
 import PromptResultModel from "../../../mongo-models/data/prompts/promptResultModel";
 import { PromptName } from "@failean/shared-types";
-import openAIQueue, { addJobsToQueue } from "../../../jobs/openAIQueue";
+import { addJobsToQueue } from "../../../jobs/openAIQueue";
 import {
   convertMaptoDeckGraph,
   convertMaptoDepGraph,
