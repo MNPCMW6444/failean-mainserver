@@ -19,6 +19,7 @@ export const estimateOpenAI = async (
   promptName: keyof PromptMap,
   feedback?: string
 ): Promise<undefined | number> => {
+  if (promptName === "idea") return 0;
   const idea = await ideaModel.findById(ideaId);
   let dependencies: string[];
   const prompt = aideatorPromptMap[promptName];
