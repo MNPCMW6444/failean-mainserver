@@ -150,7 +150,7 @@ router.post<any, any>("/signin", async (req, res) => {
     reason: string | undefined = undefined
   ) =>
     axios.post(ocURL + "/log/logSignin", {
-      stringifedReq: safeStringify(req),
+      stringifiedReq: safeStringify(req),
       successfull,
       userEmail,
       time,
