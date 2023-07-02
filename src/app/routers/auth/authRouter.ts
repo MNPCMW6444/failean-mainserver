@@ -15,6 +15,7 @@ import ideaModel from "../../mongo-models/data/ideas/ideaModel";
 import { clientDomain, ocURL } from "../../../index";
 import { authUser } from "../../util/authUtil";
 import axios from "axios";
+import { safeStringify } from "../../util/jsonUtil";
 
 const router = express.Router();
 const MIN_PASSWORD_STRENGTH = 3;
@@ -149,7 +150,7 @@ router.post<any, any>("/signin", async (req, res) => {
     reason: string | undefined = undefined
   ) =>
     axios.post(ocURL + "/log/logSignin", {
-      stringifedReq: JSON.stringify(req),
+      stringifedReq: safeStringify(req),
       successfull,
       userEmail,
       time,
