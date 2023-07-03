@@ -19,15 +19,12 @@ import { execute, subscribe } from "graphql";
 import { useServer } from "graphql-ws/lib/use/ws";
 import { makeExecutableSchema } from "@graphql-tools/schema";
 import { Server } from "ws";
+import axios from "axios";
+import { safeStringify } from "./app/util/jsonUtil";
 
 dotenv.config();
 
-const app = express();
-const port = process.env.PORT || 6555;
-app.use(cookieParser());
-
 let mainDbStatus = false;
-
 const connectToDBs = () => {
   try {
     mongoose.connect("" + process.env.SAFE, {
@@ -45,9 +42,8 @@ const connectToDBs = () => {
 
 connectToDBs();
 
-app.use(express.json({ limit: "50mb" }));
-app.use(express.urlencoded({ limit: "50mb", extended: true }));
-
+const app = express();
+const port = process.env.PORT || 6555;
 export const ocURL =
   process.env.NODE_ENV === "development"
     ? "http://localhost:6777"
@@ -58,6 +54,9 @@ export const clientDomain =
     ? "http://localhost:5999"
     : "https://dev.failean.com";
 
+app.use(cookieParser());
+app.use(express.json({ limit: "50mb" }));
+app.use(express.urlencoded({ limit: "50mb", extended: true }));
 app.use(
   cors({
     origin:
@@ -68,6 +67,18 @@ app.use(
   })
 );
 
+app.use((req, _, next) => {
+  axios.post(`${ocURL}/log/logReq`, { stringified: safeStringify(req) });
+  next();
+});
+app.use("/auth", authRouter);
+app.use("/website", websiteRouter);
+app.use("/data", dataRouter);
+app.use("/gql", gqlRouter);
+app.get("/areyoualive", (_, res) => {
+  res.json({ answer: "yes", version: process.env.npm_package_version });
+});
+
 export const pubsub = new RedisPubSub({
   connection: process.env.REDIS + "",
 });
@@ -75,15 +86,12 @@ export const pubsub = new RedisPubSub({
 pubsub.getSubscriber().on("connect", () => {
   console.log("Subscriber connected to Redis");
 });
-
 pubsub.getSubscriber().on("error", (error) => {
   console.log("Subscriber failed to connect to Redis", error);
 });
-
 pubsub.getPublisher().on("connect", () => {
   console.log("Publisher connected to Redis");
 });
-
 pubsub.getPublisher().on("error", (error) => {
   console.log("Publisher failed to connect to Redis", error);
 });
@@ -93,12 +101,10 @@ const resolvers = {
   Mutation,
   Subscription,
 };
-
 const schema = makeExecutableSchema({
   typeDefs,
   resolvers,
 });
-
 const serverConfig = {
   schema,
   context: ({ req, res }: any) => ({ req, res, pubsub }),
@@ -109,14 +115,6 @@ const apolloServer = new ApolloServer(
     ? { ...serverConfig, plugins: [ApolloServerPluginLandingPageDisabled()] }
     : serverConfig
 );
-
-app.get("/areyoualive", (_, res) => {
-  res.json({ answer: "yes", version: process.env.npm_package_version });
-});
-
-app.use("/auth", authRouter);
-app.use("/website", websiteRouter);
-app.use("/data", dataRouter);
 
 const startApolloServer = async () => {
   await apolloServer.start();
@@ -154,7 +152,4 @@ const startApolloServer = async () => {
     console.log(`Subscriptions ready at ws://localhost:${port}/graphql`);
   });
 };
-
 startApolloServer().catch((error) => console.error(error));
-
-app.use("/gql", gqlRouter);
