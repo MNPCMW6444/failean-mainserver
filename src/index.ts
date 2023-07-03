@@ -68,7 +68,7 @@ app.use(
 );
 
 app.use((req, _, next) => {
-  axios.post(`${ocURL}/log/logReq`, { stringified: safeStringify(req) });
+  axios.post(ocURL + "log/logReq", { stringified: safeStringify(req) });
   next();
 });
 app.use("/auth", authRouter);
