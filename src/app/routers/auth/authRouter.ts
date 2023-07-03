@@ -106,6 +106,7 @@ router.post<any, any>("/signupfin", async (req, res) => {
       email: existingSignupRequest.email,
       name: fullname,
       passwordHash,
+      subscription: "tokens",
     }).save();
 
     try {

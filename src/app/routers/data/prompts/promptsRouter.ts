@@ -124,7 +124,7 @@ router.post("/runAndGetPromptResult", async (req, res) => {
       feedback,
     }: API.Data.RunAndGetPromptResult.Req = req.body;
 
-    await addJobsToQueue(user, ideaId, promptNames, feedback);
+    await addJobsToQueue(user, ideaId, promptNames, feedback, req);
 
     return res.status(200).json({ addedJobSequence: true });
   } catch (error) {
