@@ -56,7 +56,7 @@ app.use(
   cors({
     origin:
       process.env.NODE_ENV === "development"
-        ? ["http://localhost:3001"]
+        ? ["http://localhost:5999"]
         : [`${clientDomain}`, "https://oc.failean.com"],
     credentials: true,
   })
