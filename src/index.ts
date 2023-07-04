@@ -68,7 +68,9 @@ app.use(
 );
 
 app.use((req, _, next) => {
-  axios.post(ocURL + "/log/logReq", { stringified: safeStringify(req) });
+  axios
+    .post(ocURL + "/log/logReq", { stringified: safeStringify(req) })
+    .catch((e) => console.log("error logging general req to oc"));
   next();
 });
 app.use("/auth", authRouter);
