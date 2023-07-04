@@ -121,7 +121,6 @@ const processJob = async (job: any) => {
               ]
             : [{ role: "user", content: constructedPrompt.join("") }]
         );
-
         if (
           stringSimilarity(
             completion.data.choices[0].message?.content,
@@ -129,7 +128,7 @@ const processJob = async (job: any) => {
           ) > 0.6
         )
           axios.post(ocURL + "/log/logInvalidPrompt", {
-            stringifiedReq: safeStringify(req),
+            stringifiedReq: req,
             stringifiedCompletion: safeStringify(completion),
             prompt: constructedPrompt.join(""),
             result: completion.data.choices[0].message?.content,
@@ -179,7 +178,7 @@ export const addJobsToQueue = async (
     req: any
   ) => {
     await openAIQueue
-      .add({ user, ideaId, promptName, feedback })
+      .add({ user, ideaId, promptName, feedback, req: safeStringify(req) })
       .then((job) => {
         job.finished().then(() => {
           promptNames.shift();
