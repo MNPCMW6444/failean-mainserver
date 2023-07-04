@@ -1,6 +1,6 @@
 {
   "name": "failean-mainserver",
-  "version": "3.0.84",
+  "version": "3.0.95",
   "scripts": {
     "clean": "rm -rf node_modules package-lock.json",
     "build": "npx ts-node build.ts",
@@ -30,7 +30,8 @@
   },
   "dependencies": {
     "@bull-board/express": "^5.6.0",
-    "@failean/shared-types": "^2.9.143",
+    "@failean/mongo-models": "^1.6.117",
+    "@failean/shared-types": "^2.9.150",
     "@sendgrid/mail": "^7.7.0",
     "@types/bcrypt": "^5.0.0",
     "@types/cookie-parser": "^1.4.3",
@@ -39,6 +40,7 @@
     "@types/fs-extra": "^11.0.1",
     "@types/jsonwebtoken": "^9.0.2",
     "@types/uuid": "^9.0.2",
+    "@types/ws": "^8.5.5",
     "@types/zxcvbn": "^4.4.1",
     "apollo-server-express": "^3.12.0",
     "bcrypt": "^5.1.0",
@@ -60,8 +62,7 @@
     "ts-node": "^10.9.1",
     "uuid": "^9.0.0",
     "ws": "^8.13.0",
-    "zxcvbn": "^4.4.2",
-    "@types/ws": "^8.5.5"
+    "zxcvbn": "^4.4.2"
   },
   "main": "index.js",
   "keywords": [],

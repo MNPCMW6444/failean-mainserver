@@ -1,16 +1,7 @@
 import mongoose from "mongoose";
 import { WhiteModels } from "@failean/shared-types";
-type WhiteToken = WhiteModels.Accounts.WhiteToken;
-
-const tokenModal = new mongoose.Schema(
-  {
-    owner: { type: mongoose.Schema.Types.ObjectId, required: true },
-    transaction: { type: Number, required: true },
-    description: { type: String, required: false },
-  },
-  {
-    timestamps: true,
-  }
+import { tokenModel } from "@failean/mongo-models";
+export default mongoose.model<WhiteModels.Accounts.WhiteToken>(
+  "token",
+  tokenModel
 );
-
-export default mongoose.model<WhiteToken>("token", tokenModal);

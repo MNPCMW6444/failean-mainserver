@@ -1,5 +1,5 @@
 import Queue from "bull";
-import { pubsub } from "../../index";
+import { ocURL, pubsub } from "../../index";
 import ideaModel from "../mongo-models/data/ideas/ideaModel";
 import aideatorPromptMap from "../../content/prompts/aideatorPromptMap";
 import {
@@ -14,6 +14,10 @@ import { createBullBoard } from "@bull-board/api";
 import { BullAdapter } from "@bull-board/api/bullAdapter";
 import { ExpressAdapter } from "@bull-board/express";
 import express from "express";
+import stringSimilarity from "../util/string-similarity";
+import { INVALID_PROMPT_MESSAGE } from "../util/messages";
+import { safeStringify } from "../util/jsonUtil";
+import axios from "axios";
 
 type WhiteUser = WhiteModels.Auth.WhiteUser;
 
@@ -44,7 +48,7 @@ app.listen(3000, () => {
 // Define your job processing function
 const processJob = async (job: any) => {
   try {
-    const { user, ideaId, promptName, feedback } = job.data;
+    const { user, ideaId, promptName, feedback, req } = job.data;
     if (user.subscription !== "tokens") {
       return;
     }
@@ -117,6 +121,20 @@ const processJob = async (job: any) => {
               ]
             : [{ role: "user", content: constructedPrompt.join("") }]
         );
+        if (
+          stringSimilarity(
+            completion.data.choices[0].message?.content,
+            INVALID_PROMPT_MESSAGE
+          ) > 0.6
+        )
+          axios.post(ocURL + "/log/logInvalidPrompt", {
+            stringifiedReq: req,
+            stringifiedCompletion: safeStringify(completion),
+            prompt: constructedPrompt.join(""),
+            result: completion.data.choices[0].message?.content,
+            promptName,
+            ideaId,
+          });
 
         const savedResult = new PromptResultModel({
           owner: user._id,
@@ -149,29 +167,31 @@ export const addJobsToQueue = async (
   user: WhiteModels.Auth.WhiteUser,
   ideaId: string,
   promptNames: PromptName[],
-  feedback: API.Data.RunAndGetPromptResult.Req["feedback"]
+  feedback: API.Data.RunAndGetPromptResult.Req["feedback"],
+  req: any
 ) => {
   const addJobToQueue = async (
     user: WhiteModels.Auth.WhiteUser,
     ideaId: string,
     promptName: PromptName,
-    feedback: API.Data.RunAndGetPromptResult.Req["feedback"]
+    feedback: API.Data.RunAndGetPromptResult.Req["feedback"],
+    req: any
   ) => {
     await openAIQueue
-      .add({ user, ideaId, promptName, feedback })
+      .add({ user, ideaId, promptName, feedback, req: safeStringify(req) })
       .then((job) => {
         job.finished().then(() => {
           promptNames.shift();
           if (promptNames[0] === "idea") promptNames.shift();
           if (promptNames.length > 0) {
-            addJobToQueue(user, ideaId, promptNames[0], feedback);
+            addJobToQueue(user, ideaId, promptNames[0], feedback, req);
           }
         });
       });
   };
 
   if (promptNames.length > 0) {
-    await addJobToQueue(user, ideaId, promptNames[0], feedback);
+    await addJobToQueue(user, ideaId, promptNames[0], feedback, req);
   }
 };
 

@@ -1,20 +1,8 @@
 import mongoose from "mongoose";
 import { WhiteModels } from "@failean/shared-types";
-type WhiteTask = WhiteModels.Data.Prompts.WhiteTask;
+import { taskModel } from "@failean/mongo-models";
 
-const taskModal = new mongoose.Schema(
-  {
-    owner: { type: mongoose.Schema.Types.ObjectId, required: true },
-    ideaId: { type: mongoose.Schema.Types.ObjectId, required: true },
-    promptName: { type: String, required: true },
-    taskId: {
-      type: Number,
-      required: true,
-    },
-  },
-  {
-    timestamps: true,
-  }
+export default mongoose.model<WhiteModels.Data.Prompts.WhiteTask>(
+  "task",
+  taskModel
 );
-
-export default mongoose.model<WhiteTask>("task", taskModal);

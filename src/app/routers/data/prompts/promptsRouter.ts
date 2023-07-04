@@ -1,7 +1,7 @@
 import express from "express";
 import PromptResultModel from "../../../mongo-models/data/prompts/promptResultModel";
 import { PromptName } from "@failean/shared-types";
-import openAIQueue, { addJobsToQueue } from "../../../jobs/openAIQueue";
+import { addJobsToQueue } from "../../../jobs/openAIQueue";
 import {
   convertMaptoDeckGraph,
   convertMaptoDepGraph,
@@ -48,6 +48,17 @@ router.post("/getPromptResult", async (req, res) => {
     const { ideaId, promptName }: { ideaId: string; promptName: PromptName } =
       req.body;
 
+    if (promptName === "all") {
+      const promptResults = await PromptResultModel.find({
+        owner: user._id,
+        ideaId,
+      });
+
+      return res.status(200).json({
+        promptResult: promptResults,
+      });
+    }
+
     const promptResult = await PromptResultModel.find({
       owner: user._id,
       ideaId,
@@ -83,12 +94,16 @@ router.post("/preRunPrompt", async (req, res) => {
       )
     ).then((results) =>
       results.reduce(
-        (total, number) => (total || 99999999) + (number || 99999999),
+        (total, number) =>
+          (total !== null && total !== undefined ? total : 99999999) +
+          (number !== null && number !== undefined ? number : 99999999),
         0
       )
     );
 
-    return res.status(200).json({ price: ((price || 100) * 8) / 100 });
+    return res
+      .status(200)
+      .json({ price: Math.floor(((price || 100) * 8) / 100) });
   } catch (error) {
     console.error(error);
     return res.status(500).json({ clientMessage: "An error occurred" });
@@ -109,7 +124,7 @@ router.post("/runAndGetPromptResult", async (req, res) => {
       feedback,
     }: API.Data.RunAndGetPromptResult.Req = req.body;
 
-    await addJobsToQueue(user, ideaId, promptNames, feedback);
+    await addJobsToQueue(user, ideaId, promptNames, feedback, req);
 
     return res.status(200).json({ addedJobSequence: true });
   } catch (error) {
