@@ -12,7 +12,7 @@ import zxcvbn from "zxcvbn";
 import { sendEmail } from "../../util/emailUtil";
 import { v4 as keyv4, stringify } from "uuid";
 import ideaModel from "../../mongo-models/data/ideas/ideaModel";
-import { clientDomain, ocURL } from "../../../index";
+import { clientDomain, ocServerDomain } from "../../../index";
 import { authUser } from "../../util/authUtil";
 import axios from "axios";
 import { safeStringify } from "../../util/jsonUtil";
@@ -150,7 +150,7 @@ router.post<any, any>("/signin", async (req, res) => {
     time: Date,
     reason: string | undefined = undefined
   ) =>
-    axios.post(ocURL + "/log/logSignin", {
+    axios.post(ocServerDomain + "/log/logSignin", {
       stringifiedReq: safeStringify(req),
       successfull,
       userEmail,

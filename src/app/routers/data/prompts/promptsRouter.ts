@@ -145,13 +145,20 @@ router.post("/savePromptResult", async (req, res) => {
       ideaId,
       promptName,
       data,
-    }: { ideaId: string; promptName: PromptName; data: string } = req.body;
+      reason,
+    }: {
+      ideaId: string;
+      promptName: PromptName;
+      data: string;
+      reason: string;
+    } = req.body;
 
     const savedPromptResult = new PromptResultModel({
       owner: user._id,
       ideaId,
       promptName,
       data,
+      reason,
     });
     await savedPromptResult.save();
     return res.status(200).json({

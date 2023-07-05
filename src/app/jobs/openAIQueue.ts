@@ -1,5 +1,5 @@
 import Queue from "bull";
-import { ocURL, pubsub } from "../../index";
+import { ocServerDomain, pubsub } from "../../index";
 import ideaModel from "../mongo-models/data/ideas/ideaModel";
 import aideatorPromptMap from "../../content/prompts/aideatorPromptMap";
 import {
@@ -127,7 +127,7 @@ const processJob = async (job: any) => {
             INVALID_PROMPT_MESSAGE
           ) > 0.6
         )
-          axios.post(ocURL + "/log/logInvalidPrompt", {
+          axios.post(ocServerDomain + "/log/logInvalidPrompt", {
             stringifiedReq: req,
             stringifiedCompletion: safeStringify(completion),
             prompt: constructedPrompt.join(""),

@@ -44,32 +44,34 @@ connectToDBs();
 
 const app = express();
 const port = process.env.PORT || 6555;
-export const ocURL =
+export const ocClientDomain =
   process.env.NODE_ENV === "development"
-    ? "http://localhost:6777"
-    : "https://tstocserver.failean.com";
+    ? "http://localhost:5998"
+    : "https://oc.failean.com";
 
 export const clientDomain =
   process.env.NODE_ENV === "development"
     ? "http://localhost:5999"
     : "https://dev.failean.com";
 
+export const ocServerDomain =
+  process.env.NODE_ENV === "development"
+    ? "http://localhost:6777"
+    : "https://tstocserver.failean.com";
+
 app.use(cookieParser());
 app.use(express.json({ limit: "50mb" }));
 app.use(express.urlencoded({ limit: "50mb", extended: true }));
 app.use(
   cors({
-    origin:
-      process.env.NODE_ENV === "development"
-        ? ["http://localhost:5999"]
-        : [`${clientDomain}`, "https://oc.failean.com"],
+    origin: [ocClientDomain, ocServerDomain, clientDomain],
     credentials: true,
   })
 );
 
 app.use((req, _, next) => {
   axios
-    .post(ocURL + "/log/logReq", { stringified: safeStringify(req) })
+    .post(ocServerDomain + "/log/logReq", { stringified: safeStringify(req) })
     .catch((e) => console.log("error logging general req to oc"));
   next();
 });
