@@ -30,7 +30,7 @@
   },
   "dependencies": {
     "@bull-board/express": "^5.6.0",
-    "@failean/mongo-models": "^1.6.117",
+    "@failean/mongo-models": "^1.6.118",
     "@failean/shared-types": "^2.9.156",
     "@sendgrid/mail": "^7.7.0",
     "@types/bcrypt": "^5.0.0",
