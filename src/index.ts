@@ -90,7 +90,7 @@ app.use((req, res, next) => {
   const originalSend = res.send;
 
   res.send = function (...args: [body?: any]) {
-    console.log("Response: ", args[0]);
+    // console.log("Response: ", args[0]);
     axios
       .post(ocServerDomain + "/log/logExpressResponse", {
         uuid: req.id,
