@@ -13,7 +13,6 @@ import { callOpenAI } from "../util/data/prompts/openAIUtil";
 import { createBullBoard } from "@bull-board/api";
 import { BullAdapter } from "@bull-board/api/bullAdapter";
 import { ExpressAdapter } from "@bull-board/express";
-import express from "express";
 import stringSimilarity from "../util/string-similarity";
 import { INVALID_PROMPT_MESSAGE } from "../util/messages";
 import { safeStringify } from "../util/jsonUtil";
@@ -34,15 +33,6 @@ openAIQueue.on("error", (error) => {
 createBullBoard({
   queues: [new BullAdapter(openAIQueue)],
   serverAdapter: serverAdapter,
-});
-
-const app = express();
-
-app.use("/admin/queues", serverAdapter.getRouter());
-
-app.listen(3000, () => {
-  console.log("Bull Dashbaord is Running on port 3000...");
-  console.log("For the UI, open http://localhost:3000/admin/queues");
 });
 
 // Define your job processing function
