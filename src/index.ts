@@ -21,6 +21,15 @@ import { makeExecutableSchema } from "@graphql-tools/schema";
 import { Server } from "ws";
 import axios from "axios";
 import { safeStringify } from "./app/util/jsonUtil";
+import { v4 as uuidv4 } from "uuid";
+
+declare global {
+  namespace Express {
+    interface Request {
+      id: string;
+    }
+  }
+}
 
 dotenv.config();
 
@@ -69,12 +78,32 @@ app.use(
   })
 );
 
-app.use((req, _, next) => {
+app.use((req, res, next) => {
+  req.id = uuidv4();
   axios
-    .post(ocServerDomain + "/log/logReq", { stringified: safeStringify(req) })
-    .catch((e) => console.log("error logging general req to oc"));
+    .post(ocServerDomain + "/log/logExpressRequest", {
+      uuid: req.id,
+      stringifiedReq: safeStringify(req),
+    })
+    .catch(() => console.log("error logging general req to oc"));
+
+  const originalSend = res.send;
+
+  res.send = function (...args: [body?: any]) {
+    console.log("Response: ", args[0]);
+    axios
+      .post(ocServerDomain + "/log/logExpressResponse", {
+        uuid: req.id,
+        stringifiedRes: safeStringify(args[0]),
+      })
+      .catch(() => console.log("error logging general res to oc"));
+
+    return originalSend.apply(this, args);
+  };
+
   next();
 });
+
 app.use("/auth", authRouter);
 app.use("/website", websiteRouter);
 app.use("/data", dataRouter);
