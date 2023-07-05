@@ -24,7 +24,7 @@ type WhiteUser = WhiteModels.Auth.WhiteUser;
 // Create a new Bull queue
 const openAIQueue = new Queue("openAIQueue", process.env.REDIS || "");
 
-const serverAdapter = new ExpressAdapter();
+export const serverAdapter = new ExpressAdapter();
 serverAdapter.setBasePath("/admin/queues");
 
 openAIQueue.on("error", (error) => {

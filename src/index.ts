@@ -22,6 +22,8 @@ import { Server } from "ws";
 import axios from "axios";
 import { safeStringify } from "./app/util/jsonUtil";
 import { v4 as uuidv4 } from "uuid";
+import expressBasicAuth from "express-basic-auth";
+import { serverAdapter } from "./app/jobs/openAIQueue"; // Assuming that serverAdapter is exported from the file where you defined it
 
 declare global {
   namespace Express {
@@ -111,6 +113,20 @@ app.use("/gql", gqlRouter);
 app.get("/areyoualive", (_, res) => {
   res.json({ answer: "yes", version: process.env.npm_package_version });
 });
+
+if (process.env.NODE_ENV === "production") {
+  app.use(
+    "/admin/queues",
+    expressBasicAuth({
+      users: { [process.env.ADMIN_USER + ""]: process.env.ADMIN_PASSWORD + "" },
+      challenge: true,
+      realm: "Imb4T3st4pp",
+    }),
+    serverAdapter.getRouter()
+  );
+} else {
+  app.use("/admin/queues", serverAdapter.getRouter());
+}
 
 export const pubsub = new RedisPubSub({
   connection: process.env.REDIS + "",
