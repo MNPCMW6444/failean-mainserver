@@ -45,13 +45,13 @@ router.post("/getPromptResult", async (req, res) => {
       return res.status(401).json({ clientMessage: "Unauthorized" });
     }
 
-    const { ideaId, promptName }: { ideaId: string; promptName: PromptName } =
+    const { ideaID, promptName }: { ideaID: string; promptName: PromptName } =
       req.body;
 
     if (promptName === "all") {
       const promptResults = await PromptResultModel.find({
         owner: user._id,
-        ideaId,
+        ideaID,
       });
 
       return res.status(200).json({
@@ -61,7 +61,7 @@ router.post("/getPromptResult", async (req, res) => {
 
     const promptResult = await PromptResultModel.find({
       owner: user._id,
-      ideaId,
+      ideaID,
       promptName,
     });
 
@@ -83,14 +83,14 @@ router.post("/preRunPrompt", async (req, res) => {
     }
 
     const {
-      ideaId,
+      ideaID,
       promptNames,
       feedback,
     }: API.Data.RunAndGetPromptResult.Req = req.body;
 
     const price = await Promise.all(
       promptNames.map((promptName) =>
-        estimateOpenAI(user, ideaId, promptName, feedback)
+        estimateOpenAI(user, ideaID, promptName, feedback)
       )
     ).then((results) =>
       results.reduce(
@@ -119,12 +119,12 @@ router.post("/runAndGetPromptResult", async (req, res) => {
     }
 
     const {
-      ideaId,
+      ideaID,
       promptNames,
       feedback,
     }: API.Data.RunAndGetPromptResult.Req = req.body;
 
-    await addJobsToQueue(user, ideaId, promptNames, feedback, req);
+    await addJobsToQueue(user, ideaID, promptNames, feedback, req);
 
     return res.status(200).json({ addedJobSequence: true });
   } catch (error) {
@@ -142,12 +142,12 @@ router.post("/savePromptResult", async (req, res) => {
     }
 
     const {
-      ideaId,
+      ideaID,
       promptName,
       data,
       reason,
     }: {
-      ideaId: string;
+      ideaID: string;
       promptName: PromptName;
       data: string;
       reason: string;
@@ -155,7 +155,7 @@ router.post("/savePromptResult", async (req, res) => {
 
     const savedPromptResult = new PromptResultModel({
       owner: user._id,
-      ideaId,
+      ideaID,
       promptName,
       data,
       reason,

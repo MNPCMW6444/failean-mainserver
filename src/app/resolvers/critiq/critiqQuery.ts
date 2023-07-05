@@ -1,10 +1,10 @@
 const Query = {
   getCritiqValidation: async (
     _: any,
-    { ideaId, critiqAnswers }: any,
+    { ideaID, critiqAnswers }: any,
     { models }: any
   ) => {
-    const idea = await models.Idea.findById(ideaId);
+    const idea = await models.Idea.findById(ideaID);
     const prompts = idea.prompts;
 
     let results = [];

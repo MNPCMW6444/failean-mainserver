@@ -48,11 +48,11 @@ app.listen(3000, () => {
 // Define your job processing function
 const processJob = async (job: any) => {
   try {
-    const { user, ideaId, promptName, feedback, req } = job.data;
+    const { user, ideaID, promptName, feedback, req } = job.data;
     if (user.subscription !== "tokens") {
       return;
     }
-    const idea = await ideaModel.findById(ideaId);
+    const idea = await ideaModel.findById(ideaID);
     let dependencies: string[];
     const prompt = aideatorPromptMap[promptName];
     if (prompt) {
@@ -60,7 +60,7 @@ const processJob = async (job: any) => {
         if (promptPart.type === "variable" && promptPart.content !== "idea") {
           let promptRes = await PromptResultModel.find({
             owner: user._id,
-            ideaId,
+            ideaID,
             promptName: promptPart.content,
           });
           return {
@@ -102,7 +102,7 @@ const processJob = async (job: any) => {
           feedback?.length > 1 &&
           (await PromptResultModel.find({
             owner: user._id,
-            ideaId,
+            ideaID,
             promptName,
           }));
 
@@ -133,12 +133,12 @@ const processJob = async (job: any) => {
             prompt: constructedPrompt.join(""),
             result: completion.data.choices[0].message?.content,
             promptName,
-            ideaId,
+            ideaID,
           });
 
         const savedResult = new PromptResultModel({
           owner: user._id,
-          ideaId,
+          ideaID,
           promptName,
           data: completion.data.choices[0].message?.content,
           reason: feedback?.length && feedback?.length > 1 ? "feedback" : "run",
@@ -165,33 +165,33 @@ openAIQueue.process(processJob);
 
 export const addJobsToQueue = async (
   user: WhiteModels.Auth.WhiteUser,
-  ideaId: string,
+  ideaID: string,
   promptNames: PromptName[],
   feedback: API.Data.RunAndGetPromptResult.Req["feedback"],
   req: any
 ) => {
   const addJobToQueue = async (
     user: WhiteModels.Auth.WhiteUser,
-    ideaId: string,
+    ideaID: string,
     promptName: PromptName,
     feedback: API.Data.RunAndGetPromptResult.Req["feedback"],
     req: any
   ) => {
     await openAIQueue
-      .add({ user, ideaId, promptName, feedback, req: safeStringify(req) })
+      .add({ user, ideaID, promptName, feedback, req: safeStringify(req) })
       .then((job) => {
         job.finished().then(() => {
           promptNames.shift();
           if (promptNames[0] === "idea") promptNames.shift();
           if (promptNames.length > 0) {
-            addJobToQueue(user, ideaId, promptNames[0], feedback, req);
+            addJobToQueue(user, ideaID, promptNames[0], feedback, req);
           }
         });
       });
   };
 
   if (promptNames.length > 0) {
-    await addJobToQueue(user, ideaId, promptNames[0], feedback, req);
+    await addJobToQueue(user, ideaID, promptNames[0], feedback, req);
   }
 };
 

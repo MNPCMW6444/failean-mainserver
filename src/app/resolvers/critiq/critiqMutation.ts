@@ -1,12 +1,12 @@
 const Mutation = {
   saveCritiqAnswers: async (
     _: any,
-    { ideaId, critiqAnswers }: any,
+    { ideaID, critiqAnswers }: any,
     { models }: any
   ) => {
     try {
       await models.Critiq.create({
-        owner: ideaId,
+        owner: ideaID,
         steps: critiqAnswers,
       });
 

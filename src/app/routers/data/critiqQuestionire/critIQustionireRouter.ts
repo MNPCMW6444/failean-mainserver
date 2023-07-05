@@ -5,7 +5,7 @@ import jsonwebtoken from "jsonwebtoken";
 
 const router = express.Router();
 
-router.get("/data/critiqQuestionire/:ideaId", async (req, res) => {
+router.get("/data/critiqQuestionire/:ideaID", async (req, res) => {
   try {
     const token = req.cookies.jsonwebtoken;
     if (!token) return res.status(401).json({ errorMessage: "Unauthorized." });
@@ -15,7 +15,7 @@ router.get("/data/critiqQuestionire/:ideaId", async (req, res) => {
     );
 
     let ideacritiqQuestionire = await answerModel.find({
-      ideaId: req.params.ideaId,
+      ideaID: req.params.ideaID,
       owner: (validatedUser as any).id,
     });
     /* 
@@ -36,10 +36,10 @@ router.post("/data/critiqQuestionire/update", async (req, res) => {
       token,
       process.env.JWT_SECRET as any
     );
-    const { ideaId, questionId, answer, score } = req.body;
+    const { ideaID, questionId, answer, score } = req.body;
 
     const answerToUpdate = await answerModel.findOne({
-      ideaId,
+      ideaID,
       questionId,
       owner: (validatedUser as any).id,
     });
@@ -47,7 +47,7 @@ router.post("/data/critiqQuestionire/update", async (req, res) => {
     if (!answerToUpdate) {
       // Create a new answer if not exist
       await new answerModel({
-        ideaId,
+        ideaID,
         questionId,
         answer,
         score,

@@ -15,12 +15,12 @@ type WhiteUser = WhiteModels.Auth.WhiteUser;
 
 export const estimateOpenAI = async (
   user: WhiteUser,
-  ideaId: string,
+  ideaID: string,
   promptName: keyof PromptMap,
   feedback?: string
 ): Promise<undefined | number> => {
   if (promptName === "idea") return 0;
-  const idea = await ideaModel.findById(ideaId);
+  const idea = await ideaModel.findById(ideaID);
   let dependencies: string[];
   const prompt = aideatorPromptMap[promptName];
   if (prompt) {
@@ -28,7 +28,7 @@ export const estimateOpenAI = async (
       if (promptPart.type === "variable" && promptPart.content !== "idea") {
         let promptRes = await PromptResultModel.find({
           owner: user._id,
-          ideaId,
+          ideaID,
           promptName: promptPart.content,
         });
         return {
@@ -66,7 +66,7 @@ export const estimateOpenAI = async (
         feedback?.length > 1 &&
         (await PromptResultModel.find({
           owner: user._id,
-          ideaId,
+          ideaID,
           promptName,
         }));
 
