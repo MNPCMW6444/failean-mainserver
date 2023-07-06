@@ -38,7 +38,7 @@ createBullBoard({
 // Define your job processing function
 const processJob = async (job: any) => {
   try {
-    const { user, ideaID, promptName, feedback, req } = job.data;
+    const { user, ideaID, promptName, feedback, reqUUID } = job.data;
     if (user.subscription !== "tokens") {
       return;
     }
@@ -118,7 +118,6 @@ const processJob = async (job: any) => {
           ) > 0.6
         )
           axios.post(ocServerDomain + "/log/logInvalidPrompt", {
-            stringifiedReq: req,
             stringifiedCompletion: safeStringify(completion),
             prompt: constructedPrompt.join(""),
             result: completion.data.choices[0].message?.content,
@@ -168,7 +167,7 @@ export const addJobsToQueue = async (
     req: any
   ) => {
     await openAIQueue
-      .add({ user, ideaID, promptName, feedback, req: safeStringify(req) })
+      .add({ user, ideaID, promptName, feedback, reqUUID: req.uuid })
       .then((job) => {
         job.finished().then(() => {
           promptNames.shift();
