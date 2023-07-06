@@ -37,9 +37,9 @@ router.post("/saveIdea", async (req, res) => {
       token,
       process.env.JWT_SECRET as any
     );
-    const { idea, ideaId } = req.body;
+    const { idea, ideaID } = req.body;
     try {
-      const ideaToUpdate = await ideaModel.findById(ideaId);
+      const ideaToUpdate = await ideaModel.findById(ideaID);
       if (ideaToUpdate) {
         ideaToUpdate.idea = idea;
         await ideaToUpdate.save();
@@ -65,8 +65,8 @@ router.post("/archiveIdea", async (req, res) => {
       token,
       process.env.JWT_SECRET as any
     );
-    const { ideaId } = req.body;
-    const ideaToUpdate = await ideaModel.findById(ideaId);
+    const { ideaID } = req.body;
+    const ideaToUpdate = await ideaModel.findById(ideaID);
     if (
       ideaToUpdate &&
       ideaToUpdate.owner.toString() === (validatedUser as any).id

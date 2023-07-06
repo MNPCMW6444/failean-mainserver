@@ -15,14 +15,12 @@ type WhiteUser = WhiteModels.Auth.WhiteUser;
 
 export const estimateOpenAI = async (
   user: WhiteUser,
-  ideaId: string,
+  ideaID: string,
   promptName: keyof PromptMap,
   feedback?: string
-): Promise<number | undefined> => {
-  if (user.subscription !== "tokens") {
-    return;
-  }
-  const idea = await ideaModel.findById(ideaId);
+): Promise<undefined | number> => {
+  if (promptName === "idea") return 0;
+  const idea = await ideaModel.findById(ideaID);
   let dependencies: string[];
   const prompt = aideatorPromptMap[promptName];
   if (prompt) {
@@ -30,7 +28,7 @@ export const estimateOpenAI = async (
       if (promptPart.type === "variable" && promptPart.content !== "idea") {
         let promptRes = await PromptResultModel.find({
           owner: user._id,
-          ideaId,
+          ideaID,
           promptName: promptPart.content,
         });
         return {
@@ -39,7 +37,7 @@ export const estimateOpenAI = async (
       }
     });
 
-    Promise.all(promises).then(async (updatedPropmtResult) => {
+    return Promise.all(promises).then(async (updatedPropmtResult) => {
       dependencies = updatedPropmtResult.map((r: any) => {
         return r;
       });
@@ -59,18 +57,16 @@ export const estimateOpenAI = async (
           i++;
           const res = (cleanDeps[i - 1] as any)?.x;
           missing = !missing && !(res?.length > 1);
-          return res;
+          return missing ? "a".repeat(3000) : res;
         }
       });
-
-      if (missing) throw new Error("Missing dependencies");
 
       const promptResult =
         feedback?.length &&
         feedback?.length > 1 &&
         (await PromptResultModel.find({
           owner: user._id,
-          ideaId,
+          ideaID,
           promptName,
         }));
 
@@ -87,7 +83,6 @@ export const estimateOpenAI = async (
             ]
           : [{ role: "user", content: constructedPrompt.join("") }]
       );
-
       return encode(input).length;
     });
   }

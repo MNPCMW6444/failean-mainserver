@@ -1,5 +1,5 @@
 import Queue from "bull";
-import { pubsub } from "../../index";
+import { ocServerDomain, pubsub } from "../../index";
 import ideaModel from "../mongo-models/data/ideas/ideaModel";
 import aideatorPromptMap from "../../content/prompts/aideatorPromptMap";
 import {
@@ -13,14 +13,17 @@ import { callOpenAI } from "../util/data/prompts/openAIUtil";
 import { createBullBoard } from "@bull-board/api";
 import { BullAdapter } from "@bull-board/api/bullAdapter";
 import { ExpressAdapter } from "@bull-board/express";
-import express from "express";
+import stringSimilarity from "../util/string-similarity";
+import { INVALID_PROMPT_MESSAGE } from "../util/messages";
+import { safeStringify } from "../util/jsonUtil";
+import axios from "axios";
 
 type WhiteUser = WhiteModels.Auth.WhiteUser;
 
 // Create a new Bull queue
 const openAIQueue = new Queue("openAIQueue", process.env.REDIS || "");
 
-const serverAdapter = new ExpressAdapter();
+export const serverAdapter = new ExpressAdapter();
 serverAdapter.setBasePath("/admin/queues");
 
 openAIQueue.on("error", (error) => {
@@ -32,23 +35,14 @@ createBullBoard({
   serverAdapter: serverAdapter,
 });
 
-const app = express();
-
-app.use("/admin/queues", serverAdapter.getRouter());
-
-app.listen(3000, () => {
-  console.log("Bull Dashbaord is Running on port 3000...");
-  console.log("For the UI, open http://localhost:3000/admin/queues");
-});
-
 // Define your job processing function
 const processJob = async (job: any) => {
   try {
-    const { user, ideaId, promptName, feedback } = job.data;
+    const { user, ideaID, promptName, feedback, reqUUID } = job.data;
     if (user.subscription !== "tokens") {
       return;
     }
-    const idea = await ideaModel.findById(ideaId);
+    const idea = await ideaModel.findById(ideaID);
     let dependencies: string[];
     const prompt = aideatorPromptMap[promptName];
     if (prompt) {
@@ -56,7 +50,7 @@ const processJob = async (job: any) => {
         if (promptPart.type === "variable" && promptPart.content !== "idea") {
           let promptRes = await PromptResultModel.find({
             owner: user._id,
-            ideaId,
+            ideaID,
             promptName: promptPart.content,
           });
           return {
@@ -98,7 +92,7 @@ const processJob = async (job: any) => {
           feedback?.length > 1 &&
           (await PromptResultModel.find({
             owner: user._id,
-            ideaId,
+            ideaID,
             promptName,
           }));
 
@@ -117,10 +111,23 @@ const processJob = async (job: any) => {
               ]
             : [{ role: "user", content: constructedPrompt.join("") }]
         );
+        if (
+          stringSimilarity(
+            completion.data.choices[0].message?.content,
+            INVALID_PROMPT_MESSAGE
+          ) > 0.6
+        )
+          axios.post(ocServerDomain + "/log/logInvalidPrompt", {
+            stringifiedCompletion: safeStringify(completion),
+            prompt: constructedPrompt.join(""),
+            result: completion.data.choices[0].message?.content,
+            promptName,
+            ideaID,
+          });
 
         const savedResult = new PromptResultModel({
           owner: user._id,
-          ideaId,
+          ideaID,
           promptName,
           data: completion.data.choices[0].message?.content,
           reason: feedback?.length && feedback?.length > 1 ? "feedback" : "run",
@@ -147,31 +154,33 @@ openAIQueue.process(processJob);
 
 export const addJobsToQueue = async (
   user: WhiteModels.Auth.WhiteUser,
-  ideaId: string,
+  ideaID: string,
   promptNames: PromptName[],
-  feedback: API.Data.RunAndGetPromptResult.Req["feedback"]
+  feedback: API.Data.RunAndGetPromptResult.Req["feedback"],
+  req: any
 ) => {
   const addJobToQueue = async (
     user: WhiteModels.Auth.WhiteUser,
-    ideaId: string,
+    ideaID: string,
     promptName: PromptName,
-    feedback: API.Data.RunAndGetPromptResult.Req["feedback"]
+    feedback: API.Data.RunAndGetPromptResult.Req["feedback"],
+    req: any
   ) => {
     await openAIQueue
-      .add({ user, ideaId, promptName, feedback })
+      .add({ user, ideaID, promptName, feedback, reqUUID: req.uuid })
       .then((job) => {
         job.finished().then(() => {
           promptNames.shift();
           if (promptNames[0] === "idea") promptNames.shift();
           if (promptNames.length > 0) {
-            addJobToQueue(user, ideaId, promptNames[0], feedback);
+            addJobToQueue(user, ideaID, promptNames[0], feedback, req);
           }
         });
       });
   };
 
   if (promptNames.length > 0) {
-    await addJobToQueue(user, ideaId, promptNames[0], feedback);
+    await addJobToQueue(user, ideaID, promptNames[0], feedback, req);
   }
 };
 

@@ -1,28 +1,5 @@
-import mongoose, { Schema } from "mongoose";
+import mongoose from "mongoose";
 import { WhiteModels } from "@failean/shared-types";
-type WhiteUser = WhiteModels.Auth.WhiteUser;
+import { userModel } from "@failean/mongo-models";
 
-const UserSchema = new Schema(
-  {
-    email: {
-      type: String,
-      required: true,
-      unique: true,
-    },
-    passwordHash: { type: String, required: true },
-    name: {
-      type: String,
-      required: true,
-    },
-    subscription: {
-      type: String,
-      required: true,
-      default: "free",
-    },
-  },
-  {
-    timestamps: true,
-  }
-);
-
-export default mongoose.model<WhiteUser>("User", UserSchema);
+export default mongoose.model<WhiteModels.Auth.WhiteUser>("user", userModel);

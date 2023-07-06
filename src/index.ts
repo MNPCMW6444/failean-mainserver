@@ -19,15 +19,23 @@ import { execute, subscribe } from "graphql";
 import { useServer } from "graphql-ws/lib/use/ws";
 import { makeExecutableSchema } from "@graphql-tools/schema";
 import { Server } from "ws";
+import axios from "axios";
+import { safeStringify } from "./app/util/jsonUtil";
+import { v4 as uuidv4 } from "uuid";
+import expressBasicAuth from "express-basic-auth";
+import { serverAdapter } from "./app/jobs/openAIQueue"; // Assuming that serverAdapter is exported from the file where you defined it
+
+declare global {
+  namespace Express {
+    interface Request {
+      id: string;
+    }
+  }
+}
 
 dotenv.config();
 
-const app = express();
-const port = process.env.PORT || 6555;
-app.use(cookieParser());
-
 let mainDbStatus = false;
-
 const connectToDBs = () => {
   try {
     mongoose.connect("" + process.env.SAFE, {
@@ -45,22 +53,80 @@ const connectToDBs = () => {
 
 connectToDBs();
 
-app.use(express.json());
+const app = express();
+const port = process.env.PORT || 6555;
+export const ocClientDomain =
+  process.env.NODE_ENV === "development"
+    ? "http://localhost:5998"
+    : "https://oc.failean.com";
 
 export const clientDomain =
   process.env.NODE_ENV === "development"
     ? "http://localhost:5999"
     : "https://dev.failean.com";
 
+export const ocServerDomain =
+  process.env.NODE_ENV === "development"
+    ? "http://localhost:6777"
+    : "https://tstocserver.failean.com";
+
+app.use(cookieParser());
+app.use(express.json({ limit: "50mb" }));
+app.use(express.urlencoded({ limit: "50mb", extended: true }));
 app.use(
   cors({
-    origin:
-      process.env.NODE_ENV === "development"
-        ? ["http://localhost:5999"]
-        : [`${clientDomain}`, "https://oc.failean.com"],
+    origin: [ocClientDomain, ocServerDomain, clientDomain],
     credentials: true,
   })
 );
+
+app.use((req, res, next) => {
+  req.id = uuidv4();
+  axios
+    .post(ocServerDomain + "/log/logExpressRequest", {
+      uuid: req.id,
+      stringifiedReq: safeStringify(req),
+    })
+    .catch(() => console.log("error logging general req to oc"));
+
+  const originalSend = res.send;
+
+  res.send = function (...args: [body?: any]) {
+    // console.log("Response: ", args[0]);
+    axios
+      .post(ocServerDomain + "/log/logExpressResponse", {
+        uuid: req.id,
+        stringifiedRes: safeStringify(args[0]),
+      })
+      .catch(() => console.log("error logging general res to oc"));
+
+    return originalSend.apply(this, args);
+  };
+
+  next();
+});
+
+app.use("/auth", authRouter);
+app.use("/website", websiteRouter);
+app.use("/data", dataRouter);
+app.use("/gql", gqlRouter);
+app.get("/areyoualive", (_, res) => {
+  res.json({ answer: "yes", version: process.env.npm_package_version });
+});
+
+if (process.env.NODE_ENV === "production") {
+  app.use(
+    "/admin/queues",
+    expressBasicAuth({
+      users: { [process.env.ADMIN_USER + ""]: process.env.ADMIN_PASSWORD + "" },
+      challenge: true,
+      realm: "Imb4T3st4pp",
+    }),
+    serverAdapter.getRouter()
+  );
+} else {
+  app.use("/admin/queues", serverAdapter.getRouter());
+}
 
 export const pubsub = new RedisPubSub({
   connection: process.env.REDIS + "",
@@ -69,15 +135,12 @@ export const pubsub = new RedisPubSub({
 pubsub.getSubscriber().on("connect", () => {
   console.log("Subscriber connected to Redis");
 });
-
 pubsub.getSubscriber().on("error", (error) => {
   console.log("Subscriber failed to connect to Redis", error);
 });
-
 pubsub.getPublisher().on("connect", () => {
   console.log("Publisher connected to Redis");
 });
-
 pubsub.getPublisher().on("error", (error) => {
   console.log("Publisher failed to connect to Redis", error);
 });
@@ -87,12 +150,10 @@ const resolvers = {
   Mutation,
   Subscription,
 };
-
 const schema = makeExecutableSchema({
   typeDefs,
   resolvers,
 });
-
 const serverConfig = {
   schema,
   context: ({ req, res }: any) => ({ req, res, pubsub }),
@@ -103,14 +164,6 @@ const apolloServer = new ApolloServer(
     ? { ...serverConfig, plugins: [ApolloServerPluginLandingPageDisabled()] }
     : serverConfig
 );
-
-app.get("/areyoualive", (_, res) => {
-  res.json({ answer: "yes", version: process.env.npm_package_version });
-});
-
-app.use("/auth", authRouter);
-app.use("/website", websiteRouter);
-app.use("/data", dataRouter);
 
 const startApolloServer = async () => {
   await apolloServer.start();
@@ -148,7 +201,4 @@ const startApolloServer = async () => {
     console.log(`Subscriptions ready at ws://localhost:${port}/graphql`);
   });
 };
-
 startApolloServer().catch((error) => console.error(error));
-
-app.use("/gql", gqlRouter);
