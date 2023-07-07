@@ -18,7 +18,7 @@ import { encode } from "gpt-3-encoder";
 import { amendTokens, tokenCount } from "../../accounts/tokensUtil";
 import { AxiosResponse } from "axios";
 
-const ROI = 3;
+const ROI = 1.5;
 
 type WhiteUser = WhiteModels.Auth.WhiteUser;
 

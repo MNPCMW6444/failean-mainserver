@@ -16,6 +16,7 @@ import { clientDomain, ocServerDomain } from "../../../index";
 import { authUser } from "../../util/authUtil";
 import axios from "axios";
 import { safeStringify } from "../../util/jsonUtil";
+import { amendTokens } from "../../util/accounts/tokensUtil";
 
 const router = express.Router();
 const MIN_PASSWORD_STRENGTH = 3;
@@ -115,6 +116,11 @@ router.post<any, any>("/signupfin", async (req, res) => {
         idea: existingSignupRequest.idea,
       }).save();
     } catch (err) {}
+
+    const userCount = (await userModel.find()).length;
+
+    if (userCount < 50)
+      amendTokens(savedUser._id, 500, `freeforfirst50-the${userCount}`);
 
     const token = jsonwebtoken.sign(
       {
