@@ -10,7 +10,7 @@ import {
 import RequestForPassChange from "../../mongo-models/auth/requestForPassChangeModal";
 import zxcvbn from "zxcvbn";
 import { sendEmail } from "../../util/emailUtil";
-import { v4 as keyv4, stringify } from "uuid";
+import { v4 as keyv4 } from "uuid";
 import ideaModel from "../../mongo-models/data/ideas/ideaModel";
 import { clientDomain, ocServerDomain } from "../../../index";
 import { authUser } from "../../util/authUtil";
@@ -120,8 +120,7 @@ router.post<any, any>("/signupfin", async (req, res) => {
     const userCount = (await userModel.find()).length;
 
     if (userCount < 50)
-      amendTokens(savedUser._id, 500, `freeforfirst50-the${userCount}`);
-    else console.log("not free for first 50", userCount);
+      amendTokens(savedUser, 500, `freeforfirst50-the${userCount}`);
 
     const token = jsonwebtoken.sign(
       {
@@ -170,7 +169,7 @@ router.post<any, any>("/signin", async (req, res) => {
         {
           auth: {
             username: "client",
-            password: process.env.OCPASS + "",
+            password: process.env.OCPASS + "xx",
           },
         }
       )
