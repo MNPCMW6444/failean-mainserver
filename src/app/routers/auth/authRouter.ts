@@ -120,7 +120,7 @@ router.post<any, any>("/signupfin", async (req, res) => {
     const userCount = (await userModel.find()).length;
 
     if (userCount < 50)
-      amendTokens(savedUser, 500, `freeforfirst50-the${userCount}`);
+      amendTokens(savedUser, 1000, `freeforfirst50-the${userCount}`);
 
     const token = jsonwebtoken.sign(
       {
