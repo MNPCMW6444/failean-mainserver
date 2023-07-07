@@ -111,28 +111,43 @@ const processJob = async (job: any) => {
               ]
             : [{ role: "user", content: constructedPrompt.join("") }]
         );
-        if (
-          stringSimilarity(
-            completion.data.choices[0].message?.content,
-            INVALID_PROMPT_MESSAGE
-          ) > 0.6
-        )
-          axios.post(ocServerDomain + "/log/logInvalidPrompt", {
-            stringifiedCompletion: safeStringify(completion),
-            prompt: constructedPrompt.join(""),
-            result: completion.data.choices[0].message?.content,
-            promptName,
-            ideaID,
-          });
 
-        const savedResult = new PromptResultModel({
-          owner: user._id,
-          ideaID,
-          promptName,
-          data: completion.data.choices[0].message?.content,
-          reason: feedback?.length && feedback?.length > 1 ? "feedback" : "run",
-        });
-        await savedResult.save();
+        if (completion === -1) throw new Error("Acoount error");
+        else if (completion === -2) throw new Error("No Tokens");
+        else {
+          if (
+            stringSimilarity(
+              completion.data.choices[0].message?.content + "",
+              INVALID_PROMPT_MESSAGE
+            ) > 0.6
+          )
+            axios.post(
+              ocServerDomain + "/log/logInvalidPrompt",
+              {
+                stringifiedCompletion: safeStringify(completion),
+                prompt: constructedPrompt.join(""),
+                result: completion.data.choices[0].message?.content,
+                promptName,
+                ideaID,
+              },
+              {
+                auth: {
+                  username: "client",
+                  password: process.env.OCPASS + "",
+                },
+              }
+            );
+
+          const savedResult = new PromptResultModel({
+            owner: user._id,
+            ideaID,
+            promptName,
+            data: completion.data.choices[0].message?.content,
+            reason:
+              feedback?.length && feedback?.length > 1 ? "feedback" : "run",
+          });
+          await savedResult.save();
+        }
       });
     }
     pubsub.publish("JOB_COMPLETED", { jobCompleted: (job?.id || "8765") + "" });

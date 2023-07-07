@@ -10,6 +10,7 @@ import aideatorPromptMap from "../../../../content/prompts/aideatorPromptMap";
 import { authUser } from "../../../util/authUtil";
 import { API } from "@failean/shared-types";
 import { estimateOpenAI } from "../../../util/data/prompts/openAIUtil";
+import { tokenCount } from "../../../util/accounts/tokensUtil";
 
 const router = express.Router();
 
@@ -117,6 +118,11 @@ router.post("/runAndGetPromptResult", async (req, res) => {
     if (!user) {
       return res.status(401).json({ clientMessage: "Unauthorized" });
     }
+
+    if ((await tokenCount(user._id)) <= 0)
+      return res
+        .status(400)
+        .json({ clientMessage: "Token balance is not positive..." });
 
     const {
       ideaID,

@@ -16,6 +16,7 @@ import { clientDomain, ocServerDomain } from "../../../index";
 import { authUser } from "../../util/authUtil";
 import axios from "axios";
 import { safeStringify } from "../../util/jsonUtil";
+import { amendTokens } from "../../util/accounts/tokensUtil";
 
 const router = express.Router();
 const MIN_PASSWORD_STRENGTH = 3;
@@ -116,6 +117,11 @@ router.post<any, any>("/signupfin", async (req, res) => {
       }).save();
     } catch (err) {}
 
+    const userCount = (await userModel.find()).length;
+
+    if (userCount < 50)
+      amendTokens(savedUser._id, 500, `freeforfirst50-the${userCount}`);
+
     const token = jsonwebtoken.sign(
       {
         id: savedUser._id,
@@ -150,13 +156,22 @@ router.post<any, any>("/signin", async (req, res) => {
     time: Date,
     reason: string | undefined = undefined
   ) =>
-    axios.post(ocServerDomain + "/log/logSignin", {
-      stringifiedReq: safeStringify(req),
-      successfull,
-      userEmail,
-      time,
-      reason,
-    });
+    axios.post(
+      ocServerDomain + "/log/logSignin",
+      {
+        stringifiedReq: safeStringify(req),
+        successfull,
+        userEmail,
+        time,
+        reason,
+      },
+      {
+        auth: {
+          username: "client",
+          password: process.env.OCPASS + "",
+        },
+      }
+    );
   try {
     const { email, password } = req.body;
     if (!email || !password) {
