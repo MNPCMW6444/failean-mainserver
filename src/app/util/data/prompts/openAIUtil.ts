@@ -18,7 +18,7 @@ import { encode } from "gpt-3-encoder";
 import { amendTokens, tokenCount } from "../../accounts/tokensUtil";
 import { AxiosResponse } from "axios";
 
-const ROI = 1.5;
+const ROI = 2;
 
 type WhiteUser = WhiteModels.Auth.WhiteUser;
 
@@ -128,12 +128,13 @@ export const callOpenAI = async (
         ],
       });
 
-      completion.data.usage &&
-        amendTokens(
-          user,
-          0 - completion.data.usage.total_tokens * ROI * 0.04,
-          "callopenai"
-        );
+      if (completion.data.usage) {
+        const priceForUsInCents =
+          completion.data.usage?.prompt_tokens * 0.003 +
+          completion.data.usage?.completion_tokens * 0.004;
+        const forThem = priceForUsInCents * ROI;
+        amendTokens(user, 0 - forThem, "callopenai");
+      }
 
       return completion as any;
     } else return -2;
