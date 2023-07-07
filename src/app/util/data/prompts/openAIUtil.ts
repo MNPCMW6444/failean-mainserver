@@ -4,12 +4,21 @@ import {
   RoleMap,
   WhiteModels,
 } from "@failean/shared-types";
-import { Configuration, OpenAIApi, ChatCompletionRequestMessage } from "openai";
+import {
+  Configuration,
+  OpenAIApi,
+  ChatCompletionRequestMessage,
+  CreateChatCompletionResponse,
+} from "openai";
 import { roleMap } from "../../../../content/prompts/roleMap";
 import ideaModel from "../../../mongo-models/data/ideas/ideaModel";
 import PromptResultModel from "../../../mongo-models/data/prompts/promptResultModel";
 import aideatorPromptMap from "../../../../content/prompts/aideatorPromptMap";
 import { encode } from "gpt-3-encoder";
+import { amendTokens, tokenCount } from "../../accounts/tokensUtil";
+import { AxiosResponse } from "axios";
+
+const ROI = 3;
 
 type WhiteUser = WhiteModels.Auth.WhiteUser;
 
@@ -91,7 +100,7 @@ export const callOpenAI = async (
   user: WhiteUser,
   roleName: keyof RoleMap,
   chat: Array<ChatCompletionRequestMessage>
-): Promise<any> => {
+): Promise<AxiosResponse<CreateChatCompletionResponse, any> | -1 | -2> => {
   const role = roleMap[roleName];
   if (user.subscription === "free") {
     return -1;
@@ -107,17 +116,27 @@ export const callOpenAI = async (
     });
 
     const openai = new OpenAIApi(configuration);
+    if ((await tokenCount(user._id)) > 0) {
+      const completion = await openai.createChatCompletion({
+        model: "gpt-3.5-turbo",
+        messages: [
+          {
+            role: "system",
+            content: role,
+          },
+          ...chat,
+        ],
+      });
 
-    return await openai.createChatCompletion({
-      model: "gpt-3.5-turbo",
-      messages: [
-        {
-          role: "system",
-          content: role,
-        },
-        ...chat,
-      ],
-    });
+      completion.data.usage &&
+        amendTokens(
+          user,
+          0 - completion.data.usage.total_tokens * ROI * 0.04,
+          "callopenai"
+        );
+
+      return completion as any;
+    } else return -2;
   }
   return -1;
 };

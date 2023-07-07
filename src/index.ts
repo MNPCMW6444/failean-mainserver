@@ -4,6 +4,7 @@ import dotenv from "dotenv";
 import mongoose, { ConnectOptions } from "mongoose";
 import cookieParser from "cookie-parser";
 import authRouter from "./app/routers/auth/authRouter";
+import accountsRouter from "./app/routers/accounts/accountsRouter";
 import websiteRouter from "./app/routers/website/websiteRouter";
 import dataRouter from "./app/routers/data/dataRouter";
 import gqlRouter from "./app/routers/gqlRouter";
@@ -106,6 +107,7 @@ app.use((req, res, next) => {
   next();
 });
 
+app.use("/accounts", accountsRouter);
 app.use("/auth", authRouter);
 app.use("/website", websiteRouter);
 app.use("/data", dataRouter);
