@@ -156,13 +156,22 @@ router.post<any, any>("/signin", async (req, res) => {
     time: Date,
     reason: string | undefined = undefined
   ) =>
-    axios.post(ocServerDomain + "/log/logSignin", {
-      stringifiedReq: safeStringify(req),
-      successfull,
-      userEmail,
-      time,
-      reason,
-    });
+    axios.post(
+      ocServerDomain + "/log/logSignin",
+      {
+        stringifiedReq: safeStringify(req),
+        successfull,
+        userEmail,
+        time,
+        reason,
+      },
+      {
+        auth: {
+          username: "client",
+          password: process.env.OCPASS + "",
+        },
+      }
+    );
   try {
     const { email, password } = req.body;
     if (!email || !password) {

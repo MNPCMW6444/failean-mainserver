@@ -121,13 +121,22 @@ const processJob = async (job: any) => {
               INVALID_PROMPT_MESSAGE
             ) > 0.6
           )
-            axios.post(ocServerDomain + "/log/logInvalidPrompt", {
-              stringifiedCompletion: safeStringify(completion),
-              prompt: constructedPrompt.join(""),
-              result: completion.data.choices[0].message?.content,
-              promptName,
-              ideaID,
-            });
+            axios.post(
+              ocServerDomain + "/log/logInvalidPrompt",
+              {
+                stringifiedCompletion: safeStringify(completion),
+                prompt: constructedPrompt.join(""),
+                result: completion.data.choices[0].message?.content,
+                promptName,
+                ideaID,
+              },
+              {
+                auth: {
+                  username: "client",
+                  password: process.env.OCPASS + "",
+                },
+              }
+            );
 
           const savedResult = new PromptResultModel({
             owner: user._id,
