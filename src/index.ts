@@ -25,6 +25,7 @@ import { safeStringify } from "./app/util/jsonUtil";
 import { v4 as uuidv4 } from "uuid";
 import expressBasicAuth from "express-basic-auth";
 import { serverAdapter } from "./app/jobs/openAIQueue"; // Assuming that serverAdapter is exported from the file where you defined it
+import analyticsRouter from "./app/routers/analytics/analyticsRouter";
 
 declare global {
   namespace Express {
@@ -110,6 +111,7 @@ app.use((req, res, next) => {
 app.use("/accounts", accountsRouter);
 app.use("/auth", authRouter);
 app.use("/website", websiteRouter);
+app.use("/analytics", analyticsRouter);
 app.use("/data", dataRouter);
 app.use("/gql", gqlRouter);
 app.get("/areyoualive", (_, res) => {

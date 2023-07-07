@@ -121,6 +121,7 @@ router.post<any, any>("/signupfin", async (req, res) => {
 
     if (userCount < 50)
       amendTokens(savedUser._id, 500, `freeforfirst50-the${userCount}`);
+    else console.log("not free for first 50", userCount);
 
     const token = jsonwebtoken.sign(
       {
