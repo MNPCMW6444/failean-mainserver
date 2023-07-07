@@ -1,5 +1,8 @@
 import { PromptMap, PromptPart, GroupedPrompt } from "@failean/shared-types";
 
+export const STATIC = "static";
+export const VARIABLE = "variable";
+
 export const convertMaptoDepGraph = (promptMap: PromptMap) => {
   let superPrompts: { name: string; deps: string[]; level: number }[] =
     Object.keys(promptMap).map((promptName) => ({
@@ -48,11 +51,10 @@ export const convertMaptoDepGraph = (promptMap: PromptMap) => {
       });
   }
 
-  return superPrompts.map(({ name, level }) => ({ name, level }));
+  return superPrompts.map(({ name, deps, level }) => ({ name, deps, level }));
 };
 
-export const convertMaptoDeckGraph = (promptMap: PromptMap) => {
-  let groupedResults: GroupedPrompt[] = [];
+export const convertMaptoDeckGraph = () => {
   const promptGroups: Record<string, string[]> = {
     ideaSummary: [
       "refindIdea",
@@ -101,13 +103,57 @@ export const convertMaptoDeckGraph = (promptMap: PromptMap) => {
     ],
     funding: ["fundingStrategies", "potentialInvestors"],
   };
+  return promptGroups;
+};
+
+export const convertMaptocritiqGraph = (promptMap: PromptMap) => {
+  let critiqResults: GroupedPrompt[] = [];
+  const critiqPromptGroup: Record<string, string[]> = {
+    valueValidation: [
+      "refindIdea",
+      "valueProposition",
+      "uniqueValueProposition",
+      "IdealCustomerPersona",
+      "pricing",
+      "mvpUserStories",
+      "mvpFeatures",
+    ],
+    marketValidation: [
+      "refindIdea",
+      "marketAnalysis",
+      "marketSize",
+      "competitorAnalysis",
+      "targetAudience",
+      "channels",
+    ],
+    businessValidation: [
+      "refindIdea",
+      "pricing",
+      "businessModel",
+      "unitEconomics",
+      "partnerships",
+      "operationalCosts",
+      "risksAndChallenges",
+    ],
+    teamValidation: ["refindIdea", "teamComposition"],
+
+    economicValidation: [
+      "salesVolumeEstimation",
+      "revenueProjections",
+      "unitEconomics",
+      "mvpCost",
+      "marketingCost",
+      "CAC",
+    ],
+    legalValidation: ["compliance", "legal", "compliancePrompt3"],
+  };
 
   let level = 0;
-  for (const groupName in promptGroups) {
-    for (const promptName of promptGroups[groupName]) {
+  for (const groupName in critiqPromptGroup) {
+    for (const promptName of critiqPromptGroup[groupName]) {
       const prompt = promptMap[promptName];
       if (prompt) {
-        groupedResults.push({
+        critiqResults.push({
           groupName,
           prompt,
           level,
@@ -117,5 +163,21 @@ export const convertMaptoDeckGraph = (promptMap: PromptMap) => {
     level++;
   }
 
-  return groupedResults;
+  return critiqResults;
+};
+
+export const validateMap = (map: PromptMap): boolean => {
+  for (let key in map) {
+    for (let part of map[key].prompt) {
+      if (
+        part.type === "variable" &&
+        part.content !== "idea" &&
+        !(part.content in map)
+      ) {
+        console.log(`Invalid content "${part.content}" in prompt "${key}"`);
+        return false;
+      }
+    }
+  }
+  return true;
 };

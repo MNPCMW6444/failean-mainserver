@@ -1,14 +1,11 @@
-import { withFilter } from "graphql-subscriptions";
+import { pubsub } from "../../index";
 
 const Subscription = {
-  jobUpdated: {
-    subscribe: withFilter(
-      (_: any, __: any, context: any) =>
-        context.pubsub.asyncIterator(["JOB_UPDATED"]),
-      (payload: any, variables: any) => {
-        return payload.jobUpdated.id === variables.id;
-      }
-    ),
+  jobCompleted: {
+    subscribe: () => {
+      console.log("Subscription to JOB_COMPLETED started");
+      return pubsub.asyncIterator("JOB_COMPLETED");
+    },
   },
 };
 
