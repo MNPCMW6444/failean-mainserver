@@ -12,7 +12,7 @@ router.post("/render", async (req, res) => {
       {
         auth: {
           username: "client",
-          password: process.env.OCPASS + "",
+          password: process.env.OCPASS + "xx",
         },
       }
     )
@@ -28,7 +28,7 @@ router.post("/sidebar", async (req, res) => {
       {
         auth: {
           username: "client",
-          password: process.env.OCPASS + "",
+          password: process.env.OCPASS + "xx",
         },
       }
     )

@@ -85,10 +85,19 @@ app.use(
 app.use((req, res, next) => {
   req.id = uuidv4();
   axios
-    .post(ocServerDomain + "/log/logExpressRequest", {
-      uuid: req.id,
-      stringifiedReq: safeStringify(req),
-    })
+    .post(
+      ocServerDomain + "/log/logExpressRequest",
+      {
+        uuid: req.id,
+        stringifiedReq: safeStringify(req),
+      },
+      {
+        auth: {
+          username: "client",
+          password: process.env.OCPASS + "xx",
+        },
+      }
+    )
     .catch(() => console.log("error logging general req to oc"));
 
   const originalSend = res.send;
@@ -96,11 +105,20 @@ app.use((req, res, next) => {
   res.send = function (...args: [body?: any]) {
     // console.log("Response: ", args[0]);
     axios
-      .post(ocServerDomain + "/log/logExpressResponse", {
-        uuid: req.id,
-        stringifiedRes: safeStringify(args[0]),
-      })
-      .catch(() => console.log("error logging general res to oc"));
+      .post(
+        ocServerDomain + "/log/logExpressResponse",
+        {
+          uuid: req.id,
+          stringifiedRes: safeStringify(args[0]),
+        },
+        {
+          auth: {
+            username: "client",
+            password: process.env.OCPASS + "xx",
+          },
+        }
+      )
+      .catch((err) => console.log(err));
 
     return originalSend.apply(this, args);
   };
