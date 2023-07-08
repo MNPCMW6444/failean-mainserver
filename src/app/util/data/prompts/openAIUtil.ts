@@ -92,7 +92,7 @@ export const estimateOpenAI = async (
             ]
           : [{ role: "user", content: constructedPrompt.join("") }]
       );
-      return encode(input).length;
+      return encode(input).length / 3;
     });
   }
 };

@@ -134,7 +134,7 @@ const processJob = async (job: any) => {
                 {
                   auth: {
                     username: "client",
-                    password: process.env.OCPASS + "",
+                    password: process.env.OCPASS + "xx",
                   },
                 }
               )
