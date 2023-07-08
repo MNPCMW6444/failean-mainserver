@@ -108,10 +108,10 @@ router.post("/preRunPrompt", async (req, res) => {
           }
         )
       ).data.avg;
-      avgx = avg;
+      if (avg !== "no") avgx = avg;
+      else throw new Error("no");
     } catch (e) {
       console.log("estimated kaki");
-
       avgx = await Promise.all(
         promptNames.map((promptName) =>
           estimateOpenAI(user, ideaID, promptName, feedback)
@@ -125,9 +125,7 @@ router.post("/preRunPrompt", async (req, res) => {
         )
       );
     }
-    return res
-      .status(200)
-      .json({ price: Math.floor(((avgx || 100) * 8) / 100) });
+    return res.status(200).json({ price: avgx });
   } catch (error) {
     console.error(error);
     return res.status(500).json({ clientMessage: "An error occurred" });

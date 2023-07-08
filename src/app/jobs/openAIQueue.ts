@@ -109,7 +109,9 @@ const processJob = async (job: any) => {
                 },
                 { role: "user", content: feedback },
               ]
-            : [{ role: "user", content: constructedPrompt.join("") }]
+            : [{ role: "user", content: constructedPrompt.join("") }],
+          promptName,
+          reqUUID
         );
 
         if (completion === -1) throw new Error("Acoount error");
