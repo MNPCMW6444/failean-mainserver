@@ -1,6 +1,6 @@
 {
   "name": "failean-mainserver",
-  "version": "4.0.0",
+  "version": "4.0.1",
   "scripts": {
     "clean": "rm -rf node_modules package-lock.json",
     "build": "npx ts-node build.ts",
