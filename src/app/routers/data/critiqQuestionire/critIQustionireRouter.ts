@@ -17,10 +17,6 @@ router.get("/data/critiqQuestionire/:ideaID", async (req, res) => {
       ideaID: req.params.ideaID,
       owner: (validatedUser as any).id,
     });
-    /* 
-    return res
-      .status(200)
-      .json(ideacritiqQuestionire.map((answer: CritiqDocument) => answer._doc)); */
   } catch (err) {
     console.log(err);
     return res.status(500).json({ errorMessage: JSON.stringify(err) });
@@ -35,30 +31,29 @@ router.post("/data/critiqQuestionire/update", async (req, res) => {
       token,
       process.env.JWT_SECRET as any
     );
-    const { ideaID, questionId, answer, failScore, leanScore } = req.body;
+    const { ideaID, answers, failScore, leanScore } = req.body;
 
-    const answerToUpdate = await answerModel.findOne({
+    const existingCritiq = await answerModel.findOne({
       ideaID,
-      questionId,
       owner: (validatedUser as any).id,
     });
 
-    if (!answerToUpdate) {
+    if (!existingCritiq) {
       await new answerModel({
         ideaID,
-        questionId,
-        answer,
+        owner: (validatedUser as any).id,
         failScore,
         leanScore,
-        owner: (validatedUser as any).id,
+        answers,
       }).save();
     } else {
-      /*  answerToUpdate.answer = answer;
-      answerToUpdate.score = score; */
-      await answerToUpdate.save();
+      existingCritiq.failScore = failScore;
+      existingCritiq.leanScore = leanScore;
+      existingCritiq.answers = answers;
+      await existingCritiq.save();
     }
 
-    return res.status(200).json({ message: "Answer updated" });
+    return res.status(200).json({ message: "Critiq updated" });
   } catch (err) {
     console.log(err);
     return res.status(500).json({ errorMessage: JSON.stringify(err) });
