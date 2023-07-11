@@ -24,6 +24,7 @@ import { safeStringify } from "./app/util/jsonUtil";
 import { v4 as uuidv4 } from "uuid";
 import expressBasicAuth from "express-basic-auth";
 import { serverAdapter } from "./app/jobs/openAIQueue"; // Assuming that serverAdapter is exported from the file where you defined it
+import analyticsRouter from "./app/routers/analytics/analyticsRouter";
 
 declare global {
   namespace Express {
@@ -63,7 +64,7 @@ export const ocClientDomain =
 export const clientDomain =
   process.env.NODE_ENV === "development"
     ? "http://localhost:5999"
-    : "https://failean.com";
+    : "https://dev.failean.com";
 
 export const ocServerDomain =
   process.env.NODE_ENV === "development"
@@ -83,10 +84,19 @@ app.use(
 app.use((req, res, next) => {
   req.id = uuidv4();
   axios
-    .post(ocServerDomain + "/log/logExpressRequest", {
-      uuid: req.id,
-      stringifiedReq: safeStringify(req),
-    })
+    .post(
+      ocServerDomain + "/log/logExpressRequest",
+      {
+        uuid: req.id,
+        stringifiedReq: safeStringify(req),
+      },
+      {
+        auth: {
+          username: "client",
+          password: process.env.OCPASS + "xx",
+        },
+      }
+    )
     .catch(() => console.log("error logging general req to oc"));
 
   const originalSend = res.send;
@@ -94,11 +104,20 @@ app.use((req, res, next) => {
   res.send = function (...args: [body?: any]) {
     // console.log("Response: ", args[0]);
     axios
-      .post(ocServerDomain + "/log/logExpressResponse", {
-        uuid: req.id,
-        stringifiedRes: safeStringify(args[0]),
-      })
-      .catch(() => console.log("error logging general res to oc"));
+      .post(
+        ocServerDomain + "/log/logExpressResponse",
+        {
+          uuid: req.id,
+          stringifiedRes: safeStringify(args[0]),
+        },
+        {
+          auth: {
+            username: "client",
+            password: process.env.OCPASS + "xx",
+          },
+        }
+      )
+      .catch((err) => console.log(err));
 
     return originalSend.apply(this, args);
   };
@@ -109,6 +128,7 @@ app.use((req, res, next) => {
 app.use("/accounts", accountsRouter);
 app.use("/auth", authRouter);
 app.use("/website", websiteRouter);
+app.use("/analytics", analyticsRouter);
 app.use("/data", dataRouter);
 app.use("/gql", gqlRouter);
 app.get("/areyoualive", (_, res) => {

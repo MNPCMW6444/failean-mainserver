@@ -109,7 +109,9 @@ const processJob = async (job: any) => {
                 },
                 { role: "user", content: feedback },
               ]
-            : [{ role: "user", content: constructedPrompt.join("") }]
+            : [{ role: "user", content: constructedPrompt.join("") }],
+          promptName,
+          reqUUID
         );
 
         if (completion === -1) throw new Error("Acoount error");
@@ -121,23 +123,24 @@ const processJob = async (job: any) => {
               INVALID_PROMPT_MESSAGE
             ) > 0.6
           )
-            axios.post(
-              ocServerDomain + "/log/logInvalidPrompt",
-              {
-                stringifiedCompletion: safeStringify(completion),
-                prompt: constructedPrompt.join(""),
-                result: completion.data.choices[0].message?.content,
-                promptName,
-                ideaID,
-              },
-              {
-                auth: {
-                  username: "client",
-                  password: process.env.OCPASS + "",
+            axios
+              .post(
+                ocServerDomain + "/log/logInvalidPrompt",
+                {
+                  stringifiedCompletion: safeStringify(completion),
+                  prompt: constructedPrompt.join(""),
+                  result: completion.data.choices[0].message?.content,
+                  promptName,
+                  ideaID,
                 },
-              }
-            );
-
+                {
+                  auth: {
+                    username: "client",
+                    password: process.env.OCPASS + "xx",
+                  },
+                }
+              )
+              .catch((err) => console.error(err));
           const savedResult = new PromptResultModel({
             owner: user._id,
             ideaID,

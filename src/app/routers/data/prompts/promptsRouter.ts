@@ -11,6 +11,8 @@ import { authUser } from "../../../util/authUtil";
 import { API } from "@failean/shared-types";
 import { estimateOpenAI } from "../../../util/data/prompts/openAIUtil";
 import { tokenCount } from "../../../util/accounts/tokensUtil";
+import axios from "axios";
+import { ocServerDomain } from "../../../../index";
 
 const router = express.Router();
 
@@ -89,22 +91,41 @@ router.post("/preRunPrompt", async (req, res) => {
       feedback,
     }: API.Data.RunAndGetPromptResult.Req = req.body;
 
-    const price = await Promise.all(
-      promptNames.map((promptName) =>
-        estimateOpenAI(user, ideaID, promptName, feedback)
-      )
-    ).then((results) =>
-      results.reduce(
-        (total, number) =>
-          (total !== null && total !== undefined ? total : 99999999) +
-          (number !== null && number !== undefined ? number : 99999999),
-        0
-      )
-    );
+    let avgx: number | undefined = 999999;
 
-    return res
-      .status(200)
-      .json({ price: Math.floor(((price || 100) * 8) / 100) });
+    try {
+      const avg = (
+        await axios.post(
+          ocServerDomain + "/read/avgPriceForPrompt",
+          {
+            promptName: promptNames,
+          },
+          {
+            auth: {
+              username: "client",
+              password: process.env.OCPASS + "xx",
+            },
+          }
+        )
+      ).data.avg;
+      if (avg !== "no") avgx = avg;
+      else throw new Error("no");
+    } catch (e) {
+      console.log("estimated kaki");
+      avgx = await Promise.all(
+        promptNames.map((promptName) =>
+          estimateOpenAI(user, ideaID, promptName, feedback)
+        )
+      ).then((results) =>
+        results.reduce(
+          (total, number) =>
+            (total !== null && total !== undefined ? total : 99999999) +
+            (number !== null && number !== undefined ? number : 99999999),
+          0
+        )
+      );
+    }
+    return res.status(200).json({ price: avgx });
   } catch (error) {
     console.error(error);
     return res.status(500).json({ clientMessage: "An error occurred" });

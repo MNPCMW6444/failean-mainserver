@@ -31,7 +31,7 @@ const aideatorPromptMap: PromptMap = {
     prompt: [
       {
         type: STATIC,
-        content: `Please summarize the following refined idea into one sentence Here are some more pointers; First, avoid using adjectives, particularly superlatives. Never say "first", "only", "huge" or "best" as these words signal inexperience. Second, properly define your target market. For example, "women" or "small businesses" are way too large and not nearly targeted enough. Finally, keep it short. It's easy to write a long sentence, but the right thing is to be concise.: `,
+        content: `Please summarize the following refined idea. never use more than six words: `,
       },
       { type: VARIABLE, content: "refinedIdea" },
     ],
