@@ -12,7 +12,6 @@ import { ApolloServer } from "apollo-server-express";
 import typeDefs from "./app/typeDefs";
 import { RedisPubSub } from "graphql-redis-subscriptions";
 import Query from "./app/resolvers/query";
-import Mutation from "./app/resolvers/mutation";
 import Subscription from "./app/resolvers/subscription";
 import { ApolloServerPluginLandingPageDisabled } from "apollo-server-core";
 import { createServer } from "http";
@@ -149,7 +148,6 @@ pubsub.getPublisher().on("error", (error) => {
 
 const resolvers = {
   Query,
-  Mutation,
   Subscription,
 };
 const schema = makeExecutableSchema({
