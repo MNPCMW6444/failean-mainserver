@@ -6,7 +6,7 @@ type WhiteCritiq = WhiteModels.Data.Critiq.WhiteCritiq;
 interface Answer {
   question: string;
   selectedOption: string;
-  failingScore: number;
+  failScore: number;
   leanScore: number;
 }
 
@@ -23,7 +23,7 @@ const answerSchema = new mongoose.Schema<Answer>(
   {
     question: { type: String, required: true },
     selectedOption: { type: String, required: true },
-    failingScore: { type: Number, required: true },
+    failScore: { type: Number, required: true },
     leanScore: { type: Number, required: true },
   },
   { _id: false }

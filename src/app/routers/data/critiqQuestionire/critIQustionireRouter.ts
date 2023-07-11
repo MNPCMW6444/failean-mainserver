@@ -1,6 +1,5 @@
 import express from "express";
-import answerModel from /*   CritiqDocument,
- */ "../../../mongo-models/data/critiq/critiqModel";
+import answerModel from "../../../mongo-models/data/critiq/critiqQuestModel";
 import jsonwebtoken from "jsonwebtoken";
 
 const router = express.Router();
@@ -36,7 +35,7 @@ router.post("/data/critiqQuestionire/update", async (req, res) => {
       token,
       process.env.JWT_SECRET as any
     );
-    const { ideaID, questionId, answer, score } = req.body;
+    const { ideaID, questionId, answer, failScore, leanScore } = req.body;
 
     const answerToUpdate = await answerModel.findOne({
       ideaID,
@@ -45,12 +44,12 @@ router.post("/data/critiqQuestionire/update", async (req, res) => {
     });
 
     if (!answerToUpdate) {
-      // Create a new answer if not exist
       await new answerModel({
         ideaID,
         questionId,
         answer,
-        score,
+        failScore,
+        leanScore,
         owner: (validatedUser as any).id,
       }).save();
     } else {
