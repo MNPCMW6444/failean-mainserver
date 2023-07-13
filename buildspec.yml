@@ -5,18 +5,14 @@ env:
     NPM_TOKEN: prod/npmgithub
 
 phases:
-  install:
-    commands:
-      - echo Installing source code dependencies...
-      - npm install
-  pre_build:
+=  pre_build:
     commands:
       - echo Logging in to Amazon ECR...
       - aws ecr get-login-password --region region | docker login --username AWS --password-stdin uri
   build:
     commands:
       - echo Build started on `date`
-      - npm run docker:build
+      - npm run d:b
   post_build:
     commands:
       - echo Build completed on `date`
