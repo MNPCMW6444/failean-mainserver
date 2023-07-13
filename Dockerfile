@@ -1,31 +1,43 @@
 
+FROM node:lts as BUILDER
+
+WORKDIR /app
+
+
+ARG NPM_TOKEN
+
+
+COPY package.json /app/package.json
+COPY tsconfig.json /app/tsconfig.json
+COPY tsconfig.prod.json /app/tsconfig.prod.json
+COPY build.ts /app/build.ts
+COPY src /app/src
+
+
+RUN echo "//npm.pkg.github.com/:_authToken=$NPM_TOKEN" > .npmrc
+RUN echo "@failean:registry=https://npm.pkg.github.com" >> .npmrc
 
 
 
 
 
 
-# Use an official Node.js runtime as the base image
+RUN npm run prod
+
+
+RUN rm -rf .npmrc
+
+
 FROM node:lts
 
-# Set the working directory in the container
-WORKDIR /usr/src/app
+WORKDIR /app
 
-COPY package.json ./
-COPY .npmrc ./
+COPY package.json /app/package.json
 
-# Install any needed dependencies
-ENV NPM_TOKEN=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
 
-RUN npm run update
 
-RUN npm i
+COPY --from=builder /app/dist /app/dist
 
-# Copy the rest of the application code into the working directory
-COPY . .
-
-# Expose the port the app runs on
-EXPOSE 6555
-
-# Start the application
 CMD ["npm", "start"]
+
+EXPOSE 6555

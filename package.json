@@ -1,9 +1,11 @@
 {
   "name": "failean-mainserver",
-  "version": "4.0.1",
+  "version": "4.0.3",
   "scripts": {
     "clean": "rm -rf node_modules package-lock.json",
     "build": "npx ts-node build.ts",
+    "preprod": "npm i",
+    "prod": "npm run build",
     "update": "npm i",
     "preupdate": "npx npm-check-updates -u",
     "lint": "eslint . --ext .ts",
