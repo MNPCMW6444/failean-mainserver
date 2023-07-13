@@ -5,7 +5,7 @@ env:
     NPM_TOKEN: prod/npmgithub
 
 phases:
-=  pre_build:
+  pre_build:
     commands:
       - echo Logging in to Amazon ECR...
       - aws ecr get-login-password --region region | docker login --username AWS --password-stdin uri
