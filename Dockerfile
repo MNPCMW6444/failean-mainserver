@@ -15,8 +15,6 @@ FROM node:lts
 WORKDIR /app
 COPY package.json /app/package.json
 COPY --from=builder /app/dist /app/dist
-COPY --from=builder /app/node_modules /app/node_modules
-
 CMD ["npm", "run", "start:p"]
 
 EXPOSE 6555

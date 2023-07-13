@@ -37,10 +37,8 @@ declare global {
 
 dotenv.config();
 
-let mainDbStatus = false;
 const connectToDBs = async () => {
   try {
-    console.log(process.env.SAFE);
     await mongoose.connect("" + process.env.SAFE, {
       useNewUrlParser: true,
       useUnifiedTopology: true,
