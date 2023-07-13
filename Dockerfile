@@ -1,4 +1,4 @@
-FROM node:lts as BUILDER
+FROM 988253048728.dkr.ecr.us-east-1.amazonaws.com/node:lts as BUILDER
 WORKDIR /app
 ARG NPM_TOKEN
 COPY package.json /app/package.json
@@ -11,7 +11,7 @@ RUN echo "@failean:registry=https://npm.pkg.github.com" >> .npmrc
 RUN npm run prod
 RUN rm -rf .npmrc
 
-FROM node:lts
+FROM 988253048728.dkr.ecr.us-east-1.amazonaws.com/node:lts
 WORKDIR /app
 COPY package.json /app/package.json
 COPY --from=builder /app/dist /app/dist
