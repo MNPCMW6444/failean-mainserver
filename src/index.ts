@@ -38,22 +38,21 @@ declare global {
 dotenv.config();
 
 let mainDbStatus = false;
-const connectToDBs = () => {
+const connectToDBs = async () => {
   try {
-    mongoose.connect("" + process.env.SAFE, {
+    console.log(process.env.SAFE);
+    await mongoose.connect("" + process.env.SAFE, {
       useNewUrlParser: true,
       useUnifiedTopology: true,
     } as ConnectOptions);
-    mainDbStatus = true;
+    console.log("connected to safe-mongo");
   } catch (e) {
-    console.error(e);
-    mainDbStatus = false;
+    console.error(e.message);
+    process.exit(1);
   }
-  if (!mainDbStatus) setTimeout(connectToDBs, 180000);
-  else console.log("connected to safe-mongo");
 };
 
-connectToDBs();
+connectToDBs().catch((err) => console.error(err.message));
 
 const app = express();
 const port = process.env.PORT || 6555;
