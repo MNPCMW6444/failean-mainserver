@@ -9,12 +9,16 @@ COPY src /app/src
 RUN echo "//npm.pkg.github.com/:_authToken=$NPM_TOKEN" > .npmrc
 RUN echo "@failean:registry=https://npm.pkg.github.com" >> .npmrc
 RUN npm run prod
+RUN npm clean:p
+RUN npm i --production
 RUN rm -rf .npmrc
 
-FROM 988253048728.dkr.ecr.us-east-1.amazonaws.com/node:lts
+FROM 988253048728.dkr.ecr.us-east-1.amazonaws.com/node:lts-slim
 WORKDIR /app
 COPY package.json /app/package.json
+COPY package-lock.json /app/package-lock.json
+COPY node_modules /app/node_modules
 COPY --from=builder /app/dist /app/dist
-CMD ["npm", "run", "start:p"]
+CMD ["node", "./dist"]
 
 EXPOSE 6555

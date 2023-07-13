@@ -3,6 +3,7 @@
   "version": "4.0.27",
   "scripts": {
     "clean": "rm -rf node_modules package-lock.json dist",
+    "clean:p": "rm -rf node_modules package-lock.json",
     "build": "npx ts-node build.ts",
     "preprod": "npm i",
     "prod": "npm run build",
