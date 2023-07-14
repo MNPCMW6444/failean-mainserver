@@ -10,7 +10,7 @@ RUN echo "//npm.pkg.github.com/:_authToken=$NPM_TOKEN" > .npmrc
 RUN echo "@failean:registry=https://npm.pkg.github.com" >> .npmrc
 RUN npm run prod
 RUN npm run clean:p
-RUN npm i --production
+RUN npm i --omit=dev
 RUN rm -rf .npmrc
 
 FROM 988253048728.dkr.ecr.us-east-1.amazonaws.com/node:lts-slim
