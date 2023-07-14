@@ -1,6 +1,6 @@
 {
   "name": "failean-mainserver",
-  "version": "4.0.48",
+  "version": "4.0.49",
   "scripts": {
     "clean": "rm -rf node_modules package-lock.json dist",
     "clean:p": "rm -rf node_modules package-lock.json",
