@@ -2,7 +2,7 @@ version: 0.2
 
 env:
   secrets-manager:
-    NPM_TOKEN: prod/npmgithub.npmgithub
+    NPM_TOKEN: prod/npmgithub.NPM_TOKEN
 
 phases:
   pre_build:
