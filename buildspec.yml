@@ -1,27 +1,20 @@
 version: 0.2
 
 env:
-  variables:
-    IMAGE_REPO_NAME: "988253048728.dkr.ecr.us-east-1.amazonaws.com/mainserver"
-    IMAGE_TAG: "latest"
+  secrets-manager:
+    NPM_TOKEN: prod/npmgithub:NPM_TOKEN
 
 phases:
-  install:
-    runtime-versions:
-      docker: 18
   pre_build:
     commands:
       - echo Logging in to Amazon ECR...
-      - $(aws ecr get-login --region $AWS_DEFAULT_REGION --no-include-email)
-      - COMMIT_HASH=$(echo $CODEBUILD_RESOLVED_SOURCE_VERSION | cut -c 1-7)
-      - IMAGE_TAG=${COMMIT_HASH:=latest}
+      - aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 988253048728.dkr.ecr.us-east-1.amazonaws.com
   build:
     commands:
       - echo Build started on `date`
-      - echo Building the Docker image...
-      - docker build -t $IMAGE_REPO_NAME:$IMAGE_TAG .
+      - npm run d:b
   post_build:
     commands:
       - echo Build completed on `date`
-      - echo Pushing the Docker image...
+      - echo Pushing the Docker image to Amazon ECR...
       - docker push $IMAGE_REPO_NAME:$IMAGE_TAG
