@@ -19,8 +19,6 @@ phases:
     commands:
       - echo Build started on `date`
       - IMAGE_TAG=$(jq -r ".version" package.json)
-      - echo $IMAGE_TAG
-      - echo $IMAGE_TAG
       - npm run d:b
 
   post_build:
