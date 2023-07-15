@@ -5,14 +5,24 @@ env:
     NPM_TOKEN: prod/npmgithub:NPM_TOKEN
 
 phases:
+  install:
+    commands:
+      - apt-get update
+      - apt-get install -y jq
+
   pre_build:
     commands:
       - echo Logging in to Amazon ECR...
       - aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 988253048728.dkr.ecr.us-east-1.amazonaws.com
+
   build:
     commands:
       - echo Build started on `date`
+      - IMAGE_TAG=$(jq -r ".version" package.json)
+      - echo $IMAGE_TAG
       - npm run d:b
+      - docker build -t 988253048728.dkr.ecr.us-east-1.amazonaws.com/mainserver:$IMAGE_TAG .
+
   post_build:
     commands:
       - echo Build completed on `date`
