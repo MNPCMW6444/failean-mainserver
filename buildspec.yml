@@ -20,8 +20,8 @@ phases:
       - echo Build started on `date`
       - IMAGE_TAG=$(jq -r ".version" package.json)
       - echo $IMAGE_TAG
+      - echo $IMAGE_TAG
       - npm run d:b
-      - docker build -t 988253048728.dkr.ecr.us-east-1.amazonaws.com/mainserver:$IMAGE_TAG .
 
   post_build:
     commands:
