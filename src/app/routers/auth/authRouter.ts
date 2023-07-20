@@ -53,7 +53,6 @@ router.post<any, any>("/signupreq", async (req, res) => {
     res.json({ result: "email successfully sent to " + email });
   } catch (err) {
     console.error(err);
-    res.json({ result: "email successfully sent to " });
 
     res.status(500).json({
       serverError:
