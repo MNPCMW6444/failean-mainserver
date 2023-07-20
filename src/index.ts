@@ -39,8 +39,8 @@ dotenv.config();
 
 const connectToDBs = async () => {
   try {
-    await mongoose.connect(
-      `mongodb://${process.env.DB_USER}:${process.env.DB_PASS}@${process.env.DB_HOST}:${process.env.DB_PORT}/x?ssl=true&replicaSet=rs0&readPreference=secondaryPreferred&retryWrites=false`,
+    await mongoose.createConnection(
+      `mongodb://${process.env.DB_USER}:${process.env.DB_PASS}@${process.env.DB_HOST}:${process.env.DB_PORT}/x?ssl=true`,
       {
         useNewUrlParser: true,
         useUnifiedTopology: true,
