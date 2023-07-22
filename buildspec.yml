@@ -10,7 +10,7 @@ phases:
     commands:
       - echo Logging in to Amazon ECR...
       - aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 988253048728.dkr.ecr.us-east-1.amazonaws.com
-      - aws codeartifact login --tool npm --domain failean.com --repository failean --domain-owner 988253048728 --region us-east-1
+      - aws codeartifact login --tool npm --repository failean --domain failean --domain-owner 988253048728 --region us-east-1
       - echo "//failean-988253048728.d.codeartifact.us-east-1.amazonaws.com/npm/failean/:always-auth=true" >> .npmrc
 
   build:
