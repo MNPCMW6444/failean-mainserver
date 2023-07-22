@@ -1,8 +1,5 @@
 FROM 988253048728.dkr.ecr.us-east-1.amazonaws.com/node:lts as BUILDER
-RUN curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip" && \
-    unzip awscliv2.zip && \
-    ./aws/install -i /usr/local/aws-cli -b /usr/local/bin
-RUN apk add --no-cache python3 py3-pip unzip && \
+RUN apt-get update && apt-get install -y python3 python3-pip unzip && \
     curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip" && \
     unzip awscliv2.zip && \
     ./aws/install -i /usr/local/aws-cli -b /usr/local/bin
