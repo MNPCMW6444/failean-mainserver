@@ -1,6 +1,6 @@
 {
   "name": "failean-mainserver",
-  "version": "4.0.65",
+  "version": "4.0.62",
   "scripts": {
     "clean": "rm -rf node_modules package-lock.json dist",
     "clean:p": "rm -rf node_modules package-lock.json",
@@ -41,6 +41,7 @@
   "license": "ISC",
   "description": "",
   "devDependencies": {
+    "@failean/shared-types": "^2.9.158",
     "@types/bcrypt": "^5.0.0",
     "@types/cookie-parser": "^1.4.3",
     "@types/fs-extra": "^11.0.1",
@@ -60,6 +61,7 @@
   "dependencies": {
     "@bull-board/api": "^5.7.0",
     "@bull-board/express": "^5.7.0",
+    "@failean/mongo-models": "^1.6.119",
     "@sendgrid/mail": "^7.7.0",
     "apollo-server-express": "^3.12.0",
     "axios": "^1.4.0",
@@ -72,6 +74,7 @@
     "graphql-redis-subscriptions": "^2.6.0",
     "graphql-ws": "^5.14.0",
     "jsonwebtoken": "^9.0.1",
+    "mongoose": "^7.4.0",
     "openai": "^3.3.0",
     "ws": "^8.13.0",
     "zxcvbn": "^4.4.2"
