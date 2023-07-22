@@ -37,19 +37,18 @@ declare global {
 
 dotenv.config();
 
-const connectToDBs = async () => {
-  try {
-    await mongoose.createConnection(`mongodb://mongo:27017/main`, {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
-    } as ConnectOptions);
-    console.log("connected to safe-mongo");
-  } catch (e) {
-    console.error(e.message);
-  }
-};
+const connection = mongoose.createConnection(`mongodb://mongo:27017/main`, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+} as ConnectOptions);
 
-connectToDBs().catch((err) => console.error(err.message));
+connection.on("connected", () => {
+  console.log("Connected to safe-mongo");
+});
+
+connection.on("error", (error) => {
+  console.error("Error connecting to safe-mongo:", error.message);
+});
 
 const app = express();
 const port = process.env.PORT || 6555;
