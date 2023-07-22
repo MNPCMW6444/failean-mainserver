@@ -151,7 +151,8 @@ if (process.env.NODE_ENV === "production") {
 }
 
 export const pubsub = new RedisPubSub({
-  connection: process.env.REDIS + "",
+  connection: "localhost:6379",
+  //process.env.REDIS + "",
 });
 
 pubsub.getSubscriber().on("connect", () => {
