@@ -1,5 +1,5 @@
 FROM 988253048728.dkr.ecr.us-east-1.amazonaws.com/node:lts as BUILDER
-RUN curl "https://d1vvhvl2y92vvt.cloudfront.net/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip" \ && unzip awscliv2.zip \ && sudo ./aws/install
+RUN curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip" \ && unzip awscliv2.zip \ && sudo ./aws/install
 RUN aws configure set region us-west-2
 RUN pip install awscli-plugin-codeartifact
 RUN npm config set @failean:registry ttps://failean-988253048728.d.codeartifact.us-east-1.amazonaws.com/npm/failean/
