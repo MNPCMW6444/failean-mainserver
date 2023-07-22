@@ -149,7 +149,7 @@ if (process.env.NODE_ENV === "production") {
 }
 
 export const pubsub = new RedisPubSub({
-  connection: "redis.prod:6379",
+  connection: "44.200.122.246:6379",
   //process.env.REDIS + "",
 });
 
