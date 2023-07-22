@@ -1,14 +1,9 @@
 FROM 988253048728.dkr.ecr.us-east-1.amazonaws.com/node:lts as BUILDER
-RUN apt-get update && apt-get install -y python3 python3-pip python3-venv unzip && \
-    curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip" && \
+RUN curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip" && \
     unzip awscliv2.zip && \
     ./aws/install -i /usr/local/aws-cli -b /usr/local/bin
 RUN aws configure set region us-east-1
-RUN python3 -m venv /venv
-RUN /venv/bin/pip install awscli-plugin-codeartifact
-RUN /venv/bin/aws configure set region us-east-1
 RUN npm config set @failean:registry https://failean-988253048728.d.codeartifact.us-east-1.amazonaws.com/npm/failean/
-RUN /venv/bin/aws codeartifact login --tool npm --repository failean --domain failean --domain-owner 988253048728 --region us-east-1WORKDIR /app
 COPY package.json /app/package.json
 COPY tsconfig.json /app/tsconfig.json
 COPY tsconfig.prod.json /app/tsconfig.prod.json
