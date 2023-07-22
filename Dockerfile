@@ -5,7 +5,6 @@ RUN pip install awscli-plugin-codeartifact
 RUN npm config set @failean:registry ttps://failean-988253048728.d.codeartifact.us-east-1.amazonaws.com/npm/failean/
 RUN aws codeartifact login --tool npm --repository failean --domain failean --domain-owner 988253048728 --region us-east-1
 WORKDIR /app
-ARG NPM_TOKEN
 COPY package.json /app/package.json
 COPY tsconfig.json /app/tsconfig.json
 COPY tsconfig.prod.json /app/tsconfig.prod.json
