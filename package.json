@@ -23,7 +23,7 @@
     "version:minor": "npm version minor --no-git-tag-version",
     "version:major": "npm version major --no-git-tag-version",
     "pred:b": "rm -f .npmrc",
-    "d:b": "aws codeartifact login --tool npm --repository failean --domain failean --domain-owner 988253048728 --region us-east-1 && cp ~/.npmrc . && VERSION=$(node -p \"require('./package.json').version\") && docker build --platform amd64 -t 988253048728.dkr.ecr.us-east-1.amazonaws.com/mainserver:$VERSION ."
+    "d:b": "aws codeartifact login --tool npm --repository failean --domain failean --domain-owner 988253048728 --region us-east-1 && echo '@failean:registry=https://failean-988253048728.d.codeartifact.us-east-1.amazonaws.com/npm/failean/' >> ~/.npmrc && cp ~/.npmrc . && VERSION=$(node -p \"require('./package.json').version\") && docker build --platform amd64 -t 988253048728.dkr.ecr.us-east-1.amazonaws.com/mainserver:$VERSION ."
   },
   "nodemonConfig": {
     "watch": [
@@ -59,8 +59,8 @@
     "uuid": "^9.0.0"
   },
   "dependencies": {
-    "@bull-board/api": "^5.6.0",
-    "@bull-board/express": "^5.6.0",
+    "@bull-board/api": "^5.7.0",
+    "@bull-board/express": "^5.7.0",
     "@failean/mongo-models": "^1.6.119",
     "@sendgrid/mail": "^7.7.0",
     "apollo-server-express": "^3.12.0",
