@@ -42,7 +42,6 @@ const connectToDBs = async () => {
     await mongoose.createConnection(`mongodb://mongo:27017/main`, {
       useNewUrlParser: true,
       useUnifiedTopology: true,
-      tls: true,
     } as ConnectOptions);
     console.log("connected to safe-mongo");
   } catch (e) {
