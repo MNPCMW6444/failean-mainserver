@@ -38,7 +38,7 @@ declare global {
 dotenv.config();
 
 const connection = mongoose.createConnection(
-  `mongodb://3.227.252.83:27017/main`,
+  `mongodb://mongo.shit:27017/main`,
   {
     useNewUrlParser: true,
     useUnifiedTopology: true,
@@ -149,7 +149,7 @@ if (process.env.NODE_ENV === "production") {
 }
 
 export const pubsub = new RedisPubSub({
-  connection: "44.200.122.246:6379",
+  connection: "redis.shit:6379",
   //process.env.REDIS + "",
 });
 
