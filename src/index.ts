@@ -39,7 +39,7 @@ dotenv.config();
 
 const connectToDBs = async () => {
   try {
-    await mongoose.createConnection(`mongodb://localhost:27017/main`, {
+    await mongoose.createConnection(`mongodb://mongo:27017/main`, {
       useNewUrlParser: true,
       useUnifiedTopology: true,
       tls: true,
@@ -148,7 +148,7 @@ if (process.env.NODE_ENV === "production") {
 }
 
 export const pubsub = new RedisPubSub({
-  connection: "localhost:6379",
+  connection: "redis:6379",
   //process.env.REDIS + "",
 });
 
