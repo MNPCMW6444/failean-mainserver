@@ -22,7 +22,7 @@
     "version:patch": "npm version patch --no-git-tag-version",
     "version:minor": "npm version minor --no-git-tag-version",
     "version:major": "npm version major --no-git-tag-version",
-    "d:b": "VERSION=$(node -p \"require('./package.json').version\") && docker build --platform amd64 -t 988253048728.dkr.ecr.us-east-1.amazonaws.com/mainserver:$VERSION ."
+    "d:b": "aws codeartifact login --tool npm --repository failean --domain failean --domain-owner 988253048728 --region us-east-1 && VERSION=$(node -p \"require('./package.json').version\") && docker build --platform amd64 -t 988253048728.dkr.ecr.us-east-1.amazonaws.com/mainserver:$VERSION ."
   },
   "nodemonConfig": {
     "watch": [
