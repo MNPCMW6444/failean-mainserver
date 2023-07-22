@@ -1,4 +1,4 @@
-FROM amazon/aws-cli:2.x as aws-cli
+FROM amazon/aws-cli as aws-cli
 RUN aws codeartifact login --tool npm --domain failean.com --repository failean --domain-owner 988253048728 --region us-east-1
 FROM 988253048728.dkr.ecr.us-east-1.amazonaws.com/node:lts as BUILDER
 COPY --from=aws-cli /root/.npmrc /root/.npmrc
