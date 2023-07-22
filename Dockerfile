@@ -1,9 +1,7 @@
-FROM amazon/aws-cli as aws-cli
-RUN aws codeartifact login --tool npm --domain failean.com --repository failean --domain-owner 988253048728 --region us-east-1
 FROM 988253048728.dkr.ecr.us-east-1.amazonaws.com/node:lts as BUILDER
-COPY --from=aws-cli /root/.npmrc /root/.npmrc
-RUN npm config set @failean:registry https://failean-988253048728.d.codeartifact.us-east-1.amazonaws.com/npm/failean/
 WORKDIR /app
+COPY .npmrc /root/.npmrc
+RUN npm config set @failean:registry https://failean-988253048728.d.codeartifact.us-east-1.amazonaws.com/npm/failean/
 COPY package.json /app/package.json
 COPY tsconfig.json /app/tsconfig.json
 COPY tsconfig.prod.json /app/tsconfig.prod.json
