@@ -6,8 +6,7 @@ COPY tsconfig.json /app/tsconfig.json
 COPY tsconfig.prod.json /app/tsconfig.prod.json
 COPY build.ts /app/build.ts
 COPY src /app/src
-RUN echo "//npm.pkg.github.com/:_authToken=$NPM_TOKEN" > .npmrc
-RUN echo "@failean:registry=https://npm.pkg.github.com" >> .npmrc
+RUN aws codeartifact login --tool npm --repository failean --domain failean --domain-owner 988253048728 --region us-east-1
 RUN npm run prod
 RUN npm run clean:p
 RUN npm i --omit=dev
