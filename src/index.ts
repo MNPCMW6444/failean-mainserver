@@ -38,7 +38,7 @@ declare global {
 dotenv.config();
 
 const connection = mongoose.createConnection(
-  `mongodb://mongo.prod:27017/main`,
+  `mongodb://3.227.252.83:27017/main`,
   {
     useNewUrlParser: true,
     useUnifiedTopology: true,
