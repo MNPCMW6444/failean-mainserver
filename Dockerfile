@@ -4,10 +4,11 @@ RUN apt-get update && apt-get install -y python3 python3-pip unzip && \
     unzip awscliv2.zip && \
     ./aws/install -i /usr/local/aws-cli -b /usr/local/bin
 RUN aws configure set region us-east-1
-RUN pip3 install awscli-plugin-codeartifact
-RUN npm config set @failean:registry ttps://failean-988253048728.d.codeartifact.us-east-1.amazonaws.com/npm/failean/
-RUN aws codeartifact login --tool npm --repository failean --domain failean --domain-owner 988253048728 --region us-east-1
-WORKDIR /app
+RUN python3 -m venv /venv
+RUN /venv/bin/pip install awscli-plugin-codeartifact
+RUN /venv/bin/aws configure set region us-east-1
+RUN npm config set @failean:registry https://failean-988253048728.d.codeartifact.us-east-1.amazonaws.com/npm/failean/
+RUN /venv/bin/aws codeartifact login --tool npm --repository failean --domain failean --domain-owner 988253048728 --region us-east-1WORKDIR /app
 COPY package.json /app/package.json
 COPY tsconfig.json /app/tsconfig.json
 COPY tsconfig.prod.json /app/tsconfig.prod.json
