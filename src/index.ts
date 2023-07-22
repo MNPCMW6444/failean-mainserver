@@ -39,14 +39,11 @@ dotenv.config();
 
 const connectToDBs = async () => {
   try {
-    await mongoose.createConnection(
-      `mongodb://${process.env.DB_USER}:${process.env.DB_PASS}@${process.env.DB_HOST}:${process.env.DB_PORT}/x?ssl=true`,
-      {
-        useNewUrlParser: true,
-        useUnifiedTopology: true,
-        tls: true,
-      } as ConnectOptions
-    );
+    await mongoose.createConnection(`mongodb://localhost:27017/main`, {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+      tls: true,
+    } as ConnectOptions);
     console.log("connected to safe-mongo");
   } catch (e) {
     console.error(e.message);
