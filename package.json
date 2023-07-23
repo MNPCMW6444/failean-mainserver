@@ -1,6 +1,6 @@
 {
   "name": "failean-mainserver",
-  "version": "4.1.0",
+  "version": "4.1.2",
   "scripts": {
     "version:patch": "npm version patch --no-git-tag-version",
     "version:minor": "npm version minor --no-git-tag-version",
@@ -21,6 +21,10 @@
     "f2": "npm run update",
     "preprod": "npm run f1",
     "prod": "npm run build",
+    "preconect": "aws codeartifact login --tool npm --repository failean --domain failean --domain-owner 988253048728 --region us-east-1 && echo '@failean:registry=https://failean-988253048728.d.codeartifact.us-east-1.amazonaws.com/npm/failean/' >> ./.npmrc",
+    "connect": "npm run prod",
+    "prelocalprod": "rm -f .npmrc",
+    "localprod": "npm run connect",
     "d:b": "aws codeartifact login --tool npm --repository failean --domain failean --domain-owner 988253048728 --region us-east-1 && echo '@failean:registry=https://failean-988253048728.d.codeartifact.us-east-1.amazonaws.com/npm/failean/' >> ~/.npmrc && cp ~/.npmrc . && VERSION=$(node -p \"require('./package.json').version\") && docker build --platform amd64 -t 988253048728.dkr.ecr.us-east-1.amazonaws.com/mainserver:$VERSION .",
     "dev": "nodemon",
     "preudev": "npm run update",
@@ -43,7 +47,7 @@
   "license": "ISC",
   "description": "",
   "devDependencies": {
-    "@failean/shared-types": "^2.9.158",
+    "@failean/shared-types": "^2.9.159",
     "@types/bcrypt": "^5.0.0",
     "@types/cookie-parser": "^1.4.3",
     "@types/fs-extra": "^11.0.1",
@@ -63,7 +67,7 @@
   "dependencies": {
     "@bull-board/api": "^5.7.0",
     "@bull-board/express": "^5.7.0",
-    "@failean/mongo-models": "^1.6.119",
+    "@failean/mongo-models": "^1.6.121",
     "@sendgrid/mail": "^7.7.0",
     "apollo-server-express": "^3.12.0",
     "axios": "^1.4.0",
