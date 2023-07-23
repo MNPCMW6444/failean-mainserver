@@ -3,8 +3,6 @@ WORKDIR /app
 COPY package*.json tsconfig*.json build.ts ./
 COPY src ./src
 COPY .npmrc /root/
-RUN npm config set @failean:registry https://failean-988253048728.d.codeartifact.us-east-1.amazonaws.com/npm/failean/
-RUN npm config set registry https://registry.npmjs.org/
 RUN npm run prod && \
     npm run clean:p && \
     npm i --omit=dev && \
