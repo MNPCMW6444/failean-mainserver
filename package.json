@@ -1,6 +1,6 @@
 {
   "name": "failean-mainserver",
-  "version": "4.1.0",
+  "version": "4.0.70",
   "scripts": {
     "version:patch": "npm version patch --no-git-tag-version",
     "version:minor": "npm version minor --no-git-tag-version",
@@ -15,11 +15,7 @@
     "build": "npx ts-node build.ts",
     "lint": "eslint . --ext .ts",
     "start": "npm run dev",
-    "pref1": "npm config set registry https://registry.npmjs.org/",
-    "f1": "npm run f2",
-    "pref2": "npm config set @failean:registry https://failean-988253048728.d.codeartifact.us-east-1.amazonaws.com/npm/failean/",
-    "f2": "npm run update",
-    "preprod": "npm run f1",
+    "preprod": "npm run update",
     "prod": "npm run build",
     "d:b": "aws codeartifact login --tool npm --repository failean --domain failean --domain-owner 988253048728 --region us-east-1 && echo '@failean:registry=https://failean-988253048728.d.codeartifact.us-east-1.amazonaws.com/npm/failean/' >> ~/.npmrc && cp ~/.npmrc . && VERSION=$(node -p \"require('./package.json').version\") && docker build --platform amd64 -t 988253048728.dkr.ecr.us-east-1.amazonaws.com/mainserver:$VERSION .",
     "dev": "nodemon",
