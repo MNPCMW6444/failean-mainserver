@@ -25,7 +25,7 @@
     "connect": "npm run prod",
     "prelocalprod": "rm -f .npmrc ~/.npmrc",
     "localprod": "npm run connect",
-    "d:b": "aws codeartifact login --tool npm --repository failean --domain failean --domain-owner 988253048728 --region us-east-1 && echo && cp ~/.npmrc . && VERSION=$(node -p \"require('./package.json').version\") && docker build --platform amd64 -t 988253048728.dkr.ecr.us-east-1.amazonaws.com/mainserver:$VERSION .",
+    "d:b": "aws codeartifact login --tool npm --repository failean --domain failean --domain-owner 988253048728 --region us-east-1 && echo && cp ~/.npmrc . && VERSION=$(node -p \"require('./package.json').version\") && docker build --platform amd64 -t 988253048728.dkr.ecr.us-east-1.amazonaws.com/mainserver:$VERSION . &> build.log",
     "dev": "nodemon",
     "preudev": "npm run update",
     "udev": "npm run dev",
