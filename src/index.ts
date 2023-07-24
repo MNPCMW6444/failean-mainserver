@@ -37,13 +37,10 @@ declare global {
 
 dotenv.config();
 
-const connection = mongoose.createConnection(
-  `mongodb://mongo.prod:27017/main`,
-  {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-  } as ConnectOptions
-);
+const connection = mongoose.createConnection(`mongodb://mongo:27017/main`, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+} as ConnectOptions);
 
 connection.on("connected", () => {
   console.log("Connected to safe-mongo");
@@ -149,7 +146,7 @@ if (process.env.NODE_ENV === "production") {
 }
 
 export const pubsub = new RedisPubSub({
-  connection: "redis.prod:6379",
+  connection: "redis:6379",
   //process.env.REDIS + "",
 });
 
