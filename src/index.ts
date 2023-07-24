@@ -176,7 +176,7 @@ const serverConfig = {
   schema,
   context: ({ req, res }: any) => ({ req, res, pubsub }),
 };
-
+console.log("")
 const apolloServer = new ApolloServer(
   process.env.NODE_ENV === "production"
     ? { ...serverConfig, plugins: [ApolloServerPluginLandingPageDisabled()] }
