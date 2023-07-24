@@ -120,7 +120,7 @@ app.use((req, res, next) => {
 
   next();
 });
-
+console.log("yoad")
 app.use("/accounts", accountsRouter);
 app.use("/auth", authRouter);
 app.use("/website", websiteRouter);
