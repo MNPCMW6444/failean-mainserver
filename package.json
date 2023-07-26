@@ -14,7 +14,7 @@
     "prebuild": "npm run version:patch",
     "build": "npx ts-node build.ts",
     "lint": "eslint . --ext .ts",
-    "start": "npm run dev",
+    "start": "npm run udev",
     "preprod": "npm run update",
     "prod": "npm run build",
     "d:b": "VERSION=$(node -p \"require('./package.json').version\") && docker build --platform amd64 -t 988253048728.dkr.ecr.us-east-1.amazonaws.com/mainserver:$VERSION .",
@@ -39,7 +39,7 @@
   "license": "ISC",
   "description": "",
   "devDependencies": {
-    "@failean/shared-types": "^2.9.158",
+    "@failean/shared-types": "^2.9.159",
     "@types/bcrypt": "^5.0.0",
     "@types/cookie-parser": "^1.4.3",
     "@types/fs-extra": "^11.0.1",
@@ -57,9 +57,9 @@
     "uuid": "^9.0.0"
   },
   "dependencies": {
-    "@bull-board/api": "^5.7.0",
-    "@bull-board/express": "^5.7.0",
-    "@failean/mongo-models": "^1.6.119",
+    "@bull-board/api": "^5.7.1",
+    "@bull-board/express": "^5.7.1",
+    "@failean/mongo-models": "^1.6.121",
     "@sendgrid/mail": "^7.7.0",
     "apollo-server-express": "^3.12.0",
     "axios": "^1.4.0",
@@ -72,7 +72,7 @@
     "graphql-redis-subscriptions": "^2.6.0",
     "graphql-ws": "^5.14.0",
     "jsonwebtoken": "^9.0.1",
-    "mongoose": "^7.4.0",
+    "mongoose": "^7.4.1",
     "openai": "^3.3.0",
     "ws": "^8.13.0",
     "zxcvbn": "^4.4.2"
