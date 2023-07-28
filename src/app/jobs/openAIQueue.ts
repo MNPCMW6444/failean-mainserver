@@ -18,23 +18,38 @@ import stringSimilarity from "../util/string-similarity";
 import { INVALID_PROMPT_MESSAGE } from "../util/messages";
 import { safeStringify } from "../util/jsonUtil";
 import axios from "axios";
-
-type WhiteUser = WhiteModels.Auth.WhiteUser;
-
-// Create a new Bull queue
-const openAIQueue = new Queue("openAIQueue", process.env.REDIS || "");
+import { discoverService } from "../../AWSDiscovery";
 
 export const serverAdapter = new ExpressAdapter();
-serverAdapter.setBasePath("/admin/queues");
 
-openAIQueue.on("error", (error) => {
-  console.error(`A queue error happened: ${error}`);
-});
+type WhiteUser = WhiteModels.Auth.WhiteUser;
+let openAIQueue: any;
+// Create a new Bull queue
+discoverService("us-east-1", {
+  NamespaceName: "dev",
+  ServiceName: "redis-s",
+  MaxResults: 10,
+})
+  .then((ip) => {
+    openAIQueue = new Queue("openAIQueue", ip + ":6379");
 
-createBullBoard({
-  queues: [new BullAdapter(openAIQueue)],
-  serverAdapter: serverAdapter,
-});
+    serverAdapter.setBasePath("/admin/queues");
+
+    openAIQueue.on("error", (error: any) => {
+      console.error(`A queue error happened: ${error}`);
+    });
+
+    createBullBoard({
+      queues: [new BullAdapter(openAIQueue)],
+      serverAdapter: serverAdapter,
+    });
+
+    // Process jobs using the processJob function
+    openAIQueue.process(processJob);
+  })
+  .catch((err) => {
+    console.error(`An error occurred during service discovery: ${err}`);
+  });
 
 // Define your job processing function
 const processJob = async (job: any) => {
@@ -168,9 +183,6 @@ const processJob = async (job: any) => {
   }
 };
 
-// Process jobs using the processJob function
-openAIQueue.process(processJob);
-
 export const addJobsToQueue = async (
   user: WhiteModels.Auth.WhiteUser,
   ideaID: string,
@@ -187,7 +199,7 @@ export const addJobsToQueue = async (
   ) => {
     await openAIQueue
       .add({ user, ideaID, promptName, feedback, reqUUID: req.uuid })
-      .then((job) => {
+      .then((job: any) => {
         job.finished().then(() => {
           promptNames.shift();
           if (promptNames[0] === "idea") promptNames.shift();
