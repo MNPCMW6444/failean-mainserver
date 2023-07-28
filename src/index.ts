@@ -26,6 +26,20 @@ import { v4 as uuidv4 } from "uuid";
 import expressBasicAuth from "express-basic-auth";
 import { serverAdapter } from "./app/jobs/openAIQueue"; // Assuming that serverAdapter is exported from the file where you defined it
 import analyticsRouter from "./app/routers/analytics/analyticsRouter";
+import dns from "dns";
+
+// Domain name to look up
+const domain = "mongo-s.dev";
+
+// Perform nslookup
+dns.lookup(domain, (err, address, family) => {
+  if (err) {
+    console.error("Error:", err);
+  } else {
+    console.log(`IP Address: ${address}`);
+    console.log(`IP Version: IPv${family}`);
+  }
+});
 
 declare global {
   namespace Express {
