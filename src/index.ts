@@ -100,6 +100,7 @@ async function setup() {
   pubsub = new RedisPubSub({
     connection: redisIp + ":6379",
   });
+  console.log(`Connecting to Redis at ${redisIp}:6379`);
 
   pubsub.getSubscriber().on("connect", () => {
     console.log("Subscriber connected to Redis");
