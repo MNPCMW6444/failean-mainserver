@@ -29,9 +29,14 @@ import analyticsRouter from "./app/routers/analytics/analyticsRouter";
 
 import { ServiceDiscovery } from "@aws-sdk/client-servicediscovery";
 
-var params = {
+var paramsr = {
   NamespaceName: "dev",
   ServiceName: "redis-s",
+  MaxResults: 10,
+};
+var paramsm = {
+  NamespaceName: "dev",
+  ServiceName: "mongo-s",
   MaxResults: 10,
 };
 let p: any = null;
@@ -42,7 +47,7 @@ new ServiceDiscovery({
     accessKeyId: "AKIA6MGDYZ6MAU2NZXTS",
     secretAccessKey: "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",
   },
-}).discoverInstances(params, function (err: any, data: any) {
+}).discoverInstances(paramsr, function (err: any, data: any) {
   const { AWS_INSTANCE_IPV4 } = data.Instances[0].Attributes;
 
   const pubsub = new RedisPubSub({
@@ -107,6 +112,31 @@ new ServiceDiscovery({
   startApolloServer().catch((error) => console.error(error));
 });
 
+new ServiceDiscovery({
+  region: "us-east-1",
+  credentials: {
+    accessKeyId: "AKIA6MGDYZ6MAU2NZXTS",
+    secretAccessKey: "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",
+  },
+}).discoverInstances(paramsm, function (err: any, data: any) {
+  const { AWS_INSTANCE_IPV4 } = data.Instances[0].Attributes;
+
+  const connection = mongoose.createConnection(
+    `mongodb://${AWS_INSTANCE_IPV4}:27017/main`,
+    {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+    } as ConnectOptions
+  );
+
+  connection.on("connected", () => {
+    console.log("Connected to safe-mongo");
+  });
+
+  connection.on("error", (error) => {
+    //console.error("Error connecting to safe-mongo:", error.message);
+  });
+});
 declare global {
   namespace Express {
     interface Request {
@@ -116,22 +146,6 @@ declare global {
 }
 
 dotenv.config();
-
-const connection = mongoose.createConnection(
-  `mongodb://mongo-s.dev:27017/main`,
-  {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-  } as ConnectOptions
-);
-
-connection.on("connected", () => {
-  console.log("Connected to safe-mongo");
-});
-
-connection.on("error", (error) => {
-  //console.error("Error connecting to safe-mongo:", error.message);
-});
 
 const app = express();
 const port = process.env.PORT || 6555;
