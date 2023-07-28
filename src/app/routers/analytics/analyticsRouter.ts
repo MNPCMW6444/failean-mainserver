@@ -1,5 +1,5 @@
 import express from "express";
-import { ocServerDomain } from "../../../index";
+import { ocServerDomain } from "../../../config";
 import axios from "axios";
 
 const router = express.Router();

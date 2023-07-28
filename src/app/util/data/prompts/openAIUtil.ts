@@ -18,7 +18,7 @@ import aideatorPromptMap from "../../../../content/prompts/aideatorPromptMap";
 import { encode } from "gpt-3-encoder";
 import { amendTokens, tokenCount } from "../../accounts/tokensUtil";
 import { AxiosResponse } from "axios";
-import { ocServerDomain } from "../../../../index";
+import { ocServerDomain } from "../../../../config";
 import axios from "axios";
 
 const ROI = 2;

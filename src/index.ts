@@ -24,42 +24,89 @@ import axios from "axios";
 import { safeStringify } from "./app/util/jsonUtil";
 import { v4 as uuidv4 } from "uuid";
 import expressBasicAuth from "express-basic-auth";
-import { serverAdapter } from "./app/jobs/openAIQueue"; // Assuming that serverAdapter is exported from the file where you defined it
+import { serverAdapter } from "./app/jobs/openAIQueue";
 import analyticsRouter from "./app/routers/analytics/analyticsRouter";
+import { discoverService } from "./AWSDiscovery";
+import { clientDomain, ocClientDomain, ocServerDomain } from "./config";
 
-import { ServiceDiscovery } from "@aws-sdk/client-servicediscovery";
+dotenv.config();
 
-var paramsr = {
-  NamespaceName: "dev",
-  ServiceName: "redis-s",
-  MaxResults: 10,
+const resolvers = {
+  Query,
+  Mutation,
+  Subscription,
 };
-var paramsm = {
-  NamespaceName: "dev",
-  ServiceName: "mongo-s",
-  MaxResults: 10,
-};
-let p: any = null;
 
-new ServiceDiscovery({
-  region: "us-east-1",
-  credentials: {
-    accessKeyId: "AKIA6MGDYZ6MAU2NZXTS",
-    secretAccessKey: "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",
-  },
-}).discoverInstances(paramsr, function (err: any, data: any) {
-  const { AWS_INSTANCE_IPV4 } = data.Instances[0].Attributes;
+const schema = makeExecutableSchema({
+  typeDefs,
+  resolvers,
+});
 
-  const pubsub = new RedisPubSub({
-    connection: AWS_INSTANCE_IPV4 + ":6379",
+declare global {
+  namespace Express {
+    interface Request {
+      id: string;
+    }
+  }
+}
+
+const app = express();
+const port = process.env.PORT || 6555;
+
+app.use(cookieParser());
+app.use(express.json({ limit: "50mb" }));
+app.use(express.urlencoded({ limit: "50mb", extended: true }));
+app.use(
+  cors({
+    origin: [ocClientDomain, ocServerDomain, clientDomain],
+    credentials: true,
+  })
+);
+
+app.use("/accounts", accountsRouter);
+app.use("/auth", authRouter);
+app.use("/website", websiteRouter);
+app.use("/analytics", analyticsRouter);
+app.use("/data", dataRouter);
+app.use("/gql", gqlRouter);
+
+app.get("/areyoualive", (_, res) => {
+  res.json({ answer: "yes", version: process.env.npm_package_version });
+});
+
+if (process.env.NODE_ENV === "production") {
+  app.use(
+    "/admin/queues",
+    expressBasicAuth({
+      users: { [`${process.env.ADMIN_USER}`]: `${process.env.ADMIN_PASSWORD}` },
+      challenge: true,
+      realm: "Imb4T3st4pp",
+    }),
+    serverAdapter.getRouter()
+  );
+} else {
+  app.use("/admin/queues", serverAdapter.getRouter());
+}
+
+let pubsub: RedisPubSub;
+
+async function setup() {
+  const redisIp = await discoverService("us-east-1", {
+    NamespaceName: "dev",
+    ServiceName: "redis-s",
+    MaxResults: 10,
   });
-  p = pubsub;
+
+  pubsub = new RedisPubSub({
+    connection: redisIp + ":6379",
+  });
 
   pubsub.getSubscriber().on("connect", () => {
     console.log("Subscriber connected to Redis");
   });
+
   pubsub.getSubscriber().on("error", (error) => {
-    //console.log("Subscriber failed to connect to Redis", error);
+    console.error("Subscriber failed to connect to Redis", error);
   });
 
   const serverConfig = {
@@ -73,56 +120,48 @@ new ServiceDiscovery({
       : serverConfig
   );
 
-  const startApolloServer = async () => {
-    await apolloServer.start();
-    apolloServer.applyMiddleware({ app });
+  await apolloServer.start();
+  apolloServer.applyMiddleware({ app });
 
-    const httpServer = createServer(app);
+  const httpServer = createServer(app);
+  const wsServer = new Server({
+    server: httpServer,
+    path: "/graphql",
+  });
 
-    const wsServer = new Server({
-      server: httpServer,
-      path: "/graphql",
-    });
-
-    useServer(
-      {
-        schema,
-        execute,
-        subscribe,
-        onConnect: (ctx) => {
-          console.log("Client connected");
-        },
-        onSubscribe: (ctx, msg) => {
-          console.log("Received new subscription");
-        },
-        onOperation: ((message: any, params: any, webSocket: any) => {
-          return { ...params, context: { ...(params as any).context, pubsub } };
-        }) as any,
+  useServer(
+    {
+      schema,
+      execute,
+      subscribe,
+      onConnect: (ctx) => {
+        console.log("Client connected");
       },
-      wsServer
+      onSubscribe: (ctx, msg) => {
+        console.log("Received new subscription");
+      },
+      onOperation: ((message: any, params: any, webSocket: any) => {
+        return { ...params, context: { ...(params as any).context, pubsub } };
+      }) as any,
+    },
+    wsServer
+  );
+
+  httpServer.listen(port, () => {
+    console.log(
+      `Server is ready at http://localhost:${port}${apolloServer.graphqlPath}`
     );
+    console.log(`Subscriptions ready at ws://localhost:${port}/graphql`);
+  });
 
-    httpServer.listen(port, () => {
-      console.log(
-        `Server is ready at http://localhost:${port}${apolloServer.graphqlPath}`
-      );
-      console.log(`Subscriptions ready at ws://localhost:${port}/graphql`);
-    });
-  };
-  startApolloServer().catch((error) => console.error(error));
-});
-
-new ServiceDiscovery({
-  region: "us-east-1",
-  credentials: {
-    accessKeyId: "AKIA6MGDYZ6MAU2NZXTS",
-    secretAccessKey: "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",
-  },
-}).discoverInstances(paramsm, function (err: any, data: any) {
-  const { AWS_INSTANCE_IPV4 } = data.Instances[0].Attributes;
+  const mongoIp = await discoverService("us-east-1", {
+    NamespaceName: "dev",
+    ServiceName: "mongo-s",
+    MaxResults: 10,
+  });
 
   const connection = mongoose.createConnection(
-    `mongodb://${AWS_INSTANCE_IPV4}:27017/main`,
+    `mongodb://${mongoIp}:27017/main`,
     {
       useNewUrlParser: true,
       useUnifiedTopology: true,
@@ -134,131 +173,53 @@ new ServiceDiscovery({
   });
 
   connection.on("error", (error) => {
-    //console.error("Error connecting to safe-mongo:", error.message);
+    console.error("Error connecting to safe-mongo:", error.message);
   });
-});
-declare global {
-  namespace Express {
-    interface Request {
-      id: string;
-    }
-  }
-}
 
-dotenv.config();
-
-const app = express();
-const port = process.env.PORT || 6555;
-export const ocClientDomain =
-  process.env.NODE_ENV === "development"
-    ? "http://localhost:5998"
-    : "https://oc.failean.com";
-
-export const clientDomain =
-  process.env.NODE_ENV === "development"
-    ? "http://localhost:5999"
-    : "https://dev.failean.com";
-
-export const ocServerDomain =
-  process.env.NODE_ENV === "development"
-    ? "http://localhost:6777"
-    : "https://tstocserver.failean.com";
-
-app.use(cookieParser());
-app.use(express.json({ limit: "50mb" }));
-app.use(express.urlencoded({ limit: "50mb", extended: true }));
-app.use(
-  cors({
-    origin: [ocClientDomain, ocServerDomain, clientDomain],
-    credentials: true,
-  })
-);
-
-app.use((req, res, next) => {
-  req.id = uuidv4();
-  axios
-    .post(
-      ocServerDomain + "/log/logExpressRequest",
-      {
-        uuid: req.id,
-        stringifiedReq: safeStringify(req),
-      },
-      {
-        auth: {
-          username: "client",
-          password: process.env.OCPASS + "xx",
-        },
-      }
-    )
-    .catch(() => console.log("error logging general req to oc"));
-
-  const originalSend = res.send;
-
-  res.send = function (...args: [body?: any]) {
-    // console.log("Response: ", args[0]);
+  app.use((req, res, next) => {
+    req.id = uuidv4();
     axios
       .post(
-        ocServerDomain + "/log/logExpressResponse",
+        `${process.env.OC_SERVER_DOMAIN}/log/logExpressRequest`,
         {
           uuid: req.id,
-          stringifiedRes: safeStringify(args[0]),
+          stringifiedReq: safeStringify(req),
         },
         {
           auth: {
             username: "client",
-            password: process.env.OCPASS + "xx",
+            password: `${process.env.OCPASS}xx`,
           },
         }
       )
-      .catch((err) => console.log(err));
+      .catch(() => console.log("error logging general req to oc"));
 
-    return originalSend.apply(this, args);
-  };
+    const originalSend = res.send;
 
-  next();
-});
+    res.send = function (...args: [body?: any]) {
+      axios
+        .post(
+          `${process.env.OC_SERVER_DOMAIN}/log/logExpressResponse`,
+          {
+            uuid: req.id,
+            stringifiedRes: safeStringify(args[0]),
+          },
+          {
+            auth: {
+              username: "client",
+              password: `${process.env.OCPASS}xx`,
+            },
+          }
+        )
+        .catch((err) => console.log(err));
 
-app.use("/accounts", accountsRouter);
-app.use("/auth", authRouter);
-app.use("/website", websiteRouter);
-app.use("/analytics", analyticsRouter);
-app.use("/data", dataRouter);
-app.use("/gql", gqlRouter);
-app.get("/areyoualive", (_, res) => {
-  res.json({ answer: "yes", version: process.env.npm_package_version });
-});
+      return originalSend.apply(this, args);
+    };
 
-if (process.env.NODE_ENV === "production") {
-  app.use(
-    "/admin/queues",
-    expressBasicAuth({
-      users: { [process.env.ADMIN_USER + ""]: process.env.ADMIN_PASSWORD + "" },
-      challenge: true,
-      realm: "Imb4T3st4pp",
-    }),
-    serverAdapter.getRouter()
-  );
-} else {
-  app.use("/admin/queues", serverAdapter.getRouter());
+    next();
+  });
 }
 
-const resolvers = {
-  Query,
-  Mutation,
-  Subscription,
-};
-const schema = makeExecutableSchema({
-  typeDefs,
-  resolvers,
-});
+setup().catch((error) => console.error(error));
 
-export const x = () => {
-  return new Promise((resolve, reject) => {
-    const checkInterval = setInterval(() => {
-      if (p !== null) {
-        clearInterval(checkInterval); // stop the interval when we got the value
-        resolve(p);
-      }
-    }, 3000); // check every 3 seconds
-  });
-};
+export { pubsub };
