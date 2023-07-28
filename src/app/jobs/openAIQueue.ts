@@ -1,5 +1,5 @@
 import Queue from "bull";
-import { ocServerDomain, pubsub } from "../../index";
+import { ocServerDomain, x } from "../../index";
 import ideaModel from "../mongo-models/data/ideas/ideaModel";
 import aideatorPromptMap from "../../content/prompts/aideatorPromptMap";
 import {
@@ -37,6 +37,8 @@ createBullBoard({
 
 // Define your job processing function
 const processJob = async (job: any) => {
+  const pubsub: any = await x();
+
   try {
     const { user, ideaID, promptName, feedback, reqUUID } = job.data;
     if (user.subscription !== "tokens") {

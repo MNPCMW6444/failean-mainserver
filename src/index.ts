@@ -26,19 +26,85 @@ import { v4 as uuidv4 } from "uuid";
 import expressBasicAuth from "express-basic-auth";
 import { serverAdapter } from "./app/jobs/openAIQueue"; // Assuming that serverAdapter is exported from the file where you defined it
 import analyticsRouter from "./app/routers/analytics/analyticsRouter";
-import dns from "dns";
 
-// Domain name to look up
-const domain = "mongo-s.dev";
+import { ServiceDiscovery } from "@aws-sdk/client-servicediscovery";
 
-// Perform nslookup
-dns.lookup(domain, (err, address, family) => {
-  if (err) {
-    console.error("Error:", err);
-  } else {
-    console.log(`IP Address: ${address}`);
-    console.log(`IP Version: IPv${family}`);
-  }
+var params = {
+  NamespaceName: "dev",
+  ServiceName: "redis-s",
+  MaxResults: 10,
+};
+let p: any = null;
+
+new ServiceDiscovery({
+  region: "us-east-1",
+  credentials: {
+    accessKeyId: "AKIA6MGDYZ6MAU2NZXTS",
+    secretAccessKey: "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",
+  },
+}).discoverInstances(params, function (err: any, data: any) {
+  const { AWS_INSTANCE_IPV4 } = data.Instances[0].Attributes;
+
+  const pubsub = new RedisPubSub({
+    connection: AWS_INSTANCE_IPV4 + ":6379",
+  });
+  p = pubsub;
+
+  pubsub.getSubscriber().on("connect", () => {
+    console.log("Subscriber connected to Redis");
+  });
+  pubsub.getSubscriber().on("error", (error) => {
+    //console.log("Subscriber failed to connect to Redis", error);
+  });
+
+  const serverConfig = {
+    schema,
+    context: ({ req, res }: any) => ({ req, res, pubsub }),
+  };
+
+  const apolloServer = new ApolloServer(
+    process.env.NODE_ENV === "production"
+      ? { ...serverConfig, plugins: [ApolloServerPluginLandingPageDisabled()] }
+      : serverConfig
+  );
+
+  const startApolloServer = async () => {
+    await apolloServer.start();
+    apolloServer.applyMiddleware({ app });
+
+    const httpServer = createServer(app);
+
+    const wsServer = new Server({
+      server: httpServer,
+      path: "/graphql",
+    });
+
+    useServer(
+      {
+        schema,
+        execute,
+        subscribe,
+        onConnect: (ctx) => {
+          console.log("Client connected");
+        },
+        onSubscribe: (ctx, msg) => {
+          console.log("Received new subscription");
+        },
+        onOperation: ((message: any, params: any, webSocket: any) => {
+          return { ...params, context: { ...(params as any).context, pubsub } };
+        }) as any,
+      },
+      wsServer
+    );
+
+    httpServer.listen(port, () => {
+      console.log(
+        `Server is ready at http://localhost:${port}${apolloServer.graphqlPath}`
+      );
+      console.log(`Subscriptions ready at ws://localhost:${port}/graphql`);
+    });
+  };
+  startApolloServer().catch((error) => console.error(error));
 });
 
 declare global {
@@ -162,18 +228,6 @@ if (process.env.NODE_ENV === "production") {
   app.use("/admin/queues", serverAdapter.getRouter());
 }
 
-export const pubsub = new RedisPubSub({
-  connection: "redis-s.dev:6379",
-  //process.env.REDIS + "",
-});
-
-pubsub.getSubscriber().on("connect", () => {
-  console.log("Subscriber connected to Redis");
-});
-pubsub.getSubscriber().on("error", (error) => {
-  //console.log("Subscriber failed to connect to Redis", error);
-});
-
 const resolvers = {
   Query,
   Mutation,
@@ -183,51 +237,14 @@ const schema = makeExecutableSchema({
   typeDefs,
   resolvers,
 });
-const serverConfig = {
-  schema,
-  context: ({ req, res }: any) => ({ req, res, pubsub }),
-};
 
-const apolloServer = new ApolloServer(
-  process.env.NODE_ENV === "production"
-    ? { ...serverConfig, plugins: [ApolloServerPluginLandingPageDisabled()] }
-    : serverConfig
-);
-
-const startApolloServer = async () => {
-  await apolloServer.start();
-  apolloServer.applyMiddleware({ app });
-
-  const httpServer = createServer(app);
-
-  const wsServer = new Server({
-    server: httpServer,
-    path: "/graphql",
-  });
-
-  useServer(
-    {
-      schema,
-      execute,
-      subscribe,
-      onConnect: (ctx) => {
-        console.log("Client connected");
-      },
-      onSubscribe: (ctx, msg) => {
-        console.log("Received new subscription");
-      },
-      onOperation: ((message: any, params: any, webSocket: any) => {
-        return { ...params, context: { ...(params as any).context, pubsub } };
-      }) as any,
-    },
-    wsServer
-  );
-
-  httpServer.listen(port, () => {
-    console.log(
-      `Server is ready at http://localhost:${port}${apolloServer.graphqlPath}`
-    );
-    console.log(`Subscriptions ready at ws://localhost:${port}/graphql`);
+export const x = () => {
+  return new Promise((resolve, reject) => {
+    const checkInterval = setInterval(() => {
+      if (p !== null) {
+        clearInterval(checkInterval); // stop the interval when we got the value
+        resolve(p);
+      }
+    }, 3000); // check every 3 seconds
   });
 };
-startApolloServer().catch((error) => console.error(error));
