@@ -83,7 +83,7 @@ class App {
     });
 
     const connection = mongoose.createConnection(
-      `mongodb://${mongoIp}:27017/main`,
+      `mongodb://${mongoIp}:27017/main?retryWrites=true&w=majority`,
       {
         useNewUrlParser: true,
         useUnifiedTopology: true,

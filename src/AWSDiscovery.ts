@@ -1,4 +1,6 @@
 import { ServiceDiscovery } from "@aws-sdk/client-servicediscovery";
+import dotenv from "dotenv";
+dotenv.config();
 
 export const discoverService = async (
   region: string,
