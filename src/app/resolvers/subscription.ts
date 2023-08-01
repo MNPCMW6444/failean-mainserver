@@ -1,10 +1,10 @@
-import { pubsub } from "../../index";
+import pubsub from "../../index";
 
 const Subscription = {
   jobCompleted: {
     subscribe: () => {
       console.log("Subscription to JOB_COMPLETED started");
-      return pubsub.asyncIterator("JOB_COMPLETED");
+      return (pubsub as any).asyncIterator("JOB_COMPLETED");
     },
   },
 };

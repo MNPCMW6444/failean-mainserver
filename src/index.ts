@@ -57,7 +57,7 @@ class App {
         onSubscribe: () => {
           console.log("Received new subscription");
         },
-        onOperation: (message, params, webSocket) => {
+        onOperation: (message: any, params: any, webSocket: any) => {
           return {
             ...params,
             context: { ...params.context, pubsub: this.pubsub },
