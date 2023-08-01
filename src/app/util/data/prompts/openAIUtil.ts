@@ -1,5 +1,6 @@
 import {
   PromptMap,
+  PromptName,
   PromptPart,
   RoleMap,
   WhiteModels,
@@ -17,8 +18,10 @@ import aideatorPromptMap from "../../../../content/prompts/aideatorPromptMap";
 import { encode } from "gpt-3-encoder";
 import { amendTokens, tokenCount } from "../../accounts/tokensUtil";
 import { AxiosResponse } from "axios";
+import { ocServerDomain } from "../../../../config";
+import axios from "axios";
 
-const ROI = 1.5;
+const ROI = 2;
 
 type WhiteUser = WhiteModels.Auth.WhiteUser;
 
@@ -92,14 +95,16 @@ export const estimateOpenAI = async (
             ]
           : [{ role: "user", content: constructedPrompt.join("") }]
       );
-      return encode(input).length;
+      return encode(input).length / 3;
     });
   }
 };
 export const callOpenAI = async (
   user: WhiteUser,
   roleName: keyof RoleMap,
-  chat: Array<ChatCompletionRequestMessage>
+  chat: Array<ChatCompletionRequestMessage>,
+  promptName: PromptName,
+  openAICallReqUUID: string
 ): Promise<AxiosResponse<CreateChatCompletionResponse, any> | -1 | -2> => {
   const role = roleMap[roleName];
   if (user.subscription === "free") {
@@ -128,12 +133,29 @@ export const callOpenAI = async (
         ],
       });
 
-      completion.data.usage &&
-        amendTokens(
-          user,
-          0 - completion.data.usage.total_tokens * ROI * 0.04,
-          "callopenai"
-        );
+      if (completion.data.usage) {
+        const priceForUsInCents =
+          completion.data.usage?.prompt_tokens * 0.003 +
+          completion.data.usage?.completion_tokens * 0.004;
+        const forThem = priceForUsInCents * ROI;
+        amendTokens(user, 0 - forThem, "callopenai");
+        axios
+          .post(
+            ocServerDomain + "/log/logPromptPrice",
+            {
+              openAICallReqUUID,
+              promptName,
+              forAVGPriceInOpenAITokens: forThem,
+            },
+            {
+              auth: {
+                username: "client",
+                password: process.env.OCPASS + "xx",
+              },
+            }
+          )
+          .catch((err) => console.error(err));
+      }
 
       return completion as any;
     } else return -2;
