@@ -1,3 +1,6 @@
+import dotenv from "dotenv";
+dotenv.config();
+
 export const ocClientDomain =
   process.env.NODE_ENV === "development"
     ? "http://localhost:5998"

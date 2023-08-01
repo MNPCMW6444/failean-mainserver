@@ -9,7 +9,6 @@ declare global {
 import express, { Request, Response, NextFunction } from "express";
 import cors from "cors";
 import cookieParser from "cookie-parser";
-import { v4 as uuidv4 } from "uuid";
 import expressBasicAuth from "express-basic-auth";
 import { serverAdapter } from "./app/jobs/openAIQueue";
 import { clientDomain, ocClientDomain, ocServerDomain } from "./config";
