@@ -10,7 +10,9 @@ export const authUser = async (token: any): Promise<WhiteUser | null> => {
       token as string,
       process.env.JWT_SECRET as string
     );
-    return (await userModel()).findById((validatedUser as JwtPayload).id);
+    return (
+      (await userModel())?.findById((validatedUser as JwtPayload).id) || null
+    );
   } catch (err) {
     return null;
   }

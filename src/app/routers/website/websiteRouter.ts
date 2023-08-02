@@ -17,7 +17,7 @@ router.post("/signupreq", async (req, res) => {
       return res.status(400).json({
         clientError: "The email is missing",
       });
-    const existingUser = await userModel.findOne({ email });
+    const existingUser = await (await userModel())?.findOne({ email });
     if (existingUser)
       return res.status(400).json({
         clientError: "An account with this email already exists",
