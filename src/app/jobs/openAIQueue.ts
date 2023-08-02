@@ -1,6 +1,6 @@
 import Queue from "bull";
 import { ocServerDomain } from "../../config";
-import pubsub from "../../index";
+import pubsub from "../../redisSetup";
 import ideaModel from "../mongo-models/data/ideas/ideaModel";
 import aideatorPromptMap from "../../content/prompts/aideatorPromptMap";
 import {

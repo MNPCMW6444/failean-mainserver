@@ -38,7 +38,7 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
-    "@aws-sdk/client-servicediscovery": "^3.379.1",
+    "@aws-sdk/client-servicediscovery": "^3.382.0",
     "@bull-board/api": "^5.7.1",
     "@bull-board/express": "^5.7.1",
     "@failean/mongo-models": "^1.6.121",

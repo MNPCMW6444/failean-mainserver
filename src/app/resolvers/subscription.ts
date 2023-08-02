@@ -1,4 +1,4 @@
-import pubsub from "../../index";
+import pubsub from "../../redisSetup";
 
 const Subscription = {
   jobCompleted: {

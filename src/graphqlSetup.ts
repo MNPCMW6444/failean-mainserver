@@ -5,8 +5,7 @@ import Query from "./app/resolvers/query";
 import Mutation from "./app/resolvers/mutation";
 import Subscription from "./app/resolvers/subscription";
 import { ApolloServerPluginLandingPageDisabled } from "apollo-server-core";
-import { Express } from "express";
-import pubsub from "../src/index";
+import pubsub from "./redisSetup";
 
 const resolvers = {
   Query,
