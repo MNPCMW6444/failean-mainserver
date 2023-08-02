@@ -1,9 +1,9 @@
 import { makeExecutableSchema } from "@graphql-tools/schema";
 import { ApolloServer } from "apollo-server-express";
-import typeDefs from "./app/typeDefs";
-import Query from "./app/resolvers/query";
-import Mutation from "./app/resolvers/mutation";
-import Subscription from "./app/resolvers/subscription";
+import typeDefs from "../typeDefs";
+import Query from "../resolvers/query";
+import Mutation from "../resolvers/mutation";
+import Subscription from "../resolvers/subscription";
 import { ApolloServerPluginLandingPageDisabled } from "apollo-server-core";
 import pubsub from "./redisSetup";
 

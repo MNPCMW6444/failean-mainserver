@@ -4,7 +4,7 @@ import RequestForAccount from "../../mongo-models/auth/requestForAccountModal";
 import { websiteSignup } from "../../../content/email-templates/authEmails";
 import { sendEmail } from "../../util/emailUtil";
 import { v4 as keyv4 } from "uuid";
-import { clientDomain } from "../../../config";
+import { clientDomain } from "../../setup/config";
 
 const router = express.Router();
 

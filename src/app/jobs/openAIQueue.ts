@@ -1,6 +1,6 @@
 import Queue from "bull";
-import { ocServerDomain } from "../../config";
-import pubsub from "../../redisSetup";
+import { ocServerDomain } from "../setup/config";
+import pubsub from "../setup/redisSetup";
 import ideaModel from "../mongo-models/data/ideas/ideaModel";
 import aideatorPromptMap from "../../content/prompts/aideatorPromptMap";
 import {
@@ -18,7 +18,7 @@ import stringSimilarity from "../util/string-similarity";
 import { INVALID_PROMPT_MESSAGE } from "../util/messages";
 import { safeStringify } from "../util/jsonUtil";
 import axios from "axios";
-import { discoverService } from "../../AWSDiscovery";
+import { discoverService } from "../setup/AWSDiscovery";
 
 export const serverAdapter = new ExpressAdapter();
 
@@ -31,9 +31,14 @@ discoverService("us-east-1", {
   MaxResults: 10,
 })
   .then((ip) => {
-    console.log(`Connecting to xx Redis at ${ip}:6379`);
+    console.log(`Connecting to bull Redis at ${ip}:6379`);
 
-    openAIQueue = new Queue("openAIQueue", ip + ":6379");
+    openAIQueue = new Queue("openAIQueue", {
+      redis: {
+        host: ip,
+        port: 6379,
+      },
+    });
 
     serverAdapter.setBasePath("/admin/queues");
 

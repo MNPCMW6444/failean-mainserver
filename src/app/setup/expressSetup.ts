@@ -1,18 +1,10 @@
-declare global {
-  namespace Express {
-    interface Request {
-      id: string;
-    }
-  }
-}
-
 import express, { Request, Response, NextFunction } from "express";
 import cors from "cors";
 import cookieParser from "cookie-parser";
 import expressBasicAuth from "express-basic-auth";
-import { serverAdapter } from "./app/jobs/openAIQueue";
+import { serverAdapter } from "../jobs/openAIQueue";
 import { clientDomain, ocClientDomain, ocServerDomain } from "./config";
-import routers from "./app/routers";
+import routers from "../routers";
 
 const {
   authRouter,
@@ -27,8 +19,6 @@ export const app = express();
 export const port = process.env.PORT || 6555;
 
 const axiosLogger = (req: Request, res: Response, next: NextFunction) => {
-  // Your logger implementation
-  // ...
   next();
 };
 

@@ -3,10 +3,10 @@ import { createServer } from "http";
 import { execute, subscribe } from "graphql";
 import { useServer } from "graphql-ws/lib/use/ws";
 import { Server } from "ws";
-import { apolloServer, schema } from "./graphqlSetup";
-import { app, port } from "./expressSetup";
-import mongoSetup from "./mongoSetup";
-import redisSetup, { pubsub } from "./redisSetup";
+import { apolloServer, schema } from "./app/setup/graphqlSetup";
+import { app, port } from "./app/setup/expressSetup";
+import mongoSetup from "./app/setup/mongoSetup";
+import redisSetup, { pubsub } from "./app/setup/redisSetup";
 
 dotenv.config();
 

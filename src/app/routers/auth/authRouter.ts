@@ -12,7 +12,7 @@ import zxcvbn from "zxcvbn";
 import { sendEmail } from "../../util/emailUtil";
 import { v4 as keyv4 } from "uuid";
 import ideaModel from "../../mongo-models/data/ideas/ideaModel";
-import { clientDomain, ocServerDomain } from "../../../config";
+import { clientDomain, ocServerDomain } from "../../setup/config";
 import { authUser } from "../../util/authUtil";
 import axios from "axios";
 import { safeStringify } from "../../util/jsonUtil";
