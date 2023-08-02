@@ -31,7 +31,7 @@ discoverService("us-east-1", {
   MaxResults: 10,
 })
   .then((ip) => {
-    console.log(`Connecting to Redis at ${ip}:6379`);
+    console.log(`Connecting to xx Redis at ${ip}:6379`);
 
     openAIQueue = new Queue("openAIQueue", ip + ":6379");
 

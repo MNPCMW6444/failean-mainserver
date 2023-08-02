@@ -25,11 +25,14 @@ router.post("/signupreq", async (req, res) => {
 
     const key = keyv4();
 
-    await new RequestForAccount({
-      email,
-      key,
-      idea,
-    }).save();
+    const model = await RequestForAccount();
+
+    model &&
+      (await new model({
+        email,
+        key,
+        idea,
+      }).save());
 
     const url = `${clientDomain}/register?key=${key}`;
 

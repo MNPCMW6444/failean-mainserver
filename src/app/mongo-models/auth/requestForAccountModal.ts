@@ -1,8 +1,11 @@
-import mongoose from "mongoose";
 import { WhiteModels } from "@failean/shared-types";
 import { requestForAccountModel } from "@failean/mongo-models";
+import { safeDB } from "../../../mongoSetup";
 
-export default mongoose.model<WhiteModels.Auth.WhiteRequestForAccount>(
-  "requestForAccount",
-  requestForAccountModel
-);
+const getModel = async () =>
+  safeDB?.model<WhiteModels.Auth.WhiteRequestForAccount>(
+    "requestForAccount",
+    requestForAccountModel
+  );
+
+export default getModel;

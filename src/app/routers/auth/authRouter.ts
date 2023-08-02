@@ -2,7 +2,7 @@ import express from "express";
 import userModelG from "../../mongo-models/auth/userModel";
 import bcrypt from "bcrypt";
 import jsonwebtoken from "jsonwebtoken";
-import RequestForAccount from "../../mongo-models/auth/requestForAccountModal";
+import RequestForAccountG from "../../mongo-models/auth/requestForAccountModal";
 import {
   passreset,
   signupreq,
@@ -23,7 +23,8 @@ const MIN_PASSWORD_STRENGTH = 3;
 
 router.post<any, any>("/signupreq", async (req, res) => {
   const userModel = await userModelG();
-  if (userModel)
+  const RequestForAccount = await RequestForAccountG();
+  if (userModel && RequestForAccount)
     try {
       const { email, idea } = req.body;
       if (!email)
@@ -65,7 +66,8 @@ router.post<any, any>("/signupreq", async (req, res) => {
 
 router.post<any, any>("/signupfin", async (req, res) => {
   const userModel = await userModelG();
-  if (userModel)
+  const RequestForAccount = await RequestForAccountG();
+  if (userModel && RequestForAccount)
     try {
       const { key, fullname, password, passwordagain } = req.body;
       if (!key || !fullname || !password || !passwordagain)
@@ -155,7 +157,8 @@ router.post<any, any>("/signupfin", async (req, res) => {
 
 router.post<any, any>("/signin", async (req, res) => {
   const userModel = await userModelG();
-  if (userModel) {
+  const RequestForAccount = await RequestForAccountG();
+  if (userModel && RequestForAccount) {
     const log = (
       successfull: boolean,
       userEmail: string,
@@ -244,7 +247,8 @@ router.post<any, any>("/signin", async (req, res) => {
 
 router.post<any, any>("/updatename", async (req, res) => {
   const userModel = await userModelG();
-  if (userModel)
+  const RequestForAccount = await RequestForAccountG();
+  if (userModel && RequestForAccount)
     try {
       const user = await authUser(req.cookies.jsonwebtoken);
 
@@ -264,7 +268,8 @@ router.post<any, any>("/updatename", async (req, res) => {
 
 router.post<any, any>("/updatepassword", async (req, res) => {
   const userModel = await userModelG();
-  if (userModel)
+  const RequestForAccount = await RequestForAccountG();
+  if (userModel && RequestForAccount)
     try {
       const user = await authUser(req.cookies.jsonwebtoken);
 
@@ -293,7 +298,8 @@ router.post<any, any>("/updatepassword", async (req, res) => {
 
 router.get<any, any>("/signout", async (req, res) => {
   const userModel = await userModelG();
-  if (userModel)
+  const RequestForAccount = await RequestForAccountG();
+  if (userModel && RequestForAccount)
     try {
       res
         .cookie("jsonwebtoken", "", {
@@ -318,7 +324,8 @@ router.get<any, any>("/signout", async (req, res) => {
 
 router.post<any, any>("/passresreq", async (req, res) => {
   const userModel = await userModelG();
-  if (userModel)
+  const RequestForAccount = await RequestForAccountG();
+  if (userModel && RequestForAccount)
     try {
       const { email } = req.body;
       if (!email)
@@ -357,7 +364,8 @@ router.post<any, any>("/passresreq", async (req, res) => {
 
 router.post<any, any>("/passresfin", async (req, res) => {
   const userModel = await userModelG();
-  if (userModel)
+  const RequestForAccount = await RequestForAccountG();
+  if (userModel && RequestForAccount)
     try {
       const { email, key, password, passwordagain } = req.body;
       if (!email || !key || !password || !passwordagain)
@@ -400,7 +408,8 @@ router.post<any, any>("/passresfin", async (req, res) => {
 
 router.post<any, any>("/updaten", async (req, res) => {
   const userModel = await userModelG();
-  if (userModel)
+  const RequestForAccount = await RequestForAccountG();
+  if (userModel && RequestForAccount)
     try {
       const { notifications, newsletter } = req.body;
       if (
@@ -429,7 +438,8 @@ router.post<any, any>("/updaten", async (req, res) => {
 
 router.get<any, any>("/signedin", async (req, res) => {
   const userModel = await userModelG();
-  if (userModel)
+  const RequestForAccount = await RequestForAccountG();
+  if (userModel && RequestForAccount)
     try {
       const user = await authUser(req.cookies.jsonwebtoken);
 
