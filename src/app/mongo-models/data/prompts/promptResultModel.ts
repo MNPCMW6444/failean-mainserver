@@ -1,8 +1,11 @@
-import mongoose from "mongoose";
 import { WhiteModels } from "@failean/shared-types";
 import { promptResultModel } from "@failean/mongo-models";
+import { safeDB } from "../../../dbConnection";
 
-export default mongoose.model<WhiteModels.Data.Prompts.WhitePromptResult>(
-  "promptResult",
-  promptResultModel
-);
+export const getPromptResultModel = () => {
+  if (!safeDB) throw new Error("Database not initialized");
+  return safeDB.model<WhiteModels.Data.Prompts.WhitePromptResult>(
+    "promptResult",
+    promptResultModel
+  );
+};

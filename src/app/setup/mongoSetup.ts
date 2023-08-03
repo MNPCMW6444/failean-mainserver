@@ -10,10 +10,13 @@ const mongoSetup = async () => {
     MaxResults: 10,
   });
 
-  safeDB = await mongoose.createConnection(`mongodb://${mongoIp}:27017/main`, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-  } as ConnectOptions);
+  safeDB = await mongoose.createConnection(
+    `mongodb+srv://michael:qQbl9i98Ar2IM934@cluster0.ynbmgmg.mongodb.net/failean-tst?retryWrites=true&w=majority`,
+    {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+    } as ConnectOptions
+  );
 
   safeDB.on("error", console.error.bind(console, "connection error:"));
   safeDB.once("open", function () {
