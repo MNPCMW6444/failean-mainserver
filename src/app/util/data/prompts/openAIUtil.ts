@@ -12,8 +12,8 @@ import {
   CreateChatCompletionResponse,
 } from "openai";
 import { roleMap } from "../../../../content/prompts/roleMap";
-import ideaModel from "../../../mongo-models/data/ideas/ideaModel";
-import PromptResultModel from "../../../mongo-models/data/prompts/promptResultModel";
+import { getIdeaModel } from "../../../mongo-models/data/ideas/ideaModel";
+import { getPromptResultModel } from "../../../mongo-models/data/prompts/promptResultModel";
 import aideatorPromptMap from "../../../../content/prompts/aideatorPromptMap";
 import { encode } from "gpt-3-encoder";
 import { amendTokens, tokenCount } from "../../accounts/tokensUtil";
@@ -31,6 +31,8 @@ export const estimateOpenAI = async (
   promptName: keyof PromptMap,
   feedback?: string
 ): Promise<undefined | number> => {
+  const ideaModel = getIdeaModel();
+  const PromptResultModel = getPromptResultModel();
   if (promptName === "idea") return 0;
   const idea = await ideaModel.findById(ideaID);
   let dependencies: string[];

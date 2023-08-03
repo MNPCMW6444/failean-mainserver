@@ -1,7 +1,7 @@
 import Queue from "bull";
 import { ocServerDomain } from "../setup/config";
 import pubsub from "../setup/redisSetup";
-import ideaModel from "../mongo-models/data/ideas/ideaModel";
+import { getIdeaModel } from "../mongo-models/data/ideas/ideaModel";
 import aideatorPromptMap from "../../content/prompts/aideatorPromptMap";
 import {
   API,
@@ -9,7 +9,7 @@ import {
   PromptPart,
   WhiteModels,
 } from "@failean/shared-types";
-import PromptResultModel from "../mongo-models/data/prompts/promptResultModel";
+import { getPromptResultModel } from "../mongo-models/data/prompts/promptResultModel";
 import { callOpenAI } from "../util/data/prompts/openAIUtil";
 import { createBullBoard } from "@bull-board/api";
 import { BullAdapter } from "@bull-board/api/bullAdapter";
@@ -60,6 +60,8 @@ discoverService("us-east-1", {
 
 // Define your job processing function
 const processJob = async (job: any) => {
+  const PromptResultModel = await getPromptResultModel();
+  const ideaModel = await getIdeaModel();
   try {
     const { user, ideaID, promptName, feedback, reqUUID } = job.data;
     if (user.subscription !== "tokens") {

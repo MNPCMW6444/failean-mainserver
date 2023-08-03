@@ -1,5 +1,5 @@
 import express from "express";
-import PromptResultModel from "../../../mongo-models/data/prompts/promptResultModel";
+import { getPromptResultModel } from "../../../mongo-models/data/prompts/promptResultModel";
 import { PromptName } from "@failean/shared-types";
 import { addJobsToQueue } from "../../../jobs/openAIQueue";
 import {
@@ -50,6 +50,8 @@ router.post("/getPromptResult", async (req, res) => {
 
     const { ideaID, promptName }: { ideaID: string; promptName: PromptName } =
       req.body;
+
+    const PromptResultModel = getPromptResultModel();
 
     if (promptName === "all") {
       const promptResults = await PromptResultModel.find({
@@ -179,6 +181,7 @@ router.post("/savePromptResult", async (req, res) => {
       data: string;
       reason: string;
     } = req.body;
+    const PromptResultModel = getPromptResultModel();
 
     const savedPromptResult = new PromptResultModel({
       owner: user._id,

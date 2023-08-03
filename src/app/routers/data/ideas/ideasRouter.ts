@@ -1,11 +1,12 @@
 import express from "express";
-import ideaModel from "../../../mongo-models/data/ideas/ideaModel";
+import { getIdeaModel } from "../../../mongo-models/data/ideas/ideaModel";
 import jsonwebtoken from "jsonwebtoken";
 
 const router = express.Router();
 
 router.get("/getIdeas", async (req, res) => {
   try {
+    const ideaModel = getIdeaModel();
     const token = req.cookies.jsonwebtoken;
     if (!token) return res.status(401).json({ errorMessage: "Unauthorized." });
     const validatedUser = jsonwebtoken.verify(
@@ -31,6 +32,8 @@ router.get("/getIdeas", async (req, res) => {
 
 router.post("/saveIdea", async (req, res) => {
   try {
+    const ideaModel = getIdeaModel();
+
     const token = req.cookies.jsonwebtoken;
     if (!token) return res.status(401).json({ errorMessage: "Unauthorized." });
     const validatedUser = jsonwebtoken.verify(
@@ -59,6 +62,8 @@ router.post("/saveIdea", async (req, res) => {
 
 router.post("/archiveIdea", async (req, res) => {
   try {
+    const ideaModel = getIdeaModel();
+
     const token = req.cookies.jsonwebtoken;
     if (!token) return res.status(401).json({ errorMessage: "Unauthorized." });
     const validatedUser = jsonwebtoken.verify(

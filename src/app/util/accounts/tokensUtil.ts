@@ -1,11 +1,14 @@
-import tokenModal from "../../mongo-models/accounts/tokenModel";
+import { getTokenModel } from "../../mongo-models/accounts/tokenModel";
 import { WhiteModels } from "@failean/shared-types";
 type WhiteUser = WhiteModels.Auth.WhiteUser;
 
 export const tokenCount = async (userID: string) => {
+  const tokenModal = getTokenModel();
   const tokens = await tokenModal.find({ owner: userID });
 
-  const count: number[] = tokens.map((transaction) => transaction.transaction);
+  const count: number[] = tokens.map(
+    (transaction: any) => transaction.transaction
+  );
 
   const total = count.reduce((a, b) => a + b, 0);
 
@@ -17,6 +20,7 @@ export const amendTokens = async (
   ammount: number,
   reason: string
 ): Promise<"yes" | "no"> => {
+  const tokenModal = getTokenModel();
   try {
     if (user.subscription !== "tokens") return "no";
     const add = new tokenModal({

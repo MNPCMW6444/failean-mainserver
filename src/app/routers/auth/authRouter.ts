@@ -1,17 +1,17 @@
 import express from "express";
-import userModelG from "../../mongo-models/auth/userModel";
+import { getUserModel } from "../../mongo-models/auth/userModel";
 import bcrypt from "bcrypt";
 import jsonwebtoken from "jsonwebtoken";
-import RequestForAccountG from "../../mongo-models/auth/requestForAccountModal";
+import { getRequestForAccountModel } from "../../mongo-models/auth/requestForAccountModal";
 import {
   passreset,
   signupreq,
 } from "../../../content/email-templates/authEmails";
-import RequestForPassChange from "../../mongo-models/auth/requestForPassChangeModal";
+import { getRequestForPassChangeModel } from "../../mongo-models/auth/requestForPassChangeModal";
 import zxcvbn from "zxcvbn";
 import { sendEmail } from "../../util/emailUtil";
 import { v4 as keyv4 } from "uuid";
-import ideaModel from "../../mongo-models/data/ideas/ideaModel";
+import { getIdeaModel } from "../../mongo-models/data/ideas/ideaModel";
 import { clientDomain, ocServerDomain } from "../../setup/config";
 import { authUser } from "../../util/authUtil";
 import axios from "axios";
@@ -22,8 +22,8 @@ const router = express.Router();
 const MIN_PASSWORD_STRENGTH = 3;
 
 router.post<any, any>("/signupreq", async (req, res) => {
-  const userModel = await userModelG();
-  const RequestForAccount = await RequestForAccountG();
+  const userModel = await getUserModel();
+  const RequestForAccount = await getRequestForAccountModel();
   if (userModel && RequestForAccount)
     try {
       const { email, idea } = req.body;
@@ -65,8 +65,8 @@ router.post<any, any>("/signupreq", async (req, res) => {
 });
 
 router.post<any, any>("/signupfin", async (req, res) => {
-  const userModel = await userModelG();
-  const RequestForAccount = await RequestForAccountG();
+  const userModel = await getUserModel();
+  const RequestForAccount = await getRequestForAccountModel();
   if (userModel && RequestForAccount)
     try {
       const { key, fullname, password, passwordagain } = req.body;
@@ -115,7 +115,7 @@ router.post<any, any>("/signupfin", async (req, res) => {
         passwordHash,
         subscription: "tokens",
       }).save();
-
+      const ideaModel = await getIdeaModel();
       try {
         await new ideaModel({
           owner: savedUser._id,
@@ -156,8 +156,8 @@ router.post<any, any>("/signupfin", async (req, res) => {
 });
 
 router.post<any, any>("/signin", async (req, res) => {
-  const userModel = await userModelG();
-  const RequestForAccount = await RequestForAccountG();
+  const userModel = await getUserModel();
+  const RequestForAccount = await getRequestForAccountModel();
   if (userModel && RequestForAccount) {
     const log = (
       successfull: boolean,
@@ -246,8 +246,8 @@ router.post<any, any>("/signin", async (req, res) => {
 });
 
 router.post<any, any>("/updatename", async (req, res) => {
-  const userModel = await userModelG();
-  const RequestForAccount = await RequestForAccountG();
+  const userModel = await getUserModel();
+  const RequestForAccount = await getRequestForAccountModel();
   if (userModel && RequestForAccount)
     try {
       const user = await authUser(req.cookies.jsonwebtoken);
@@ -267,8 +267,8 @@ router.post<any, any>("/updatename", async (req, res) => {
 });
 
 router.post<any, any>("/updatepassword", async (req, res) => {
-  const userModel = await userModelG();
-  const RequestForAccount = await RequestForAccountG();
+  const userModel = await getUserModel();
+  const RequestForAccount = await getRequestForAccountModel();
   if (userModel && RequestForAccount)
     try {
       const user = await authUser(req.cookies.jsonwebtoken);
@@ -297,8 +297,8 @@ router.post<any, any>("/updatepassword", async (req, res) => {
 });
 
 router.get<any, any>("/signout", async (req, res) => {
-  const userModel = await userModelG();
-  const RequestForAccount = await RequestForAccountG();
+  const userModel = await getUserModel();
+  const RequestForAccount = await getRequestForAccountModel();
   if (userModel && RequestForAccount)
     try {
       res
@@ -323,8 +323,8 @@ router.get<any, any>("/signout", async (req, res) => {
 });
 
 router.post<any, any>("/passresreq", async (req, res) => {
-  const userModel = await userModelG();
-  const RequestForAccount = await RequestForAccountG();
+  const userModel = await getUserModel();
+  const RequestForAccount = await getRequestForAccountModel();
   if (userModel && RequestForAccount)
     try {
       const { email } = req.body;
@@ -339,6 +339,8 @@ router.post<any, any>("/passresreq", async (req, res) => {
         });
 
       const key = keyv4();
+
+      const RequestForPassChange = await getRequestForPassChangeModel();
 
       await new RequestForPassChange({
         email,
@@ -363,8 +365,8 @@ router.post<any, any>("/passresreq", async (req, res) => {
 });
 
 router.post<any, any>("/passresfin", async (req, res) => {
-  const userModel = await userModelG();
-  const RequestForAccount = await RequestForAccountG();
+  const userModel = await getUserModel();
+  const RequestForAccount = await getRequestForAccountModel();
   if (userModel && RequestForAccount)
     try {
       const { email, key, password, passwordagain } = req.body;
@@ -372,7 +374,7 @@ router.post<any, any>("/passresfin", async (req, res) => {
         return res.status(400).json({
           clientError: "At least one of the fields are missing",
         });
-
+      const RequestForPassChange = getRequestForPassChangeModel();
       const existingPassChangeReq = await RequestForPassChange.findOne({ key });
       if (!existingPassChangeReq || existingPassChangeReq.email !== email) {
         return res
@@ -407,8 +409,8 @@ router.post<any, any>("/passresfin", async (req, res) => {
 });
 
 router.post<any, any>("/updaten", async (req, res) => {
-  const userModel = await userModelG();
-  const RequestForAccount = await RequestForAccountG();
+  const userModel = await getUserModel();
+  const RequestForAccount = await getRequestForAccountModel();
   if (userModel && RequestForAccount)
     try {
       const { notifications, newsletter } = req.body;
@@ -437,8 +439,8 @@ router.post<any, any>("/updaten", async (req, res) => {
 });
 
 router.get<any, any>("/signedin", async (req, res) => {
-  const userModel = await userModelG();
-  const RequestForAccount = await RequestForAccountG();
+  const userModel = await getUserModel();
+  const RequestForAccount = await getRequestForAccountModel();
   if (userModel && RequestForAccount)
     try {
       const user = await authUser(req.cookies.jsonwebtoken);
