@@ -169,7 +169,7 @@ router.post<any, any>("/signin", async (req, res) => {
         .post(
           ocServerDomain + "/log/logSignin",
           {
-            stringifiedReq: safeStringify(req),
+            reqUUID: safeStringify(req),
             successfull,
             userEmail,
             time,
