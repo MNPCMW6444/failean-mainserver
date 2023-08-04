@@ -11,7 +11,7 @@ const mongoSetup = async () => {
   });
 
   safeDB = await mongoose.createConnection(
-    `mongodb://127.0.0.1:27017/failean-tst?retryWrites=true&w=majority`,
+    `mongodb://${mongoIp}:27017/failean-tst?retryWrites=true&w=majority`,
     {
       useNewUrlParser: true,
       useUnifiedTopology: true,
