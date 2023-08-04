@@ -1,6 +1,6 @@
 import Queue from "bull";
 import { ocServerDomain } from "../setup/config";
-import pubsub from "../setup/redisSetup";
+import { pubsub } from "../setup/redisSetup";
 import { getIdeaModel } from "../mongo-models/data/ideas/ideaModel";
 import aideatorPromptMap from "../../content/prompts/aideatorPromptMap";
 import {
@@ -178,7 +178,7 @@ const processJob = async (job: any) => {
         }
       });
     }
-    (pubsub as any).publish("JOB_COMPLETED", {
+    pubsub.publish("JOB_COMPLETED", {
       jobCompleted: (job?.id || "8765") + "",
     });
     console.log("Published update for job ", {
@@ -186,7 +186,7 @@ const processJob = async (job: any) => {
     });
   } catch (error) {
     console.error(`An error occurred during job processing: ${error}`);
-    (pubsub as any).publish("JOB_COMPLETED", {
+    pubsub.publish("JOB_COMPLETED", {
       jobCompleted: (job?.id || "8765") + "",
       status: "error",
       message: error,
