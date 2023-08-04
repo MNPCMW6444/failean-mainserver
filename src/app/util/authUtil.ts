@@ -4,7 +4,7 @@ import { WhiteModels } from "@failean/shared-types";
 type WhiteUser = WhiteModels.Auth.WhiteUser;
 
 export const authUser = async (token: any): Promise<WhiteUser | null> => {
-  const userModel = await getUserModel();
+  const userModel = getUserModel();
   try {
     if (!token) return null;
     const validatedUser = jsonwebtoken.verify(

@@ -60,8 +60,8 @@ discoverService("us-east-1", {
 
 // Define your job processing function
 const processJob = async (job: any) => {
-  const PromptResultModel = await getPromptResultModel();
-  const ideaModel = await getIdeaModel();
+  const PromptResultModel = getPromptResultModel();
+  const ideaModel = getIdeaModel();
   try {
     const { user, ideaID, promptName, feedback, reqUUID } = job.data;
     if (user.subscription !== "tokens") {
