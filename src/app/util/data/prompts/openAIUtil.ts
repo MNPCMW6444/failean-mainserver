@@ -124,42 +124,47 @@ export const callOpenAI = async (
 
     const openai = new OpenAIApi(configuration);
     if ((await tokenCount(user._id)) > 0) {
-      const completion = await openai.createChatCompletion({
-        model: "gpt-3.5-turbo",
-        messages: [
-          {
-            role: "system",
-            content: role,
-          },
-          ...chat,
-        ],
-      });
-
-      if (completion.data.usage) {
-        const priceForUsInCents =
-          completion.data.usage?.prompt_tokens * 0.003 +
-          completion.data.usage?.completion_tokens * 0.004;
-        const forThem = priceForUsInCents * ROI;
-        amendTokens(user, 0 - forThem, "callopenai");
-        axios
-          .post(
-            ocServerDomain + "/log/logPromptPrice",
+      try {
+        const completion = await openai.createChatCompletion({
+          model: "gpt-3.5-turbo",
+          messages: [
             {
-              openAICallReqUUID,
-              promptName,
-              forAVGPriceInOpenAITokens: forThem,
+              role: "system",
+              content: role,
             },
-            {
-              auth: {
-                username: "client",
-                password: process.env.OCPASS + "xx",
-              },
-            }
-          )
-          .catch((err) => console.error(err));
-      }
+            ...chat,
+          ],
+        });
 
-      return completion as any;
+        if (completion.data.usage) {
+          const priceForUsInCents =
+            completion.data.usage?.prompt_tokens * 0.003 +
+            completion.data.usage?.completion_tokens * 0.004;
+          const forThem = priceForUsInCents * ROI;
+          amendTokens(user, 0 - forThem, "callopenai");
+          axios
+            .post(
+              ocServerDomain + "/log/logPromptPrice",
+              {
+                openAICallReqUUID,
+                promptName,
+                forAVGPriceInOpenAITokens: forThem,
+              },
+              {
+                auth: {
+                  username: "client",
+                  password: process.env.OCPASS + "xx",
+                },
+              }
+            )
+            .catch((err) => console.error(err));
+        }
+
+        return completion as any;
+      } catch (err) {
+        console.log(err.response.data);
+        return -1;
+      }
     } else return -2;
   }
   return -1;
