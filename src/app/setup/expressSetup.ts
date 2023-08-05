@@ -6,9 +6,10 @@ import { serverAdapter } from "../jobs/openAIQueue";
 import { clientDomain, ocClientDomain } from "./config";
 import routers from "../routers";
 import { discoverService } from "./AWSDiscovery";
+import pack from "../../../package.json";
 
 export const app = express();
-export const port = process.env.PORT || 6555;
+export const port = 6555;
 
 export let ocServerDomain = "";
 
@@ -50,8 +51,10 @@ discoverService("us-east-1", {
   app.use("/data", dataRouter);
   app.use("/gql", gqlRouter);
 
+  const { version } = pack;
+
   app.get("/areyoualive", (_, res) => {
-    res.json({ answer: "yes", version: process.env.npm_package_version });
+    res.json({ answer: "yes", version });
   });
 
   if (process.env.NODE_ENV === "production") {
