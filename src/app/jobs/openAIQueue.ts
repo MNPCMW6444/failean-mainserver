@@ -1,5 +1,4 @@
 import Queue from "bull";
-import { ocServerDomain } from "../setup/config";
 import { pubsub } from "../setup/redisSetup";
 import { getIdeaModel } from "../mongo-models/data/ideas/ideaModel";
 import aideatorPromptMap from "../../content/prompts/aideatorPromptMap";
@@ -19,6 +18,7 @@ import { INVALID_PROMPT_MESSAGE } from "../util/messages";
 import { safeStringify } from "../util/jsonUtil";
 import axios from "axios";
 import { discoverService } from "../setup/AWSDiscovery";
+import { ocServerDomain } from "../setup/expressSetup";
 
 export const serverAdapter = new ExpressAdapter();
 

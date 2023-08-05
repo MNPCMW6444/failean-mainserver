@@ -10,8 +10,3 @@ export const clientDomain =
   process.env.NODE_ENV === "development"
     ? "http://localhost:5999"
     : "https://failean.com";
-
-export const ocServerDomain =
-  process.env.NODE_ENV === "development"
-    ? "http://localhost:6777"
-    : "https://tstocserver.failean.com";

@@ -12,7 +12,7 @@ import { API } from "@failean/shared-types";
 import { estimateOpenAI } from "../../../util/data/prompts/openAIUtil";
 import { tokenCount } from "../../../util/accounts/tokensUtil";
 import axios from "axios";
-import { ocServerDomain } from "../../../setup/config";
+import { ocServerDomain } from "../../../setup/expressSetup";
 
 const router = express.Router();
 

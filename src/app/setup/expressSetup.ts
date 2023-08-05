@@ -3,8 +3,9 @@ import cors from "cors";
 import cookieParser from "cookie-parser";
 import expressBasicAuth from "express-basic-auth";
 import { serverAdapter } from "../jobs/openAIQueue";
-import { clientDomain, ocClientDomain, ocServerDomain } from "./config";
+import { clientDomain, ocClientDomain } from "./config";
 import routers from "../routers";
+import { discoverService } from "./AWSDiscovery";
 
 const {
   authRouter,
@@ -22,22 +23,31 @@ const axiosLogger = (req: Request, res: Response, next: NextFunction) => {
   next();
 };
 
-const applyMiddlewares = (app: express.Application) => {
-  const middlewares = [
-    cookieParser(),
-    express.json({ limit: "50mb" }),
-    express.urlencoded({ limit: "50mb", extended: true }),
-    cors({
-      origin: [ocClientDomain, ocServerDomain, clientDomain],
-      credentials: true,
-    }),
-    axiosLogger,
-  ];
+export let ocServerDomain = "";
 
-  middlewares.forEach((middleware) => app.use(middleware));
-};
+discoverService("us-east-1", {
+  NamespaceName: "tst",
+  ServiceName: "ocserver",
+  MaxResults: 10,
+}).then((ip) => {
+  ocServerDomain = `http://${ip}:6777`;
+  const applyMiddlewares = (app: express.Application) => {
+    const middlewares = [
+      cookieParser(),
+      express.json({ limit: "50mb" }),
+      express.urlencoded({ limit: "50mb", extended: true }),
+      cors({
+        origin: [ocClientDomain, ocServerDomain, clientDomain],
+        credentials: true,
+      }),
+      axiosLogger,
+    ];
 
-applyMiddlewares(app);
+    middlewares.forEach((middleware) => app.use(middleware));
+  };
+
+  applyMiddlewares(app);
+});
 
 app.use("/accounts", accountsRouter);
 app.use("/auth", authRouter);
