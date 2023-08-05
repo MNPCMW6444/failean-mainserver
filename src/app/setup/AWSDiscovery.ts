@@ -20,7 +20,6 @@ export const discoverService = async (
       (data.Instances && data.Instances[0].Attributes?.AWS_INSTANCE_IPV4) + ""
     );
   } catch (err) {
-    return "127.0.0.1";
     console.error("Error during service discovery:", err.message);
     throw err; // Rethrow the error to be handled by the caller
   }

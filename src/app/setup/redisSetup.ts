@@ -5,8 +5,8 @@ export let pubsub: any;
 
 const connectRedis = async () => {
   const redisIp = await discoverService("us-east-1", {
-    NamespaceName: "dev",
-    ServiceName: "redis-s",
+    NamespaceName: "tst",
+    ServiceName: "redis",
     MaxResults: 10,
   });
 

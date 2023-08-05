@@ -26,8 +26,8 @@ type WhiteUser = WhiteModels.Auth.WhiteUser;
 let openAIQueue: any;
 // Create a new Bull queue
 discoverService("us-east-1", {
-  NamespaceName: "dev",
-  ServiceName: "redis-s",
+  NamespaceName: "tst",
+  ServiceName: "redis",
   MaxResults: 10,
 })
   .then((ip) => {
