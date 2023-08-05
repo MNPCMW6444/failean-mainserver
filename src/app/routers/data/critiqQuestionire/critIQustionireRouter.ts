@@ -2,6 +2,7 @@ import express from "express";
 import answerModel from /*   CritiqDocument,
  */ "../../../mongo-models/data/critiq/critiqModel";
 import jsonwebtoken from "jsonwebtoken";
+import { getSecrets } from "../../../setup/sectets";
 
 const router = express.Router();
 
