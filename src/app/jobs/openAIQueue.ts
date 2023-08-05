@@ -55,7 +55,7 @@ discoverService("us-east-1", {
     openAIQueue.process(processJob);
   })
   .catch((err) => {
-    console.error(`An error occurred during service discovery: ${err}`);
+    //console.error(`An error occurred during service discovery: ${err}`);
   });
 
 // Define your job processing function
