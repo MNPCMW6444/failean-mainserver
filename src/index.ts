@@ -41,7 +41,7 @@ const connectApolloServer = async () => {
     wsServer
   );
 
-  httpServer.listen(port, () => {
+  httpServer.listen(port, "0.0.0.0" as any, () => {
     console.log(
       `Server is ready at http://localhost:${port}${apolloServer.graphqlPath}`
     );
