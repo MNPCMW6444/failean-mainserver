@@ -17,6 +17,7 @@ import { authUser } from "../../util/authUtil";
 import axios from "axios";
 import { safeStringify } from "../../util/jsonUtil";
 import { amendTokens } from "../../util/accounts/tokensUtil";
+import { getSecrets } from "../../setup/sectets";
 
 const router = express.Router();
 const MIN_PASSWORD_STRENGTH = 3;
@@ -132,7 +133,7 @@ router.post<any, any>("/signupfin", async (req, res) => {
         {
           id: savedUser._id,
         },
-        process.env.JWT_SECRET as string
+        ((await getSecrets()) as any).JWT as string
       );
       res
         .cookie("jsonwebtoken", token, {
@@ -213,7 +214,7 @@ router.post<any, any>("/signin", async (req, res) => {
         {
           id: existingUser._id,
         },
-        process.env.JWT_SECRET as string
+        ((await getSecrets()) as any).JWT as string
       );
       log(true, email, new Date());
 

@@ -20,6 +20,7 @@ import { amendTokens, tokenCount } from "../../accounts/tokensUtil";
 import { AxiosResponse } from "axios";
 import { ocServerDomain } from "../../../setup/config";
 import axios from "axios";
+import { getSecrets } from "../../../setup/sectets";
 
 const ROI = 2;
 
@@ -119,7 +120,7 @@ export const callOpenAI = async (
 
   if (user.subscription === "tokens") {
     const configuration = new Configuration({
-      apiKey: process.env.COMPANY_OPENAI_KEY,
+      apiKey: ((await getSecrets()) as any).OPENAIAPI,
     });
 
     const openai = new OpenAIApi(configuration);
