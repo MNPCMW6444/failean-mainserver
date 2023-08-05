@@ -46,6 +46,7 @@ const connectApolloServer = async () => {
       `Server is ready at http://localhost:${port}${apolloServer.graphqlPath}`
     );
     console.log(`Subscriptions ready at ws://localhost:${port}/graphql`);
+    console.log("env is: ", process.env);
   });
 };
 
@@ -53,7 +54,7 @@ const setup = async () => {
   try {
     await connectApolloServer();
   } catch (error) {
-    console.error(error);
+    // console.error(error);
   }
 };
 

@@ -21,7 +21,7 @@ const connectRedis = async () => {
   });
 
   pubsub.getSubscriber().on("error", (error: any) => {
-    console.error("Subscriber failed to connect to Redis", error);
+    //console.error("Subscriber failed to connect to Redis", error);
   });
 };
 
