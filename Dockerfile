@@ -19,5 +19,5 @@ COPY --from=builder /app/package.json /app/package.json
 COPY --from=builder /app/package-lock.json /app/package-lock.json
 COPY --from=builder /app/node_modules /app/node_modules
 COPY --from=builder /app/dist /app/dist
-CMD ["node", "./dist"]
+CMD ["node", "./dist/src"]
 EXPOSE 6555
