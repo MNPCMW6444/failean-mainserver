@@ -15,7 +15,8 @@ router.post("/signupreq", async (req, res) => {
   const RequestForAccount = getRequestForAccountModel();
 
   try {
-    const { email, idea } = req.body;
+    const { email, field: idea } = req.body;
+
     if (!email)
       return res.status(400).json({
         clientError: "The email is missing",
@@ -42,7 +43,7 @@ router.post("/signupreq", async (req, res) => {
       .then(() => console.log("sent registration email"))
       .catch((err) => console.error(err));
 
-    res.redirect("/checkemail");
+    res.status(200).json({ message: "email successfully sent to " + email });
   } catch (err) {
     console.error(err);
     res.json({ result: "email successfully sent to " });
