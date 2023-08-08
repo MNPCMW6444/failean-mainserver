@@ -13,9 +13,8 @@ import { sendEmail } from "../../util/emailUtil";
 import { v4 as keyv4 } from "uuid";
 import { getIdeaModel } from "../../mongo-models/data/ideas/ideaModel";
 import { clientDomain } from "../../setup/config";
-import { ocServerDomain } from "../../setup/expressSetup";
+import { ocserverAxiosInstance } from "../../setup/expressSetup";
 import { authUser } from "../../util/authUtil";
-import axios from "axios";
 import { safeStringify } from "../../util/jsonUtil";
 import { amendTokens } from "../../util/accounts/tokensUtil";
 import { getSecrets } from "../../setup/sectets";
@@ -167,24 +166,15 @@ router.post<any, any>("/signin", async (req, res) => {
       time: Date,
       reason: string | undefined = undefined
     ) =>
-      axios
-        .post(
-          ocServerDomain + "/log/logSignin",
-          {
-            reqUUID: safeStringify(req),
-            successfull,
-            userEmail,
-            time,
-            reason,
-          },
-          {
-            auth: {
-              username: "client",
-              password: process.env.OCPASS + "xx",
-            },
-          }
-        )
-        .catch((err) => console.error(err));
+      ocserverAxiosInstance
+        .post("/log/logSignin", {
+          reqUUID: safeStringify(req),
+          successfull,
+          userEmail,
+          time,
+          reason,
+        })
+        .catch((err: any) => console.error(err));
     try {
       const { email, password } = req.body;
       if (!email || !password) {

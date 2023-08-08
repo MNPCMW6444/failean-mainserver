@@ -16,9 +16,8 @@ import { ExpressAdapter } from "@bull-board/express";
 import stringSimilarity from "../util/string-similarity";
 import { INVALID_PROMPT_MESSAGE } from "../util/messages";
 import { safeStringify } from "../util/jsonUtil";
-import axios from "axios";
 import { discoverService } from "../setup/AWSDiscovery";
-import { ocServerDomain } from "../setup/expressSetup";
+import { ocserverAxiosInstance } from "../setup/expressSetup";
 
 export const serverAdapter = new ExpressAdapter();
 
@@ -148,24 +147,15 @@ const processJob = async (job: any) => {
               INVALID_PROMPT_MESSAGE
             ) > 0.6
           )
-            axios
-              .post(
-                ocServerDomain + "/log/logInvalidPrompt",
-                {
-                  stringifiedCompletion: safeStringify(completion),
-                  prompt: constructedPrompt.join(""),
-                  result: completion.data.choices[0].message?.content,
-                  promptName,
-                  ideaID,
-                },
-                {
-                  auth: {
-                    username: "client",
-                    password: process.env.OCPASS + "xx",
-                  },
-                }
-              )
-              .catch((err) => console.error(err));
+            ocserverAxiosInstance
+              .post("log/logInvalidPrompt", {
+                stringifiedCompletion: safeStringify(completion),
+                prompt: constructedPrompt.join(""),
+                result: completion.data.choices[0].message?.content,
+                promptName,
+                ideaID,
+              })
+              .catch((err: any) => console.error(err));
           const savedResult = new PromptResultModel({
             owner: user._id,
             ideaID,

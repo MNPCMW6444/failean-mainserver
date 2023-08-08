@@ -18,8 +18,10 @@ import aideatorPromptMap from "../../../../content/prompts/aideatorPromptMap";
 import { encode } from "gpt-3-encoder";
 import { amendTokens, tokenCount } from "../../accounts/tokensUtil";
 import { AxiosResponse } from "axios";
-import { ocServerDomain } from "../../../setup/expressSetup";
-import axios from "axios";
+import {
+  ocServerDomain,
+  ocserverAxiosInstance,
+} from "../../../setup/expressSetup";
 import { getSecrets } from "../../../setup/sectets";
 
 const ROI = 2;
@@ -143,22 +145,13 @@ export const callOpenAI = async (
             completion.data.usage?.completion_tokens * 0.004;
           const forThem = priceForUsInCents * ROI;
           amendTokens(user, 0 - forThem, "callopenai");
-          axios
-            .post(
-              ocServerDomain + "/log/logPromptPrice",
-              {
-                openAICallReqUUID,
-                promptName,
-                forAVGPriceInOpenAITokens: forThem,
-              },
-              {
-                auth: {
-                  username: "client",
-                  password: process.env.OCPASS + "xx",
-                },
-              }
-            )
-            .catch((err) => console.error(err));
+          ocserverAxiosInstance
+            .post("/log/logPromptPrice", {
+              openAICallReqUUID,
+              promptName,
+              forAVGPriceInOpenAITokens: forThem,
+            })
+            .catch((err: any) => console.error(err));
         }
 
         return completion as any;

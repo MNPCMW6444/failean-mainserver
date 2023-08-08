@@ -7,11 +7,17 @@ import { clientDomain, ocClientDomain } from "./config";
 import routers from "../routers";
 import { discoverService } from "./AWSDiscovery";
 import pack from "../../../package.json";
+import { ocserverAxiosInstanceGetter } from "@failean/oc-server-provider";
 
 export const app = express();
 export const port = 6555;
 
 export let ocServerDomain = "";
+export let ocserverAxiosInstance: any = undefined;
+
+ocserverAxiosInstanceGetter().then((instance) => {
+  ocserverAxiosInstance = instance;
+});
 
 discoverService("us-east-1", {
   NamespaceName: "tst",
