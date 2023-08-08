@@ -15,7 +15,7 @@ export const port = 6555;
 export let ocServerDomain = "";
 export let ocserverAxiosInstance: any = undefined;
 
-ocserverAxiosInstanceGetter().then((instance) => {
+ocserverAxiosInstanceGetter().then((instance: any) => {
   ocserverAxiosInstance = instance;
 });
 
