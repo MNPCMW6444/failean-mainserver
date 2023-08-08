@@ -11,7 +11,7 @@ import { authUser } from "../../../util/authUtil";
 import { API } from "@failean/shared-types";
 import { estimateOpenAI } from "../../../util/data/prompts/openAIUtil";
 import { tokenCount } from "../../../util/accounts/tokensUtil";
-import { ocserverAxiosInstance } from "src/app/setup/expressSetup";
+import { ocserverAxiosInstance } from "../../../setup/expressSetup";
 
 const router = express.Router();
 
