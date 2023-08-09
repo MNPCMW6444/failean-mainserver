@@ -4,6 +4,8 @@ import { discoverService } from "./AWSDiscovery";
 export let safeDB: mongoose.Connection | null = null;
 
 const mongoSetup = async () => {
+  console.log("Trying to connect safemain mongodb...");
+
   const mongoIp = await discoverService("us-east-1", {
     NamespaceName: "tst",
     ServiceName: "mongo",
