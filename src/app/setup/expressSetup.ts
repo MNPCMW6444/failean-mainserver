@@ -31,6 +31,7 @@ discoverService("us-east-1", {
     dataRouter,
     gqlRouter,
     analyticsRouter,
+      stripeRouter
   } = routers;
   const axiosLogger = (req: Request, res: Response, next: NextFunction) => {
     next();
@@ -56,6 +57,7 @@ discoverService("us-east-1", {
   app.use("/analytics", analyticsRouter);
   app.use("/data", dataRouter);
   app.use("/gql", gqlRouter);
+  app.use("/stripe", stripeRouter);
 
   const { version } = pack;
 
