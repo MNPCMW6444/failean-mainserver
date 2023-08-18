@@ -5,12 +5,7 @@ import {
   RoleMap,
   WhiteModels,
 } from "@failean/shared-types";
-import {
-  Configuration,
-  OpenAIApi,
-  ChatCompletionRequestMessage,
-  CreateChatCompletionResponse,
-} from "openai";
+import OpenAI from "openai";
 import { roleMap } from "../../../../content/prompts/roleMap";
 import { getIdeaModel } from "../../../mongo-models/data/ideas/ideaModel";
 import { getPromptResultModel } from "../../../mongo-models/data/prompts/promptResultModel";
@@ -107,10 +102,10 @@ export const estimateOpenAI = async (
 export const callOpenAI = async (
   user: WhiteUser,
   roleName: keyof RoleMap,
-  chat: Array<ChatCompletionRequestMessage>,
+  chat: Array<OpenAI.Chat.CreateChatCompletionRequestMessage>,
   promptName: PromptName,
   openAICallReqUUID: string
-): Promise<AxiosResponse<CreateChatCompletionResponse, any> | -1 | -2> => {
+): Promise<AxiosResponse<OpenAI.Chat.Completions.ChatCompletion, any> | -1 | -2> => {
   const role = roleMap[roleName];
   if (user.subscription === "free") {
     return -1;
@@ -121,14 +116,14 @@ export const callOpenAI = async (
   }
 
   if (user.subscription === "tokens") {
-    const configuration = new Configuration({
-      apiKey: ((await getSecrets()) as any).OPENAIAPI,
-    });
+    
 
-    const openai = new OpenAIApi(configuration);
+    const openai = new OpenAI({
+      apiKey: ((await getSecrets()) as any).OPENAIAPI
+    });
     if ((await tokenCount(user._id)) > 0) {
       try {
-        const completion = await openai.createChatCompletion({
+        const completion = await openai.chat.completions.create({
           model: "gpt-3.5-turbo",
           messages: [
             {
