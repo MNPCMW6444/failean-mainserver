@@ -14,7 +14,6 @@ import { encode } from "gpt-3-encoder";
 import { amendTokens, tokenCount } from "../../accounts/tokensUtil";
 import { AxiosResponse } from "axios";
 import {
-  ocServerDomain,
   ocserverAxiosInstance,
 } from "../../../setup/expressSetup";
 import { getSecrets } from "../../../setup/sectets";
@@ -134,10 +133,11 @@ export const callOpenAI = async (
           ],
         });
 
-        if (completion.data.usage) {
+
+        if (completion.usage) {
           const priceForUsInCents =
-            completion.data.usage?.prompt_tokens * 0.003 +
-            completion.data.usage?.completion_tokens * 0.004;
+            completion.usage?.prompt_tokens * 0.003 +
+            completion.usage?.completion_tokens * 0.004;
           const forThem = priceForUsInCents * ROI;
           amendTokens(user, 0 - forThem, "callopenai");
           ocserverAxiosInstance
