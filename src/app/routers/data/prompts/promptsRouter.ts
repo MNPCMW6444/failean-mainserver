@@ -92,14 +92,14 @@ router.post("/preRunPrompt", async (req, res) => {
       feedback,
     }: API.Data.RunAndGetPromptResult.Req = req.body;
 
-    let avgx: number | undefined = 999999;
+    let avgx: number | undefined ;
 
     try {
-      const avg = await ocserverAxiosInstance.post("log/logPromptPrice", {
+      const avg =( await ocserverAxiosInstance.post("log/logPromptPrice", {
         promptName: promptNames,
-      }).data.avg;
+      })).data.avg;
       if (avg !== "no") avgx = avg;
-      else throw new Error("no");
+
     } catch (e) {
       console.log("estimated kaki");
       avgx = await Promise.all(
