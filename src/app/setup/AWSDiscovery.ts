@@ -11,7 +11,7 @@ export const discoverService = async (
   try {
     const data = await serviceDiscovery.discoverInstances(params);
     return (
-      (data.Instances && data.Instances[0].Attributes?.AWS_INSTANCE_IPV4) + ""
+      (data.Instances && data.Instances[0]?.Attributes?.AWS_INSTANCE_IPV4) + ""
     );
   } catch (err) {
     console.error("Error during service discovery:", err.message);
