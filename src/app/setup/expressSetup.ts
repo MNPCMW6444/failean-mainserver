@@ -5,24 +5,16 @@ import expressBasicAuth from "express-basic-auth";
 import { serverAdapter } from "../jobs/openAIQueue";
 import { clientDomain, ocClientDomain } from "./config";
 import routers from "../routers";
-import { discoverService } from "./AWSDiscovery";
 import pack from "../../../package.json";
 import * as process from "process";
 
 export const app = express();
 export const port = 6555;
 
-export let ocServerDomain = "";
 
 
 
 
-
-discoverService("us-east-1", {
-  NamespaceName: "tst",
-  ServiceName: "ocserver",
-  MaxResults: 10,
-}).then((ip) => {
   const {
     authRouter,
     accountsRouter,
@@ -36,7 +28,6 @@ discoverService("us-east-1", {
     next();
   };
 
-  ocServerDomain = `http://${ip}:6777`;
   const middlewares = [
     cookieParser(),
     express.json({ limit: "50mb" }),
@@ -79,4 +70,4 @@ discoverService("us-east-1", {
   } else {
     app.use("/admin/queues", serverAdapter.getRouter());
   }
-});
+
