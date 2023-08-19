@@ -17,7 +17,8 @@ import stringSimilarity from "../util/string-similarity";
 import { INVALID_PROMPT_MESSAGE } from "../util/messages";
 import { safeStringify } from "../util/jsonUtil";
 import { discoverService } from "../setup/AWSDiscovery";
-import { ocserverAxiosInstance } from "../setup/expressSetup";
+import {axiosInstance } from "@failean/oc-server-axiosinstance"
+
 
 export const serverAdapter = new ExpressAdapter();
 
@@ -54,7 +55,7 @@ discoverService("us-east-1", {
     openAIQueue.process(processJob);
   })
   .catch((err) => {
-    //console.error(`An error occurred during service discovery: ${err}`);
+    console.error(`An error occurred during service discovery: ${err}`);
   });
 
 // Define your job processing function
@@ -147,7 +148,7 @@ const processJob = async (job: any) => {
               INVALID_PROMPT_MESSAGE
             ) > 0.6
           )
-            ocserverAxiosInstance
+            axiosInstance
               .post("log/logInvalidPrompt", {
                 stringifiedCompletion: safeStringify(completion),
                 prompt: constructedPrompt.join(""),

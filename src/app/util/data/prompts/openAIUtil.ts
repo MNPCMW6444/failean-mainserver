@@ -13,9 +13,7 @@ import aideatorPromptMap from "../../../../content/prompts/aideatorPromptMap";
 import { encode } from "gpt-3-encoder";
 import { amendTokens, tokenCount } from "../../accounts/tokensUtil";
 import { AxiosResponse } from "axios";
-import {
-  ocserverAxiosInstance,
-} from "../../../setup/expressSetup";
+import {axiosInstance} from "@failean/oc-server-axiosinstance";
 import { getSecrets } from "../../../setup/sectets";
 
 const ROI = 2;
@@ -140,7 +138,7 @@ export const callOpenAI = async (
             completion.usage?.completion_tokens * 0.004;
           const forThem = priceForUsInCents * ROI;
           amendTokens(user, 0 - forThem, "callopenai");
-          ocserverAxiosInstance
+          axiosInstance
             .post("/log/logPromptPrice", {
               openAICallReqUUID,
               promptName,

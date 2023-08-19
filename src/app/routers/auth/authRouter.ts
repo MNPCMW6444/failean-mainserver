@@ -13,7 +13,7 @@ import { sendEmail } from "../../util/emailUtil";
 import { v4 as keyv4 } from "uuid";
 import { getIdeaModel } from "../../mongo-models/data/ideas/ideaModel";
 import { clientDomain } from "../../setup/config";
-import { ocserverAxiosInstance } from "../../setup/expressSetup";
+import {axiosInstance} from "@failean/oc-server-axiosinstance";
 import { authUser } from "../../util/authUtil";
 import { safeStringify } from "../../util/jsonUtil";
 import { amendTokens } from "../../util/accounts/tokensUtil";
@@ -166,7 +166,7 @@ router.post<any, any>("/signin", async (req, res) => {
       time: Date,
       reason: string | undefined = undefined
     ) =>
-      ocserverAxiosInstance
+      axiosInstance
         .post("/log/logSignin", {
           reqUUID: safeStringify(req),
           successfull,

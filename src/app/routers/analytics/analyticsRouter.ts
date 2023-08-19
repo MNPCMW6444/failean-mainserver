@@ -1,11 +1,11 @@
 import express from "express";
-import { ocserverAxiosInstance } from "../../setup/expressSetup";
+import {axiosInstance} from "@failean/oc-server-axiosinstance";
 
 const router = express.Router();
 
 router.post("/render", async (req, res) => {
   try {
-    await ocserverAxiosInstance.post("log/logPage", { ...req.body });
+    await axiosInstance.post("log/logPage", { ...req.body });
     return res.status(200).json({ msg: "suc" });
   } catch (err) {
     console.error(err);
@@ -14,7 +14,7 @@ router.post("/render", async (req, res) => {
 });
 
 router.post("/sidebar", async (req, res) => {
-  ocserverAxiosInstance
+  axiosInstance
     .post("/log/logSidebar", { ...req.body })
     .catch((err: any) => console.error(err));
   return res.status(200);

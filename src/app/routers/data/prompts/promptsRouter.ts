@@ -11,7 +11,7 @@ import { authUser } from "../../../util/authUtil";
 import { API } from "@failean/shared-types";
 import { estimateOpenAI } from "../../../util/data/prompts/openAIUtil";
 import { tokenCount } from "../../../util/accounts/tokensUtil";
-import { ocserverAxiosInstance } from "../../../setup/expressSetup";
+import {axiosInstance} from "@failean/oc-server-axiosinstance";
 
 const router = express.Router();
 
@@ -95,7 +95,7 @@ router.post("/preRunPrompt", async (req, res) => {
     let avgx: number | undefined ;
 
     try {
-      const avg =( await ocserverAxiosInstance.post("log/logPromptPrice", {
+      const avg =( await axiosInstance.post("log/logPromptPrice", {
         promptName: promptNames,
       })).data.avg;
       if (avg !== "no") avgx = avg;
