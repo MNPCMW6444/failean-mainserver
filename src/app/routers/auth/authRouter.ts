@@ -18,6 +18,7 @@ import { authUser } from "../../util/authUtil";
 import { safeStringify } from "../../util/jsonUtil";
 import { amendTokens } from "../../util/accounts/tokensUtil";
 import { getSecrets } from "../../setup/sectets";
+import * as process from "process";
 
 const router = express.Router();
 const MIN_PASSWORD_STRENGTH = 3;
@@ -173,7 +174,7 @@ router.post<any, any>("/signin", async (req, res) => {
           userEmail,
           time,
           reason,
-        })
+        },)
         .catch((err: any) => console.error(err));
     try {
       const { email, password } = req.body;
