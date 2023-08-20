@@ -121,6 +121,7 @@ const processJob = async (job: any) => {
             promptName,
           }));
 
+
         const completion = await callOpenAI(
           user as unknown as WhiteUser,
           prompt.role,
@@ -139,12 +140,13 @@ const processJob = async (job: any) => {
           reqUUID
         );
 
+
         if (completion === -1) throw new Error("Acoount error");
         else if (completion === -2) throw new Error("No Tokens");
         else {
           if (
             stringSimilarity(
-              completion.data?.choices[0].message?.content + "",
+              (completion as any).choices[0].message?.content + "",
               INVALID_PROMPT_MESSAGE
             ) > 0.6
           )
@@ -152,8 +154,8 @@ const processJob = async (job: any) => {
               .post("log/logInvalidPrompt", {
                 stringifiedCompletion: safeStringify(completion),
                 prompt: constructedPrompt.join(""),
-                result: completion.data?.choices[0].message?.content,
-                promptName,
+                result: (completion as any).choices[0].message?.content,
+                promptName: promptName.length?.length ? promptName.join(" "):promptName,
                 ideaID,
               })
               .catch((err: any) => console.error(err));
@@ -161,7 +163,7 @@ const processJob = async (job: any) => {
             owner: user._id,
             ideaID,
             promptName,
-            data: completion.data?.choices[0].message?.content,
+            data: (completion as any).choices[0].message?.content,
             reason:
               feedback?.length && feedback?.length > 1 ? "feedback" : "run",
           });

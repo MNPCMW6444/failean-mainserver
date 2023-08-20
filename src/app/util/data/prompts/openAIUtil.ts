@@ -113,13 +113,15 @@ export const callOpenAI = async (
   }
 
   if (user.subscription === "tokens") {
-    
+
+
 
     const openai = new OpenAI({
       apiKey: ((await getSecrets()) as any).OPENAIAPI
     });
     if ((await tokenCount(user._id)) > 0) {
       try {
+
         const completion = await openai.chat.completions.create({
           model: "gpt-3.5-turbo",
           messages: [
@@ -132,12 +134,17 @@ export const callOpenAI = async (
         });
 
 
+
+
         if (completion.usage) {
           const priceForUsInCents =
             completion.usage?.prompt_tokens * 0.003 +
             completion.usage?.completion_tokens * 0.004;
           const forThem = priceForUsInCents * ROI;
           amendTokens(user, 0 - forThem, "callopenai");
+
+
+
           axiosInstance
             .post("/log/logPromptPrice", {
               openAICallReqUUID,
