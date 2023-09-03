@@ -2,6 +2,7 @@ import express from "express";
 import answerModel from /*   CritiqDocument,
  */ "../../../mongo-models/data/critiq/critiqModel";
 import jsonwebtoken from "jsonwebtoken";
+import { getSecrets } from "../../../setup/sectets";
 
 const router = express.Router();
 
@@ -11,7 +12,7 @@ router.get("/data/critiqQuestionire/:ideaID", async (req, res) => {
     if (!token) return res.status(401).json({ errorMessage: "Unauthorized." });
     const validatedUser = jsonwebtoken.verify(
       token,
-      process.env.JWT_SECRET as any
+      ((await getSecrets()) as any).JWT as any
     );
 
     let ideacritiqQuestionire = await answerModel.find({
@@ -34,7 +35,7 @@ router.post("/data/critiqQuestionire/update", async (req, res) => {
     if (!token) return res.status(401).json({ errorMessage: "Unauthorized." });
     const validatedUser = jsonwebtoken.verify(
       token,
-      process.env.JWT_SECRET as any
+      ((await getSecrets()) as any).JWT as any
     );
     const { ideaID, questionId, answer, score } = req.body;
 

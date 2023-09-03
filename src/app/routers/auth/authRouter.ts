@@ -12,11 +12,13 @@ import zxcvbn from "zxcvbn";
 import { sendEmail } from "../../util/emailUtil";
 import { v4 as keyv4 } from "uuid";
 import { getIdeaModel } from "../../mongo-models/data/ideas/ideaModel";
-import { clientDomain, ocServerDomain } from "../../setup/config";
+import { clientDomain } from "../../setup/config";
+import {axiosInstance} from "@failean/oc-server-axiosinstance";
 import { authUser } from "../../util/authUtil";
-import axios from "axios";
 import { safeStringify } from "../../util/jsonUtil";
 import { amendTokens } from "../../util/accounts/tokensUtil";
+import { getSecrets } from "../../setup/sectets";
+import * as process from "process";
 
 const router = express.Router();
 const MIN_PASSWORD_STRENGTH = 3;
@@ -132,7 +134,7 @@ router.post<any, any>("/signupfin", async (req, res) => {
         {
           id: savedUser._id,
         },
-        process.env.JWT_SECRET as string
+        ((await getSecrets()) as any).JWT as string
       );
       res
         .cookie("jsonwebtoken", token, {
@@ -165,24 +167,15 @@ router.post<any, any>("/signin", async (req, res) => {
       time: Date,
       reason: string | undefined = undefined
     ) =>
-      axios
-        .post(
-          ocServerDomain + "/log/logSignin",
-          {
-            reqUUID: safeStringify(req),
-            successfull,
-            userEmail,
-            time,
-            reason,
-          },
-          {
-            auth: {
-              username: "client",
-              password: process.env.OCPASS + "xx",
-            },
-          }
-        )
-        .catch((err) => console.error(err));
+      axiosInstance
+        .post("/log/logSignin", {
+          reqUUID: safeStringify(req),
+          successfull,
+          userEmail,
+          time,
+          reason,
+        },)
+        .catch((err: any) => console.error(err));
     try {
       const { email, password } = req.body;
       if (!email || !password) {
@@ -213,7 +206,7 @@ router.post<any, any>("/signin", async (req, res) => {
         {
           id: existingUser._id,
         },
-        process.env.JWT_SECRET as string
+        ((await getSecrets()) as any).JWT as string
       );
       log(true, email, new Date());
 

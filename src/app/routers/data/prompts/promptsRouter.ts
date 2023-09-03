@@ -11,8 +11,7 @@ import { authUser } from "../../../util/authUtil";
 import { API } from "@failean/shared-types";
 import { estimateOpenAI } from "../../../util/data/prompts/openAIUtil";
 import { tokenCount } from "../../../util/accounts/tokensUtil";
-import axios from "axios";
-import { ocServerDomain } from "../../../setup/config";
+import {axiosInstance} from "@failean/oc-server-axiosinstance";
 
 const router = express.Router();
 
@@ -93,25 +92,14 @@ router.post("/preRunPrompt", async (req, res) => {
       feedback,
     }: API.Data.RunAndGetPromptResult.Req = req.body;
 
-    let avgx: number | undefined = 999999;
+    let avgx: number | undefined ;
 
     try {
-      const avg = (
-        await axios.post(
-          ocServerDomain + "/read/avgPriceForPrompt",
-          {
-            promptName: promptNames,
-          },
-          {
-            auth: {
-              username: "client",
-              password: process.env.OCPASS + "xx",
-            },
-          }
-        )
-      ).data.avg;
+      const avg =( await axiosInstance.post("log/logPromptPrice", {
+        promptName: promptNames,
+      })).data.avg;
       if (avg !== "no") avgx = avg;
-      else throw new Error("no");
+
     } catch (e) {
       console.log("estimated kaki");
       avgx = await Promise.all(

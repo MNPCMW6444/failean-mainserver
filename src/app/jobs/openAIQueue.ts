@@ -1,5 +1,4 @@
 import Queue from "bull";
-import { ocServerDomain } from "../setup/config";
 import { pubsub } from "../setup/redisSetup";
 import { getIdeaModel } from "../mongo-models/data/ideas/ideaModel";
 import aideatorPromptMap from "../../content/prompts/aideatorPromptMap";
@@ -17,8 +16,9 @@ import { ExpressAdapter } from "@bull-board/express";
 import stringSimilarity from "../util/string-similarity";
 import { INVALID_PROMPT_MESSAGE } from "../util/messages";
 import { safeStringify } from "../util/jsonUtil";
-import axios from "axios";
 import { discoverService } from "../setup/AWSDiscovery";
+import {axiosInstance } from "@failean/oc-server-axiosinstance"
+
 
 export const serverAdapter = new ExpressAdapter();
 
@@ -26,8 +26,8 @@ type WhiteUser = WhiteModels.Auth.WhiteUser;
 let openAIQueue: any;
 // Create a new Bull queue
 discoverService("us-east-1", {
-  NamespaceName: "dev",
-  ServiceName: "redis-s",
+  NamespaceName: "tst",
+  ServiceName: "redis",
   MaxResults: 10,
 })
   .then((ip) => {
@@ -121,6 +121,7 @@ const processJob = async (job: any) => {
             promptName,
           }));
 
+
         const completion = await callOpenAI(
           user as unknown as WhiteUser,
           prompt.role,
@@ -139,38 +140,30 @@ const processJob = async (job: any) => {
           reqUUID
         );
 
+
         if (completion === -1) throw new Error("Acoount error");
         else if (completion === -2) throw new Error("No Tokens");
         else {
           if (
             stringSimilarity(
-              completion.data.choices[0].message?.content + "",
+              (completion as any).choices[0].message?.content + "",
               INVALID_PROMPT_MESSAGE
             ) > 0.6
           )
-            axios
-              .post(
-                ocServerDomain + "/log/logInvalidPrompt",
-                {
-                  stringifiedCompletion: safeStringify(completion),
-                  prompt: constructedPrompt.join(""),
-                  result: completion.data.choices[0].message?.content,
-                  promptName,
-                  ideaID,
-                },
-                {
-                  auth: {
-                    username: "client",
-                    password: process.env.OCPASS + "xx",
-                  },
-                }
-              )
-              .catch((err) => console.error(err));
+            axiosInstance
+              .post("log/logInvalidPrompt", {
+                stringifiedCompletion: safeStringify(completion),
+                prompt: constructedPrompt.join(""),
+                result: (completion as any).choices[0].message?.content,
+                promptName: promptName.length?.length ? promptName.join(" "):promptName,
+                ideaID,
+              })
+              .catch((err: any) => console.error(err));
           const savedResult = new PromptResultModel({
             owner: user._id,
             ideaID,
             promptName,
-            data: completion.data.choices[0].message?.content,
+            data: (completion as any).choices[0].message?.content,
             reason:
               feedback?.length && feedback?.length > 1 ? "feedback" : "run",
           });

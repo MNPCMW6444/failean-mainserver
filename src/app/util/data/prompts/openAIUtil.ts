@@ -5,12 +5,7 @@ import {
   RoleMap,
   WhiteModels,
 } from "@failean/shared-types";
-import {
-  Configuration,
-  OpenAIApi,
-  ChatCompletionRequestMessage,
-  CreateChatCompletionResponse,
-} from "openai";
+import OpenAI from "openai";
 import { roleMap } from "../../../../content/prompts/roleMap";
 import { getIdeaModel } from "../../../mongo-models/data/ideas/ideaModel";
 import { getPromptResultModel } from "../../../mongo-models/data/prompts/promptResultModel";
@@ -18,8 +13,8 @@ import aideatorPromptMap from "../../../../content/prompts/aideatorPromptMap";
 import { encode } from "gpt-3-encoder";
 import { amendTokens, tokenCount } from "../../accounts/tokensUtil";
 import { AxiosResponse } from "axios";
-import { ocServerDomain } from "../../../setup/config";
-import axios from "axios";
+import {axiosInstance} from "@failean/oc-server-axiosinstance";
+import { getSecrets } from "../../../setup/sectets";
 
 const ROI = 2;
 
@@ -104,10 +99,10 @@ export const estimateOpenAI = async (
 export const callOpenAI = async (
   user: WhiteUser,
   roleName: keyof RoleMap,
-  chat: Array<ChatCompletionRequestMessage>,
+  chat: Array<OpenAI.Chat.CreateChatCompletionRequestMessage>,
   promptName: PromptName,
   openAICallReqUUID: string
-): Promise<AxiosResponse<CreateChatCompletionResponse, any> | -1 | -2> => {
+): Promise<AxiosResponse<OpenAI.Chat.Completions.ChatCompletion, any> | -1 | -2> => {
   const role = roleMap[roleName];
   if (user.subscription === "free") {
     return -1;
@@ -118,14 +113,16 @@ export const callOpenAI = async (
   }
 
   if (user.subscription === "tokens") {
-    const configuration = new Configuration({
-      apiKey: process.env.COMPANY_OPENAI_KEY,
-    });
 
-    const openai = new OpenAIApi(configuration);
+
+
+    const openai = new OpenAI({
+      apiKey: ((await getSecrets()) as any).OPENAIAPI
+    });
     if ((await tokenCount(user._id)) > 0) {
       try {
-        const completion = await openai.createChatCompletion({
+
+        const completion = await openai.chat.completions.create({
           model: "gpt-3.5-turbo",
           messages: [
             {
@@ -136,28 +133,25 @@ export const callOpenAI = async (
           ],
         });
 
-        if (completion.data.usage) {
+
+
+
+        if (completion.usage) {
           const priceForUsInCents =
-            completion.data.usage?.prompt_tokens * 0.003 +
-            completion.data.usage?.completion_tokens * 0.004;
+            completion.usage?.prompt_tokens * 0.003 +
+            completion.usage?.completion_tokens * 0.004;
           const forThem = priceForUsInCents * ROI;
           amendTokens(user, 0 - forThem, "callopenai");
-          axios
-            .post(
-              ocServerDomain + "/log/logPromptPrice",
-              {
-                openAICallReqUUID,
-                promptName,
-                forAVGPriceInOpenAITokens: forThem,
-              },
-              {
-                auth: {
-                  username: "client",
-                  password: process.env.OCPASS + "xx",
-                },
-              }
-            )
-            .catch((err) => console.error(err));
+
+
+
+          axiosInstance
+            .post("/log/logPromptPrice", {
+              openAICallReqUUID,
+              promptName,
+              forAVGPriceInOpenAITokens: forThem,
+            })
+            .catch((err: any) => console.error(err));
         }
 
         return completion as any;

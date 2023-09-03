@@ -1,21 +1,11 @@
 import express from "express";
-import { ocServerDomain } from "../../setup/config";
-import axios from "axios";
+import {axiosInstance} from "@failean/oc-server-axiosinstance";
 
 const router = express.Router();
 
 router.post("/render", async (req, res) => {
   try {
-    await axios.post(
-      ocServerDomain + "/log/logPage",
-      { ...req.body },
-      {
-        auth: {
-          username: "client",
-          password: process.env.OCPASS + "xx",
-        },
-      }
-    );
+    await axiosInstance.post("log/logPage", { ...req.body });
     return res.status(200).json({ msg: "suc" });
   } catch (err) {
     console.error(err);
@@ -24,18 +14,9 @@ router.post("/render", async (req, res) => {
 });
 
 router.post("/sidebar", async (req, res) => {
-  axios
-    .post(
-      ocServerDomain + "/log/logSidebar",
-      { ...req.body },
-      {
-        auth: {
-          username: "client",
-          password: process.env.OCPASS + "xx",
-        },
-      }
-    )
-    .catch((err) => console.error(err));
+  axiosInstance
+    .post("/log/logSidebar", { ...req.body })
+    .catch((err: any) => console.error(err));
   return res.status(200);
 });
 export default router;

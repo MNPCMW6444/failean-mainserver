@@ -3,63 +3,71 @@ import cors from "cors";
 import cookieParser from "cookie-parser";
 import expressBasicAuth from "express-basic-auth";
 import { serverAdapter } from "../jobs/openAIQueue";
-import { clientDomain, ocClientDomain, ocServerDomain } from "./config";
+import { clientDomain, ocClientDomain } from "./config";
 import routers from "../routers";
-
-const {
-  authRouter,
-  accountsRouter,
-  websiteRouter,
-  dataRouter,
-  gqlRouter,
-  analyticsRouter,
-} = routers;
+import pack from "../../../package.json";
+import * as process from "process";
 
 export const app = express();
-export const port = process.env.PORT || 6555;
+export const port = 6555;
 
-const axiosLogger = (req: Request, res: Response, next: NextFunction) => {
-  next();
-};
 
-const applyMiddlewares = (app: express.Application) => {
+
+
+
+  const {
+    authRouter,
+    accountsRouter,
+    websiteRouter,
+    dataRouter,
+    gqlRouter,
+    analyticsRouter,
+      stripeRouter
+  } = routers;
+  const axiosLogger = (req: Request, res: Response, next: NextFunction) => {
+    next();
+  };
+
   const middlewares = [
     cookieParser(),
     express.json({ limit: "50mb" }),
     express.urlencoded({ limit: "50mb", extended: true }),
     cors({
-      origin: [ocClientDomain, ocServerDomain, clientDomain],
+      origin: [ocClientDomain, clientDomain],
       credentials: true,
     }),
     axiosLogger,
   ];
 
   middlewares.forEach((middleware) => app.use(middleware));
-};
 
-applyMiddlewares(app);
+  app.use("/accounts", accountsRouter);
+  app.use("/auth", authRouter);
+  app.use("/website", websiteRouter);
+  app.use("/analytics", analyticsRouter);
+  app.use("/data", dataRouter);
+  app.use("/gql", gqlRouter);
+  app.use("/stripe", stripeRouter);
 
-app.use("/accounts", accountsRouter);
-app.use("/auth", authRouter);
-app.use("/website", websiteRouter);
-app.use("/analytics", analyticsRouter);
-app.use("/data", dataRouter);
-app.use("/gql", gqlRouter);
+  const { version } = pack;
 
-app.get("/areyoualive", (_, res) => {
-  res.json({ answer: "yes", version: process.env.npm_package_version });
-});
+  app.get("/areyoualive", (_, res) => {
+    res.json({ answer: "yes", version });
+  });
 
-if (process.env.NODE_ENV === "production") {
-  app.use(
-    "/admin/queues",
-    expressBasicAuth({
-      users: { [`${process.env.ADMIN_USER}`]: `${process.env.ADMIN_PASSWORD}` },
-      challenge: true,
-      realm: "Imb4T3st4pp",
-    }),
-    serverAdapter.getRouter()
-  );
-} else {
-  app.use("/admin/queues", serverAdapter.getRouter());
-}
+  if (process.env.NODE_ENV === "production") {
+    app.use(
+      "/admin/queues",
+      expressBasicAuth({
+        users: {
+          [`${process.env.ADMIN_USER}`]: `${process.env.ADMIN_PASSWORD}`,
+        },
+        challenge: true,
+        realm: "Imb4T3st4pp",
+      }),
+      serverAdapter.getRouter()
+    );
+  } else {
+    app.use("/admin/queues", serverAdapter.getRouter());
+  }
+

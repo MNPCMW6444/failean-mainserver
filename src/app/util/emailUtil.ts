@@ -1,12 +1,14 @@
 import sgMail from "@sendgrid/mail";
 import dotenv from "dotenv";
 import name from "../../content/name";
+import { getSecrets } from "../setup/sectets";
 
 dotenv.config();
-sgMail.setApiKey(process.env.SENDGRID || "");
 
-export const sendEmail = (to: string, subject: string, html: string) =>
-  sgMail.send({
+export const sendEmail = async (to: string, subject: string, html: string) => {
+  sgMail.setApiKey(((await getSecrets()) as any).SENDGRIDAPI);
+
+  return sgMail.send({
     from: {
       email: "service@failean.com",
       name: name.up,
@@ -15,3 +17,4 @@ export const sendEmail = (to: string, subject: string, html: string) =>
     subject,
     html,
   });
+};

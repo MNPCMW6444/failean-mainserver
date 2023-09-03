@@ -4,14 +4,16 @@ import { discoverService } from "./AWSDiscovery";
 export let safeDB: mongoose.Connection | null = null;
 
 const mongoSetup = async () => {
+  console.log("Trying to connect safemain mongodb...");
+
   const mongoIp = await discoverService("us-east-1", {
-    NamespaceName: "dev",
-    ServiceName: "mongo-s",
+    NamespaceName: "tst",
+    ServiceName: "mongo",
     MaxResults: 10,
   });
 
   safeDB = await mongoose.createConnection(
-    `mongodb://127.0.0.1:27017/failean-tst?retryWrites=true&w=majority`,
+    `mongodb://${mongoIp}:27017/failean-tst?retryWrites=true&w=majority`,
     {
       useNewUrlParser: true,
       useUnifiedTopology: true,
