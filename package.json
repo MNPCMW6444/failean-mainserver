@@ -1,6 +1,6 @@
 {
   "name": "failean-mainserver",
-  "version": "6.1.3",
+  "version": "7.0.0",
   "private": true,
   "scripts": {
     "v..": "npm version patch --no-git-tag-version",
