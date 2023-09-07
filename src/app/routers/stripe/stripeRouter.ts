@@ -1,4 +1,3 @@
-import {getSecrets} from "../../setup/sectets";
 import express from "express";
 
 const router = express.Router();
@@ -6,7 +5,7 @@ const router = express.Router();
 const endpointSecret = "whsec_e665041c4c4d75b5a6d662dd3c30ff61e658d63899ffa846fcd0ca3efcdd9776";
 
 router.post('/paymentMade', express.raw({type: 'application/json'}), async (request, response) => {
-    const stripe = require('stripe')((await getSecrets()) as any).STRIPE_SECRET;
+    const stripe = require('stripe')
     const sig = request.headers['stripe-signature'];
     let event;
     try {

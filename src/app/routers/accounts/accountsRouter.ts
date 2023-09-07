@@ -2,7 +2,7 @@ import express from "express";
 import jsonwebtoken from "jsonwebtoken";
 import { API } from "@failean/shared-types";
 import { tokenCount } from "../../util/accounts/tokensUtil";
-import { getSecrets } from "../../setup/sectets";
+import * as process from "process";
 
 const router = express.Router();
 
@@ -15,7 +15,7 @@ router.get<never, API.Accounts.CountTokens.Res>(
         return res.status(401).json({ errorMessage: "Unauthorized." });
       const { id }: any = jsonwebtoken.verify(
         token,
-        ((await getSecrets()) as any).JWT as any
+        process.env.JWT+""
       );
       return res.status(200).json({ tokens: await tokenCount(id) });
     } catch (err) {

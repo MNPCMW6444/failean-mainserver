@@ -17,7 +17,6 @@ import {axiosInstance} from "@failean/oc-server-axiosinstance";
 import { authUser } from "../../util/authUtil";
 import { safeStringify } from "../../util/jsonUtil";
 import { amendTokens } from "../../util/accounts/tokensUtil";
-import { getSecrets } from "../../setup/sectets";
 import * as process from "process";
 
 const router = express.Router();
@@ -134,7 +133,7 @@ router.post<any, any>("/signupfin", async (req, res) => {
         {
           id: savedUser._id,
         },
-        ((await getSecrets()) as any).JWT as string
+        process.env.JWT+""
       );
       res
         .cookie("jsonwebtoken", token, {
@@ -206,7 +205,7 @@ router.post<any, any>("/signin", async (req, res) => {
         {
           id: existingUser._id,
         },
-        ((await getSecrets()) as any).JWT as string
+        process.env.JWT+""
       );
       log(true, email, new Date());
 

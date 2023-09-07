@@ -1,7 +1,7 @@
 import express from "express";
 import { getIdeaModel } from "../../../mongo-models/data/ideas/ideaModel";
 import jsonwebtoken from "jsonwebtoken";
-import { getSecrets } from "../../../setup/sectets";
+import * as process from "process";
 
 const router = express.Router();
 
@@ -12,7 +12,7 @@ router.get("/getIdeas", async (req, res) => {
     if (!token) return res.status(401).json({ errorMessage: "Unauthorized." });
     const validatedUser = jsonwebtoken.verify(
       token,
-      ((await getSecrets()) as any).JWT as any
+      process.env.JWT+""
     );
     let hisIdeas = await ideaModel.find({
       owner: (validatedUser as any).id,
@@ -39,7 +39,7 @@ router.post("/saveIdea", async (req, res) => {
     if (!token) return res.status(401).json({ errorMessage: "Unauthorized." });
     const validatedUser = jsonwebtoken.verify(
       token,
-      ((await getSecrets()) as any).JWT as any
+      process.env.JWT+""
     );
     const { idea, ideaID } = req.body;
     try {
@@ -69,7 +69,7 @@ router.post("/archiveIdea", async (req, res) => {
     if (!token) return res.status(401).json({ errorMessage: "Unauthorized." });
     const validatedUser = jsonwebtoken.verify(
       token,
-      ((await getSecrets()) as any).JWT as any
+      process.env.JWT+""
     );
     const { ideaID } = req.body;
     const ideaToUpdate = await ideaModel.findById(ideaID);

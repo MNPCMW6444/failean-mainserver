@@ -1,7 +1,7 @@
 import jsonwebtoken, { JwtPayload } from "jsonwebtoken";
 import { getUserModel } from "../mongo-models/auth/userModel";
 import { WhiteModels } from "@failean/shared-types";
-import { getSecrets } from "../setup/sectets";
+import * as process from "process";
 type WhiteUser = WhiteModels.Auth.WhiteUser;
 
 export const authUser = async (token: any): Promise<WhiteUser | null> => {
@@ -10,7 +10,7 @@ export const authUser = async (token: any): Promise<WhiteUser | null> => {
     if (!token) return null;
     const validatedUser = jsonwebtoken.verify(
       token as string,
-      ((await getSecrets()) as any).JWT as string
+      process.env.JWT+""
     );
     return userModel.findById((validatedUser as JwtPayload).id) || null;
   } catch (err) {

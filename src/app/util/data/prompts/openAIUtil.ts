@@ -14,7 +14,7 @@ import { encode } from "gpt-3-encoder";
 import { amendTokens, tokenCount } from "../../accounts/tokensUtil";
 import { AxiosResponse } from "axios";
 import {axiosInstance} from "@failean/oc-server-axiosinstance";
-import { getSecrets } from "../../../setup/sectets";
+import * as process from "process";
 
 const ROI = 2;
 
@@ -117,7 +117,7 @@ export const callOpenAI = async (
 
 
     const openai = new OpenAI({
-      apiKey: ((await getSecrets()) as any).OPENAIAPI
+      apiKey: process.env.OPENAIAPI
     });
     if ((await tokenCount(user._id)) > 0) {
       try {
