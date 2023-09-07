@@ -1,19 +1,14 @@
 import { RedisPubSub } from "graphql-redis-subscriptions";
-import { discoverService } from "./AWSDiscovery";
 
 export let pubsub: any;
 
 const connectRedis = async () => {
-  const redisIp = await discoverService("us-east-1", {
-    NamespaceName: "tst",
-    ServiceName: "redis",
-    MaxResults: 10,
-  });
 
-  console.log(`Connecting to Redis at ${redisIp}:6379`);
+
+
 
   pubsub = new RedisPubSub({
-    connection: redisIp + ":6379",
+    connection:"redis--6b5sfbe.internal.bluebeach-0228d74e.australiaeast.azurecontainerapps.io:6379",
   });
 
   pubsub.getSubscriber().on("connect", () => {
