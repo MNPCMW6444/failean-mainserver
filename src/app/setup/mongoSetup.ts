@@ -7,8 +7,8 @@ const mongoSetup = async () => {
 
 
 
-  safeDB = await mongoose.createConnection(
-    `mongodb://mongo:27017/failean-tst?retryWrites=true&w=majority`,
+  safeDB =  mongoose.createConnection(
+    process.env.MONGO+"",
     {
       useNewUrlParser: true,
       useUnifiedTopology: true,
