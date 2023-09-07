@@ -9,7 +9,8 @@ COPY src /app/src
 RUN npm run prod
 RUN npm run clean:prod
 RUN npm i --omit=dev
-RUN rm -rf .npmrc \
+RUN rm -rf .npmrc
+
 FROM node:lts-slim
 WORKDIR /app
 COPY --from=builder /app/package.json /app/package.json
