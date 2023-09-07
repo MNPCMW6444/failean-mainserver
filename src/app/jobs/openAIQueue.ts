@@ -17,6 +17,7 @@ import stringSimilarity from "../util/string-similarity";
 import { INVALID_PROMPT_MESSAGE } from "../util/messages";
 import { safeStringify } from "../util/jsonUtil";
 import {axiosInstance } from "@failean/oc-server-axiosinstance"
+import process from "process";
 
 
 export const serverAdapter = new ExpressAdapter();
@@ -158,10 +159,7 @@ let openAIQueue: any;
 
 
     openAIQueue = new Queue("openAIQueue", {
-      redis: {
-        host: "failean.redis.cache.windows.net",
-        port: 6379,
-      },
+      redis: process.env.AZURE_REDIS_CONNECTIONSTRING,
     });
 
     serverAdapter.setBasePath("/admin/queues");

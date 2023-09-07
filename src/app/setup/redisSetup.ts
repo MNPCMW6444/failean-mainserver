@@ -1,4 +1,5 @@
 import { RedisPubSub } from "graphql-redis-subscriptions";
+import * as process from "process";
 
 export let pubsub: any;
 
@@ -8,7 +9,7 @@ const connectRedis = async () => {
 
 
   pubsub = new RedisPubSub({
-    connection:"failean.redis.cache.windows.net:6379",
+    connection:process.env.AZURE_REDIS_CONNECTIONSTRING,
   });
 
   pubsub.getSubscriber().on("connect", () => {
