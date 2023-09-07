@@ -8,7 +8,7 @@ const connectRedis = async () => {
 
 
   pubsub = new RedisPubSub({
-    connection:"redis--6b5sfbe.internal.bluebeach-0228d74e.australiaeast.azurecontainerapps.io:6379",
+    connection:"redis:6379",
   });
 
   pubsub.getSubscriber().on("connect", () => {

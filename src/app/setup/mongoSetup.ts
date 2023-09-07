@@ -8,7 +8,7 @@ const mongoSetup = async () => {
 
 
   safeDB = await mongoose.createConnection(
-    `mongodb://mongo--is10c2t.internal.bluebeach-0228d74e.australiaeast.azurecontainerapps.io:27017/failean-tst?retryWrites=true&w=majority`,
+    `mongodb://mongo:27017/failean-tst?retryWrites=true&w=majority`,
     {
       useNewUrlParser: true,
       useUnifiedTopology: true,
