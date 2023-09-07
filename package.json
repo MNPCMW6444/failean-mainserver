@@ -11,7 +11,7 @@
     "update": "npx npm-check-updates -u && npm i",
     "build": "tsc",
     "start": "npm run dev:fullfast",
-    "prod": "npm run update:prod && npm run build",
+    "prod": "npm run update && npm run build",
     "dev:fullclean": "npm run clean:all && npm run dev:fullfast",
     "dev:fullfast": "npm run update && npm run dev:fast",
     "dev:fast": "nodemon",
