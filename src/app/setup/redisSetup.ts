@@ -8,7 +8,7 @@ const connectRedis = async () => {
 
 
   pubsub = new RedisPubSub({
-    connection:"redis:6379",
+    connection:"failean.redis.cache.windows.net:6379",
   });
 
   pubsub.getSubscriber().on("connect", () => {

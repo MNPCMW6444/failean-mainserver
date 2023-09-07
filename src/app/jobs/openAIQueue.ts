@@ -159,7 +159,7 @@ let openAIQueue: any;
 
     openAIQueue = new Queue("openAIQueue", {
       redis: {
-        host: "mongo--is10c2t.internal.bluebeach-0228d74e.australiaeast.azurecontainerapps.io",
+        host: "failean.redis.cache.windows.net",
         port: 6379,
       },
     });
