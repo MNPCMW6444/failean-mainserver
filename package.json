@@ -36,12 +36,13 @@
   "dependencies": {
     "@bull-board/api": "^5.8.1",
     "@bull-board/express": "^5.8.1",
-    "@failean/mongo-models": "^1.6.123",
+    "@failean/mongo-models": "^1.6.124",
     "@failean/oc-server-axiosinstance": "^5.5.60",
     "@sendgrid/mail": "^7.7.0",
     "apollo-server-express": "^3.12.0",
     "axios": "^1.5.0",
     "bcrypt": "^5.1.1",
+    "body-parser": "^1.20.2",
     "bull": "^4.11.3",
     "cookie-parser": "^1.4.6",
     "dotenv": "^16.3.1",
@@ -53,11 +54,11 @@
     "mongoose": "^7.5.0",
     "nodemon": "^3.0.1",
     "openai": "^4.5.0",
-    "ws": "^8.14.0",
+    "ws": "^8.14.1",
     "zxcvbn": "^4.4.2"
   },
   "devDependencies": {
-    "@failean/shared-types": "^2.9.165",
+    "@failean/shared-types": "^2.9.166",
     "@types/bcrypt": "^5.0.0",
     "@types/cookie-parser": "^1.4.4",
     "@types/fs-extra": "^11.0.1",

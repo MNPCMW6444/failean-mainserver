@@ -5,6 +5,7 @@ import dataRouter from "./data/dataRouter";
 import websiteRouter from "./website/websiteRouter";
 import stripeRouter from "./stripe/stripeRouter";
 import gqlRouter from "./gqlRouter";
+import abtestRouter from "./abtest/abtestRouter";
 
 export default {
   accountsRouter,
@@ -13,5 +14,5 @@ export default {
   dataRouter,
   gqlRouter,
   stripeRouter,
-  websiteRouter
+  websiteRouter,abtestRouter
 };

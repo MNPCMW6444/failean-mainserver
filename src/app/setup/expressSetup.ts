@@ -22,7 +22,8 @@ export const port = 6555;
     dataRouter,
     gqlRouter,
     analyticsRouter,
-      stripeRouter
+      stripeRouter,
+      abtestRouter
   } = routers;
   const axiosLogger = (req: Request, res: Response, next: NextFunction) => {
     next();
@@ -33,7 +34,7 @@ export const port = 6555;
     express.json({ limit: "50mb" }),
     express.urlencoded({ limit: "50mb", extended: true }),
     cors({
-      origin: [ocClientDomain, clientDomain],
+      origin: [ocClientDomain, clientDomain,"https://failean.com","https://scailean.com"],
       credentials: true,
     }),
     axiosLogger,
@@ -47,7 +48,8 @@ export const port = 6555;
   app.use("/analytics", analyticsRouter);
   app.use("/data", dataRouter);
   app.use("/gql", gqlRouter);
-  app.use("/stripe", stripeRouter);
+app.use("/stripe", stripeRouter);
+app.use("/abtest", abtestRouter);
 
   const { version } = pack;
 
