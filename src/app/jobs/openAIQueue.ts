@@ -162,6 +162,8 @@ let openAIQueue: any;
       redis: process.env.AZURE_REDIS_CONNECTIONSTRING,
     });
 
+    console.log("AZURE_REDIS_CONNECTIONSTRINGAZURE_REDIS_CONNECTIONSTRINGisssss    "+process.env.AZURE_REDIS_CONNECTIONSTRING)
+
     serverAdapter.setBasePath("/admin/queues");
 
     openAIQueue.on("error", (error: any) => {
