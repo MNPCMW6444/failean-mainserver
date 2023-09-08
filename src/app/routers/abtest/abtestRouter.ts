@@ -15,7 +15,7 @@ router.post('/failean', async (req, res) => {
         const emailModel = getEmailModel();
         const doc = new emailModel({email, product: "failean"});
         await doc.save();
-        return res.status(200).redirect("/suc");
+        return res.status(200).redirect("https://failean.com/suc");
     } catch (error) {
         console.error('An error occurred:', error);
         res.status(500).send('Internal Server Error');
@@ -30,7 +30,7 @@ router.post('/scailean', async (req, res) => {
         const emailModel = getEmailModel();
         const doc = new emailModel({email, product: "scailean"});
         await doc.save();
-        return res.status(200).redirect("/suc");
+        return res.status(200).redirect("https://scailean.com/suc");
     } catch (error) {
         console.error('An error occurred:', error);
         res.status(500).send('Internal Server Error');
