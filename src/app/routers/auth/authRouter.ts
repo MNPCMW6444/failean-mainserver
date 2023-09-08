@@ -51,7 +51,7 @@ router.post<any, any>("/signupreq", async (req, res) => {
       const { subject, body } = signupreq(url);
 
       sendEmail(email, subject, body)
-        .then(() => console.log("sent registration email"))
+        .then(() => console.log("sent registration email - "+body))
         .catch((err) => console.error(err));
 
       res.json({ result: "email successfully sent to " + email });
