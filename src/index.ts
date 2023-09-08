@@ -6,7 +6,6 @@ import { Server } from "ws";
 import { apolloServer, schema } from "./app/setup/graphqlSetup";
 import { app, port } from "./app/setup/expressSetup";
 import mongoSetup from "./app/setup/mongoSetup";
-import redisSetup, { pubsub } from "./app/setup/redisSetup";
 
 dotenv.config();
 
@@ -30,13 +29,7 @@ const connectApolloServer = async () => {
       },
       onSubscribe: () => {
         console.log("Received new subscription");
-      },
-      onOperation: (message: any, params: any, webSocket: any) => {
-        return {
-          ...params,
-          context: { ...params.context, pubsub },
-        };
-      },
+      }
     },
     wsServer
   );
@@ -59,8 +52,5 @@ const setup = async () => {
 
 mongoSetup().then(() => {
   console.log("mongoSetup successfully completed");
-  redisSetup().then(() => {
-    console.log("redisSetup successfully completed");
     setup();
-  });
 });

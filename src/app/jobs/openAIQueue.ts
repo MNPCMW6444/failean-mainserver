@@ -1,5 +1,4 @@
-import Queue from "bull";
-import { pubsub } from "../setup/redisSetup";
+import pubsub, {openAIQueue} from "../setup/redisSetup";
 import { getIdeaModel } from "../mongo-models/data/ideas/ideaModel";
 import aideatorPromptMap from "../../content/prompts/aideatorPromptMap";
 import {
@@ -17,7 +16,6 @@ import stringSimilarity from "../util/string-similarity";
 import { INVALID_PROMPT_MESSAGE } from "../util/messages";
 import { safeStringify } from "../util/jsonUtil";
 import {axiosInstance } from "@failean/oc-server-axiosinstance"
-import process from "process";
 
 
 export const serverAdapter = new ExpressAdapter();
@@ -153,21 +151,16 @@ const processJob = async (job: any) => {
 
 
 type WhiteUser = WhiteModels.Auth.WhiteUser;
-let openAIQueue: any;
-// Create a new Bull queue
 
 
 
-    openAIQueue = new Queue("openAIQueue", {
-      redis: process.env.AZURE_REDIS_CONNECTIONSTRING,
-    });
 
-    console.log("AZURE_REDIS_CONNECTIONSTRINGAZURE_REDIS_CONNECTIONSTRINGisssss    "+process.env.AZURE_REDIS_CONNECTIONSTRING)
+
 
     serverAdapter.setBasePath("/admin/queues");
 
     openAIQueue.on("error", (error: any) => {
-     // console.error(`A queue error happened: ${error}`);
+     console.error(`A queue error happened: ${error}`);
     });
 
     createBullBoard({
