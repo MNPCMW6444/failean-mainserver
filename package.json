@@ -10,7 +10,7 @@
     "clean:prod": "rm -rf node_modules package-lock.json",
     "update": "npx npm-check-updates -u && npm i",
     "build": "tsc",
-    "start": "npm run dev:fullfast",
+    "start": "npm run clean:all && npm run dev:fullfast",
     "prod": "npm run update && npm run build",
     "dev:fullclean": "npm run clean:all && npm run dev:fullfast",
     "dev:fullfast": "npm run update && npm run dev:fast",
