@@ -167,7 +167,7 @@ let openAIQueue: any;
     serverAdapter.setBasePath("/admin/queues");
 
     openAIQueue.on("error", (error: any) => {
-      console.error(`A queue error happened: ${error}`);
+     // console.error(`A queue error happened: ${error}`);
     });
 
     createBullBoard({
