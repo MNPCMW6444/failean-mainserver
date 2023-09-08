@@ -6,17 +6,31 @@ const router = express.Router();
 
 router.use(bodyParser.urlencoded({extended: true}));
 
-router.post('/email', async (req, res) => {
+router.post('/failean', async (req, res) => {
     try {
         const email = req.body.email;
-        const product = req.body.product;
-        if (!email || !product) {
-            return res.status(400).send('Missing email or product');
+        if (!email) {
+            return res.status(400).send('Missing email');
         }
         const emailModel = getEmailModel();
-        const doc = new emailModel({email, product});
+        const doc = new emailModel({email, product: "failean"});
         await doc.save();
-        return res.status(200).send('Successfully received data');
+        return res.status(200).redirect("/suc");
+    } catch (error) {
+        console.error('An error occurred:', error);
+        res.status(500).send('Internal Server Error');
+    }
+});
+router.post('/scailean', async (req, res) => {
+    try {
+        const email = req.body.email;
+        if (!email) {
+            return res.status(400).send('Missing email');
+        }
+        const emailModel = getEmailModel();
+        const doc = new emailModel({email, product: "scailean"});
+        await doc.save();
+        return res.status(200).redirect("/suc");
     } catch (error) {
         console.error('An error occurred:', error);
         res.status(500).send('Internal Server Error');
