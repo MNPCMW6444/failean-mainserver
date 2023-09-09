@@ -1,75 +1,84 @@
-import express, { Request, Response, NextFunction } from "express";
+import express, {Request, Response, NextFunction} from "express";
 import cors from "cors";
 import cookieParser from "cookie-parser";
 import expressBasicAuth from "express-basic-auth";
-import { serverAdapter } from "../jobs/openAIQueue";
-import { clientDomain, ocClientDomain } from "./config";
+import {serverAdapter} from "../jobs/openAIQueue";
+import {clientDomain, ocClientDomain} from "./config";
 import routers from "../routers";
 import pack from "../../../package.json";
 import * as process from "process";
+import {getEmailModel} from "../mongo-models/abtest/emailModel";
 
 export const app = express();
 export const port = 6555;
 
 
-
-
-
-  const {
+const {
     authRouter,
     accountsRouter,
     websiteRouter,
     dataRouter,
     gqlRouter,
     analyticsRouter,
-      stripeRouter,
-      abtestRouter
-  } = routers;
-  const axiosLogger = (req: Request, res: Response, next: NextFunction) => {
+    stripeRouter,
+    abtestRouter
+} = routers;
+const axiosLogger = (req: Request, res: Response, next: NextFunction) => {
     next();
-  };
+};
 
-  const middlewares = [
+const middlewares = [
     cookieParser(),
-    express.json({ limit: "50mb" }),
-    express.urlencoded({ limit: "50mb", extended: true }),
+    express.json({limit: "50mb"}),
+    express.urlencoded({limit: "50mb", extended: true}),
     cors({
-      origin: [ocClientDomain, clientDomain,"https://failean.com","https://scailean.com"],
-      credentials: true,
+        origin: [ocClientDomain, clientDomain, "https://failean.com", "https://scailean.com"],
+        credentials: true,
     }),
     axiosLogger,
-  ];
+];
 
-  middlewares.forEach((middleware) => app.use(middleware));
+middlewares.forEach((middleware) => app.use(middleware));
 
-  app.use("/accounts", accountsRouter);
-  app.use("/auth", authRouter);
-  app.use("/website", websiteRouter);
-  app.use("/analytics", analyticsRouter);
-  app.use("/data", dataRouter);
-  app.use("/gql", gqlRouter);
+app.use("/accounts", accountsRouter);
+app.use("/auth", authRouter);
+app.use("/website", websiteRouter);
+app.use("/analytics", analyticsRouter);
+app.use("/data", dataRouter);
+app.use("/gql", gqlRouter);
 app.use("/stripe", stripeRouter);
 app.use("/abtest", abtestRouter);
+app.get("/abtestg", async (_, res) => {
+    try {
+        const reses = await (getEmailModel()).find();
+        return res.status(200).json({
+            a: reses.filter(({product}) => product === "failean").length,
+            b: reses.filter(({product}) => product === "scailean").length
+        })
+    } catch (e) {
+        return res.status(500).json({err: e})
+    }
+});
 
-  const { version } = pack;
+const {version} = pack;
 
-  app.get("/areyoualive", (_, res) => {
-    res.json({ answer: "yes", version });
-  });
+app.get("/areyoualive", (_, res) => {
+    res.json({answer: "yes", version});
+});
 
-  if (process.env.NODE_ENV === "production") {
+if (process.env.NODE_ENV === "production") {
     app.use(
-      "/admin/queues",
-      expressBasicAuth({
-        users: {
-          [`${process.env.ADMIN_USER}`]: `${process.env.ADMIN_PASSWORD}`,
-        },
-        challenge: true,
-        realm: "Imb4T3st4pp",
-      }),
-      serverAdapter.getRouter()
+        "/admin/queues",
+        expressBasicAuth({
+            users: {
+                [`${process.env.ADMIN_USER}`]: `${process.env.ADMIN_PASSWORD}`,
+            },
+            challenge: true,
+            realm: "Imb4T3st4pp",
+        }),
+        serverAdapter.getRouter()
     );
-  } else {
+} else {
     app.use("/admin/queues", serverAdapter.getRouter());
-  }
+}
 

@@ -6,6 +6,7 @@ const router = express.Router();
 
 router.use(bodyParser.urlencoded({extended: true}));
 
+
 router.post('/failean', async (req, res) => {
     try {
         const email = req.body.email;
