@@ -51,9 +51,11 @@ app.use("/abtest", abtestRouter);
 app.get("/abtestg", async (_, res) => {
     try {
         const reses = await (getEmailModel()).find();
+        const a = reses.filter(({product}) => product === "failean").length;
+        const b = reses.filter(({product}) => product === "scailean").length;
         return res.status(200).json({
-            a: reses.filter(({product}) => product === "failean").length,
-            b: reses.filter(({product}) => product === "scailean").length
+            a,
+            b, c: reses.length - a - b
         })
     } catch (e) {
         return res.status(500).json({err: e})
