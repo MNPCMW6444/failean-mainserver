@@ -2,6 +2,9 @@ import { RedisPubSub } from "graphql-redis-subscriptions";
 import * as process from "process";
 import  Queue from 'bull';
 import Redis from 'ioredis';
+import dotenv from "dotenv"
+
+dotenv.config()
 
 const redisConnectionString = process.env.AZURE_REDIS_CONNECTIONSTRING+"";
 
