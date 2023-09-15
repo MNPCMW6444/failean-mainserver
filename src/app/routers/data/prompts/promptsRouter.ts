@@ -95,13 +95,14 @@ router.post("/preRunPrompt", async (req, res) => {
         let avgx: number | undefined;
 
         try {
-            const avg = (await axiosInstance.post("log/logPromptPrice", {
+            const avg = (await axiosInstance.post("read/avgPriceForPrompt", {
                 promptName: promptNames,
             })).data.avg;
-            if (avg !== "no") avgx = avg;
+            console.log()
+            if (avg !== "no") avgx = avg; else throw new Error("kakiii")
 
         } catch (e) {
-            console.log("estimated kaki");
+            console.log("estimated kaki - " + e);
             avgx = await Promise.all(
                 promptNames.map((promptName) =>
                     estimateOpenAI(user, ideaID, promptName, feedback)
