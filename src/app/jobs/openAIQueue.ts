@@ -48,6 +48,8 @@ openAIQueue.process(async (job) => {
                 }
             });
 
+            console.log("early")
+
             await Promise.all(promises).then(async (updatedPropmtResult) => {
                 dependencies = updatedPropmtResult.map((r) => {
                     return r;
@@ -86,20 +88,32 @@ openAIQueue.process(async (job) => {
                     }));
 
 
+                console.log("calling with")
+
+                const chat = promptResult && [promptResult.length - 1] &&
+                promptResult[promptResult.length - 1].data
+                    ? [
+                        {role: "user", content: constructedPrompt.join("")},
+                        {
+                            role: "assistant",
+                            content: promptResult[promptResult.length - 1].data,
+                        },
+                        {role: "user", content: feedback},
+                    ]
+                    : [{role: "user", content: constructedPrompt.join("")}]
+
+
+                console.log("prompt.role: ", prompt.role)
+                console.log("chat: ", chat)
+                console.log("promptName: ", promptName)
+                console.log("reqUUID: ", reqUUID)
+
+                if (!chat) throw new Error("asd")
+
                 const completion = await callOpenAI(
                     user as unknown as WhiteModels.Auth.WhiteUser,
                     prompt.role,
-                    promptResult && [promptResult.length - 1] &&
-                    promptResult[promptResult.length - 1].data
-                        ? [
-                            {role: "user", content: constructedPrompt.join("")},
-                            {
-                                role: "assistant",
-                                content: promptResult[promptResult.length - 1].data,
-                            },
-                            {role: "user", content: feedback},
-                        ]
-                        : [{role: "user", content: constructedPrompt.join("")}],
+                    chat as any,
                     promptName,
                     reqUUID
                 );
@@ -108,21 +122,8 @@ openAIQueue.process(async (job) => {
                 if (completion === -1) throw new Error("Acoount error");
                 else if (completion === -2) throw new Error("No Tokens");
                 else {
-                    if (
-                        stringSimilarity(
-                            (completion).choices[0].message?.content + "",
-                            INVALID_PROMPT_MESSAGE
-                        ) > 0.6
-                    )
-                        axiosInstance
-                            .post("log/logInvalidPrompt", {
-                                stringifiedCompletion: safeStringify(completion),
-                                prompt: constructedPrompt.join(""),
-                                result: (completion).choices[0].message?.content,
-                                promptName,
-                                ideaID,
-                            })
-                            .catch((err) => console.error(err));
+
+
                     const savedResult = new PromptResultModel({
                         owner: user._id,
                         ideaID,
@@ -132,6 +133,34 @@ openAIQueue.process(async (job) => {
                             feedback?.length && feedback?.length > 1 ? "feedback" : "run",
                     });
                     await savedResult.save();
+                    console.log(completion.choices[0].message?.content)
+                    if (
+                        stringSimilarity(
+                            (completion).choices[0].message?.content + "",
+                            INVALID_PROMPT_MESSAGE
+                        ) > 0.6 || stringSimilarity(completion.choices[0].message?.content + "", "Invalid Idea.")
+                    ) {
+                        console.log((completion).choices[0].message?.content)
+                        axiosInstance
+                            .post("log/logInvalidPrompt", {
+                                stringifiedCompletion: safeStringify(completion),
+                                prompt: constructedPrompt.join(""),
+                                result: (completion).choices[0].message?.content,
+                                promptName,
+                                ideaID,
+                            })
+                            .catch((err) => console.error(err));
+                        throw new Error("Missing dependencies");
+                    } else {
+                        const task = await getAITaskModel().findById(taskID);
+                        if (task) {
+                            task.status = "successful"
+                            task.promptResIDOrReason = "successful but unknown"
+                            task.finishTime = new Date();
+                        }
+                        await task?.save()
+                    }
+
                 }
             });
         }
@@ -151,7 +180,7 @@ openAIQueue.process(async (job) => {
         const task = await getAITaskModel().findById(job.data.taskID);
         if (task) {
             task.status = "failed"
-            task.promptResIDOrReason = error === "Missing dependencies" ? "invalid" : "exception"
+            task.promptResIDOrReason = error === "Missing dependencies" ? error === "No Tokens" ? "Out Of Tokens" : "invalid" : "exception"
             task.finishTime = new Date();
         }
         await task?.save()
@@ -193,13 +222,7 @@ export const addJobsToQueue = async (
                     if (promptNames.length > 0) {
                         addJobToQueue(user, ideaID, promptNames[0], feedback, req);
                     }
-                    const task = await getAITaskModel().findById(taskID);
-                    if (task) {
-                        task.status = "successful"
-                        task.promptResIDOrReason = "successful but unknown"
-                        task.finishTime = new Date();
-                    }
-                    await task?.save()
+
                 });
             });
     };
