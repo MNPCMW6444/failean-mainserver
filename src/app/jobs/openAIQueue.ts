@@ -151,7 +151,7 @@ openAIQueue.process(async (job) => {
         const task = await getAITaskModel().findById(job.data.taskID);
         if (task) {
             task.status = "failed"
-            task.promptResIDOrReason = "exeption"
+            task.promptResIDOrReason = error === "Missing dependencies" ? "invalid" : "exception"
             task.finishTime = new Date();
         }
         await task?.save()
@@ -182,7 +182,7 @@ export const addJobsToQueue = async (
     ) => {
         const {_id: taskID} = await (new (getAITaskModel())({
             startTime: new Date()
-            , status: "running", userID: user._id
+            , status: "running", userID: user._id, promptName
         })).save();
         await openAIQueue
             .add({taskID, ideaID, promptName, feedback, reqUUID: req.uuid})

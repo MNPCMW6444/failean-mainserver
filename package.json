@@ -36,7 +36,7 @@
   "dependencies": {
     "@bull-board/api": "^5.8.3",
     "@bull-board/express": "^5.8.3",
-    "@failean/mongo-models": "^1.6.128",
+    "@failean/mongo-models": "^1.6.129",
     "@failean/oc-server-axiosinstance": "^5.5.60",
     "@sendgrid/mail": "^7.7.0",
     "apollo-server-express": "^3.12.0",
@@ -51,14 +51,14 @@
     "graphql-redis-subscriptions": "^2.6.0",
     "graphql-ws": "^5.14.0",
     "jsonwebtoken": "^9.0.2",
-    "mongoose": "^7.5.1",
+    "mongoose": "^7.5.2",
     "nodemon": "^3.0.1",
     "openai": "^4.7.1",
     "ws": "^8.14.1",
     "zxcvbn": "^4.4.2"
   },
   "devDependencies": {
-    "@failean/shared-types": "^2.9.173",
+    "@failean/shared-types": "^2.9.174",
     "@types/bcrypt": "^5.0.0",
     "@types/cookie-parser": "^1.4.4",
     "@types/fs-extra": "^11.0.2",
