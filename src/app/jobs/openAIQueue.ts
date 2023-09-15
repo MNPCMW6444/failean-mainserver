@@ -48,7 +48,6 @@ openAIQueue.process(async (job) => {
                 }
             });
 
-            console.log("early")
 
             await Promise.all(promises).then(async (updatedPropmtResult) => {
                 dependencies = updatedPropmtResult.map((r) => {
@@ -70,7 +69,8 @@ openAIQueue.process(async (job) => {
                             if (promptPart.content === "idea") return idea?.idea;
                             i++;
                             const res = (cleanDeps[i - 1])?.x;
-                            missing = !missing && !(res?.length > 1);
+                            console.log(promptPart.content + ": ", (!(res?.length > 1)) ? "is missing!" : "is ok so false")
+                            missing = missing || !(res?.length > 1);
                             return res;
                         }
                     }
@@ -88,8 +88,6 @@ openAIQueue.process(async (job) => {
                     }));
 
 
-                console.log("calling with")
-
                 const chat = promptResult && [promptResult.length - 1] &&
                 promptResult[promptResult.length - 1].data
                     ? [
@@ -102,11 +100,6 @@ openAIQueue.process(async (job) => {
                     ]
                     : [{role: "user", content: constructedPrompt.join("")}]
 
-
-                console.log("prompt.role: ", prompt.role)
-                console.log("chat: ", chat)
-                console.log("promptName: ", promptName)
-                console.log("reqUUID: ", reqUUID)
 
                 if (!chat) throw new Error("asd")
 
@@ -133,14 +126,16 @@ openAIQueue.process(async (job) => {
                             feedback?.length && feedback?.length > 1 ? "feedback" : "run",
                     });
                     await savedResult.save();
-                    console.log(completion.choices[0].message?.content)
+                    const similarToInvalidGood = stringSimilarity(
+                        (completion).choices[0].message?.content + "",
+                        INVALID_PROMPT_MESSAGE
+                    )
+
+                    const similarToInvalidBad = stringSimilarity(completion.choices[0].message?.content + "", "Invalid Idea.")
+
                     if (
-                        stringSimilarity(
-                            (completion).choices[0].message?.content + "",
-                            INVALID_PROMPT_MESSAGE
-                        ) > 0.6 || stringSimilarity(completion.choices[0].message?.content + "", "Invalid Idea.")
+                        similarToInvalidGood > 0.6 || similarToInvalidBad > 0.6
                     ) {
-                        console.log((completion).choices[0].message?.content)
                         axiosInstance
                             .post("log/logInvalidPrompt", {
                                 stringifiedCompletion: safeStringify(completion),
@@ -148,9 +143,11 @@ openAIQueue.process(async (job) => {
                                 result: (completion).choices[0].message?.content,
                                 promptName,
                                 ideaID,
+                                openAICallReqUUID: reqUUID || "unknown"
                             })
                             .catch((err) => console.error(err));
-                        throw new Error("Missing dependencies");
+                        console.log("result was: ", similarToInvalidGood, similarToInvalidBad)
+                        throw new Error("invalid");
                     } else {
                         const task = await getAITaskModel().findById(taskID);
                         if (task) {
@@ -159,17 +156,19 @@ openAIQueue.process(async (job) => {
                             task.finishTime = new Date();
                         }
                         await task?.save()
+                        pubsub.publish("JOB_COMPLETED", {
+                            jobCompleted: (job?.id || "8765") + "",
+                        });
+                        console.log("Published update for job ", {
+                            jobCompleted: (job?.id || "8765") + "",
+                        });
                     }
 
                 }
             });
         }
-        pubsub.publish("JOB_COMPLETED", {
-            jobCompleted: (job?.id || "8765") + "",
-        });
-        console.log("Published update for job ", {
-            jobCompleted: (job?.id || "8765") + "",
-        });
+
+
     } catch (error) {
         console.error(`An error occurred during job processing: ${error}`);
         pubsub.publish("JOB_COMPLETED", {
@@ -177,10 +176,11 @@ openAIQueue.process(async (job) => {
             status: "error",
             message: error,
         });
-        const task = await getAITaskModel().findById(job.data.taskID);
+        const task
+            = await getAITaskModel().findById(job.data.taskID);
         if (task) {
             task.status = "failed"
-            task.promptResIDOrReason = error === "Missing dependencies" ? error === "No Tokens" ? "Out Of Tokens" : "invalid" : "exception"
+            task.promptResIDOrReason = error === "Missing dependencies" ? "missing" : error === "No Tokens" ? "Out Of Tokens" : error.toString().substring(7, error.toString().length - 1)
             task.finishTime = new Date();
         }
         await task?.save()

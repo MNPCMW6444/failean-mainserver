@@ -18,6 +18,7 @@ const pubsub = new RedisPubSub({
     subscriber: new Redis(redisConnectionString)
 });
 
+console.log("trying to connect to Redis.....");
 
 pubsub.getSubscriber().on("connect", () => {
     console.log("Subscriber connected to Redis");

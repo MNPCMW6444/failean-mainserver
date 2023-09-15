@@ -38,10 +38,10 @@ const connectApolloServer = async () => {
 
 
     httpServer.listen(port, "0.0.0.0", () => {
-        console.log(
+        /*console.log(
             `Server is ready at http://localhost:${port}${apolloServer.graphqlPath}`
         );
-        console.log(`Subscriptions ready at ws://localhost:${port}/graphql`);
+        console.log(`Subscriptions ready at ws://localhost:${port}/graphql`);*/
     });
 };
 
@@ -54,7 +54,6 @@ const setup = async () => {
 };
 
 mongoSetup().then(() => {
-    console.log("mongoSetup successfully completed");
     setup();
 });
 
