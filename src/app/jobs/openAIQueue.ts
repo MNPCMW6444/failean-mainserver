@@ -180,7 +180,7 @@ openAIQueue.process(async (job) => {
             = await getAITaskModel().findById(job.data.taskID);
         if (task) {
             task.status = "failed"
-            task.promptResIDOrReason = error === "Missing dependencies" ? "missing" : error === "No Tokens" ? "Out Of Tokens" : error.toString().substring(11, error.toString().length)
+            task.promptResIDOrReason = error;
             task.finishTime = new Date();
         }
         await task?.save()
