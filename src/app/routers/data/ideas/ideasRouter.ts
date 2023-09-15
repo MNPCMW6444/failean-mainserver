@@ -74,7 +74,6 @@ router.post("/archiveIdea", async (req, res) => {
         const ideaToUpdate = await ideaModel.findById(ideaID);
         if (
             ideaToUpdate &&
-            ideaToUpdate.owner.toString() === (user)._id
         ) {
             ideaToUpdate.archived = true;
             await ideaToUpdate.save();
