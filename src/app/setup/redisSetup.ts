@@ -1,36 +1,31 @@
-import { RedisPubSub } from "graphql-redis-subscriptions";
+import {RedisPubSub} from "graphql-redis-subscriptions";
 import * as process from "process";
-import  Queue from 'bull';
+import Queue from 'bull';
 import Redis from 'ioredis';
 import dotenv from "dotenv"
+import {OpenAIJob} from "@failean/shared-types";
 
 dotenv.config()
 
-const redisConnectionString = process.env.AZURE_REDIS_CONNECTIONSTRING+"";
+const redisConnectionString = process.env.AZURE_REDIS_CONNECTIONSTRING + "";
 
 
+export const openAIQueue = new Queue<OpenAIJob>('openAIQueue', redisConnectionString);
 
 
-export const openAIQueue = new Queue('openAIQueue', redisConnectionString);
-
-
-
-
-
-   const pubsub = new RedisPubSub({
+const pubsub = new RedisPubSub({
     publisher: new Redis(redisConnectionString),
     subscriber: new Redis(redisConnectionString)
-  });
+});
 
 
-
-  pubsub.getSubscriber().on("connect", () => {
+pubsub.getSubscriber().on("connect", () => {
     console.log("Subscriber connected to Redis");
-  });
+});
 
-  pubsub.getSubscriber().on("error", (error: any) => {
+pubsub.getSubscriber().on("error", (error) => {
     console.error("Subscriber failed to connect to Redis", error);
-  });
+});
 
 
 export default pubsub;

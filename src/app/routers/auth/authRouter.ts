@@ -175,7 +175,7 @@ router.post<any, any>("/signin", async (req, res) => {
                     time,
                     reason,
                 },)
-                .catch((err: any) => console.error(err));
+                .catch((err) => console.error(err));
         try {
             const {email, password} = req.body;
             if (!email || !password) {

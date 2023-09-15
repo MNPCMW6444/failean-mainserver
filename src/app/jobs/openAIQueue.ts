@@ -1,12 +1,7 @@
 import pubsub, {openAIQueue} from "../setup/redisSetup";
 import {getIdeaModel} from "../mongo-models/data/ideas/ideaModel";
 import aideatorPromptMap from "../../content/prompts/aideatorPromptMap";
-import {
-    API,
-    PromptName,
-    PromptPart,
-    WhiteModels,
-} from "@failean/shared-types";
+import {API, OCModels, PromptName, PromptPart, WhiteModels,} from "@failean/shared-types";
 import {getPromptResultModel} from "../mongo-models/data/prompts/promptResultModel";
 import {callOpenAI} from "../util/data/prompts/openAIUtil";
 import {createBullBoard} from "@bull-board/api";
@@ -16,20 +11,28 @@ import stringSimilarity from "../util/string-similarity";
 import {INVALID_PROMPT_MESSAGE} from "../util/messages";
 import {safeStringify} from "../util/jsonUtil";
 import {axiosInstance} from "@failean/oc-server-axiosinstance"
-
+import {getAITaskModel} from "../mongo-models/tasks/openAITaskModel";
+import {getUserModel} from "../mongo-models/auth/userModel";
+import ExpressRequest = OCModels.ExpressRequest;
 
 export const serverAdapter = new ExpressAdapter();
+serverAdapter.setBasePath("/admin/queues");
+createBullBoard({
+    queues: [new BullAdapter(openAIQueue)],
+    serverAdapter: serverAdapter,
+});
 
-const processJob = async (job: any) => {
+openAIQueue.process(async (job) => {
     const PromptResultModel = getPromptResultModel();
     const ideaModel = getIdeaModel();
     try {
-        const {user, ideaID, promptName, feedback, reqUUID} = job.data;
-        if (user.subscription !== "tokens") {
+        const {taskID, ideaID, promptName, feedback, reqUUID} = job.data;
+        const user = await (getUserModel()).findById(((await getAITaskModel().findById(taskID))?.userID));
+        if (user?.subscription !== "tokens") {
             return;
         }
         const idea = await ideaModel.findById(ideaID);
-        let dependencies: string[];
+        let dependencies;
         const prompt = aideatorPromptMap[promptName];
         if (prompt) {
             let promises = prompt.prompt.map(async (promptPart: PromptPart) => {
@@ -46,13 +49,13 @@ const processJob = async (job: any) => {
             });
 
             await Promise.all(promises).then(async (updatedPropmtResult) => {
-                dependencies = updatedPropmtResult.map((r: any) => {
+                dependencies = updatedPropmtResult.map((r) => {
                     return r;
                 });
 
-                const cleanDeps: string[] = [];
+                const cleanDeps: { x: string }[] = [];
                 dependencies.forEach((dep) => {
-                    if (dep && dep !== INVALID_PROMPT_MESSAGE) cleanDeps.push(dep);
+                    if (dep?.x && dep.x !== INVALID_PROMPT_MESSAGE) cleanDeps.push(dep);
                 });
                 let i = 0;
 
@@ -64,7 +67,7 @@ const processJob = async (job: any) => {
                         else if (promptPart.type === "variable") {
                             if (promptPart.content === "idea") return idea?.idea;
                             i++;
-                            const res = (cleanDeps[i - 1] as any)?.x;
+                            const res = (cleanDeps[i - 1])?.x;
                             missing = !missing && !(res?.length > 1);
                             return res;
                         }
@@ -84,7 +87,7 @@ const processJob = async (job: any) => {
 
 
                 const completion = await callOpenAI(
-                    user as unknown as WhiteUser,
+                    user as unknown as WhiteModels.Auth.WhiteUser,
                     prompt.role,
                     promptResult && [promptResult.length - 1] &&
                     promptResult[promptResult.length - 1].data
@@ -107,7 +110,7 @@ const processJob = async (job: any) => {
                 else {
                     if (
                         stringSimilarity(
-                            (completion as any).choices[0].message?.content + "",
+                            (completion).choices[0].message?.content + "",
                             INVALID_PROMPT_MESSAGE
                         ) > 0.6
                     )
@@ -115,16 +118,16 @@ const processJob = async (job: any) => {
                             .post("log/logInvalidPrompt", {
                                 stringifiedCompletion: safeStringify(completion),
                                 prompt: constructedPrompt.join(""),
-                                result: (completion as any).choices[0].message?.content,
-                                promptName: promptName.length?.length ? promptName.join(" ") : promptName,
+                                result: (completion).choices[0].message?.content,
+                                promptName,
                                 ideaID,
                             })
-                            .catch((err: any) => console.error(err));
+                            .catch((err) => console.error(err));
                     const savedResult = new PromptResultModel({
                         owner: user._id,
                         ideaID,
                         promptName,
-                        data: (completion as any).choices[0].message?.content,
+                        data: (completion).choices[0].message?.content,
                         reason:
                             feedback?.length && feedback?.length > 1 ? "feedback" : "run",
                     });
@@ -146,28 +149,14 @@ const processJob = async (job: any) => {
             message: error,
         });
     }
-};
-
-
-type WhiteUser = WhiteModels.Auth.WhiteUser;
-
-
-serverAdapter.setBasePath("/admin/queues");
-
-openAIQueue.on("error", (error: any) => {
+});
+openAIQueue.on("error", (error) => {
     console.error(`A queue error happened: ${error}`);
 });
 
-createBullBoard({
-    queues: [new BullAdapter(openAIQueue)],
-    serverAdapter: serverAdapter,
-});
+openAIQueue.on("completed", () => {
 
-// Process jobs using the processJob function
-openAIQueue.process(processJob);
-
-
-// Define your job processing function
+})
 
 export const addJobsToQueue = async (
     user: WhiteModels.Auth.WhiteUser,
@@ -176,16 +165,21 @@ export const addJobsToQueue = async (
     feedback: API.Data.RunAndGetPromptResult.Req["feedback"],
     req: any
 ) => {
+
     const addJobToQueue = async (
         user: WhiteModels.Auth.WhiteUser,
         ideaID: string,
         promptName: PromptName,
         feedback: API.Data.RunAndGetPromptResult.Req["feedback"],
-        req: any
+        req: ExpressRequest
     ) => {
+        const {_id: taskID} = await (new (getAITaskModel())({
+            startTime: new Date()
+            , status: "running", userID: user._id
+        })).save();
         await openAIQueue
-            .add({user, ideaID, promptName, feedback, reqUUID: req.uuid})
-            .then((job: any) => {
+            .add({taskID, ideaID, promptName, feedback, reqUUID: req.uuid})
+            .then((job) => {
                 job.finished().then(() => {
                     promptNames.shift();
                     if (promptNames[0] === "idea") promptNames.shift();
