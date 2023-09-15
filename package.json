@@ -36,7 +36,7 @@
   "dependencies": {
     "@bull-board/api": "^5.8.3",
     "@bull-board/express": "^5.8.3",
-    "@failean/mongo-models": "^1.6.124",
+    "@failean/mongo-models": "^1.6.125",
     "@failean/oc-server-axiosinstance": "^5.5.60",
     "@sendgrid/mail": "^7.7.0",
     "apollo-server-express": "^3.12.0",

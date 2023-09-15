@@ -6,6 +6,7 @@ import { Server } from "ws";
 import { apolloServer, schema } from "./app/setup/graphqlSetup";
 import { app, port } from "./app/setup/expressSetup";
 import mongoSetup from "./app/setup/mongoSetup";
+import scheduleAll from "./app/scheduled/scheduleder";
 
 dotenv.config();
 
@@ -34,6 +35,7 @@ const connectApolloServer = async () => {
     wsServer
   );
 
+
   httpServer.listen(port, "0.0.0.0" as any, () => {
     console.log(
       `Server is ready at http://localhost:${port}${apolloServer.graphqlPath}`
@@ -54,3 +56,6 @@ mongoSetup().then(() => {
   console.log("mongoSetup successfully completed");
     setup();
 });
+
+
+scheduleAll()

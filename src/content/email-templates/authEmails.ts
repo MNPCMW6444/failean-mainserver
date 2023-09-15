@@ -68,3 +68,89 @@ export const websiteSignup = (url: string) => ({
   </html>
   `,
 });
+
+export const waitListReady = (name:string) => ({
+  subject: "Your Exclusive Early Access is Now Ready!",
+  body: `<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            width: 100%;
+            max-width: 600px;
+            margin: auto;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 10px;
+            box-sizing: border-box;
+        }
+        .header, .footer {
+            background-color: #8A307F;
+            color: white;
+            text-align: center;
+            padding: 10px;
+        }
+        .content {
+            padding: 20px;
+        }
+        a {
+            color: blue;
+        }
+        @media only screen and (max-width: 600px) {
+            .container {
+                padding: 15px;
+            }
+            .content {
+                padding: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="header">
+        <h2>Your Exclusive Early Access is Now Ready!</h2>
+    </div>
+
+    <div class="content">
+        <p>Dear Valued Customer,</p>
+
+        <p>I hope this email finds you well. I'm Michael, the CEO at Failean LLC. We are excited to announce that you now have exclusive early access to our highly-anticipated new product.</p>
+
+        <p>To start exploring, simply head to <a href="https://app.failean.com">app.failean.com</a> and register for a new account.</p>
+
+        <h3>Special Offer: 10,000 Free Credits</h3>
+        <p>As an early adapter, you will receive 10,000 free credits, instead of the regular 1,000. This makes the product essentially free for you for now.</p>
+
+        <h3>How to Provide Feedback</h3>
+        <ol>
+            <li>Use the product and explore its features.</li>
+            <li>Work prompt-by-prompt instead of relying on "Run All" to refine each individual prompt result.</li>
+            <li>Think about your overall experience and any improvements you'd like to see.</li>
+            <li>Reply to this email with your observations and suggestions.</li>
+        </ol>
+
+        <p>Your feedback is invaluable to us. If you have any thoughts, questions, or encounter any issues, please don't hesitate to reply directly to this email. Our dedicated support team and I are standing by to assist you.</p>
+
+        <p>The purpose of this early access is to help us refine the product based on quality feedback from users like you. We encourage you to be as detailed and candid as possible in your responses.</p>
+
+        <p>Thank you for your ongoing support and enthusiasm. I'm excited to hear your thoughts!</p>
+
+        <p>Best regards,<br>Michael<br>CEO, Failean LLC</p>
+    </div>
+
+    <div class="footer">
+        <p>&copy; 2023 Failean LLC, All rights reserved.</p>
+    </div>
+</div>
+
+</body>
+</html>
+  `,
+});
