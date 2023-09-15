@@ -134,7 +134,7 @@ openAIQueue.process(async (job) => {
                     const similarToInvalidBad = stringSimilarity(completion.choices[0].message?.content + "", "Invalid Idea.")
 
                     if (
-                        similarToInvalidGood > 0.8 || similarToInvalidBad > 0.8
+                        similarToInvalidGood > 0.4 || similarToInvalidBad > 0.4
                     ) {
                         axiosInstance
                             .post("log/logInvalidPrompt", {
