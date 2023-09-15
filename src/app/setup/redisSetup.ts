@@ -3,7 +3,7 @@ import * as process from "process";
 import Queue from 'bull';
 import Redis from 'ioredis';
 import dotenv from "dotenv"
-import {OpenAIJob} from "../../index";
+import {OpenAIJob} from "@failean/shared-types";
 
 dotenv.config()
 

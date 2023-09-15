@@ -16,7 +16,6 @@ import stringSimilarity from "../util/string-similarity";
 import {INVALID_PROMPT_MESSAGE} from "../util/messages";
 import {safeStringify} from "../util/jsonUtil";
 import {axiosInstance} from "@failean/oc-server-axiosinstance"
-import {OpenAIJob} from "../../index";
 import ExpressRequest = OCModels.ExpressRequest;
 
 export const serverAdapter = new ExpressAdapter();
