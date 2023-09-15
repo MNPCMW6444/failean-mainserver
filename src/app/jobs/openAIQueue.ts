@@ -1,12 +1,7 @@
 import pubsub, {openAIQueue} from "../setup/redisSetup";
 import {getIdeaModel} from "../mongo-models/data/ideas/ideaModel";
 import aideatorPromptMap from "../../content/prompts/aideatorPromptMap";
-import {
-    API, OCModels,
-    PromptName,
-    PromptPart,
-    WhiteModels,
-} from "@failean/shared-types";
+import {API, OCModels, PromptName, PromptPart, WhiteModels,} from "@failean/shared-types";
 import {getPromptResultModel} from "../mongo-models/data/prompts/promptResultModel";
 import {callOpenAI} from "../util/data/prompts/openAIUtil";
 import {createBullBoard} from "@bull-board/api";
@@ -16,6 +11,8 @@ import stringSimilarity from "../util/string-similarity";
 import {INVALID_PROMPT_MESSAGE} from "../util/messages";
 import {safeStringify} from "../util/jsonUtil";
 import {axiosInstance} from "@failean/oc-server-axiosinstance"
+import {getAITaskModel} from "../mongo-models/tasks/openAITaskModel";
+import {getUserModel} from "../mongo-models/auth/userModel";
 import ExpressRequest = OCModels.ExpressRequest;
 
 export const serverAdapter = new ExpressAdapter();
@@ -29,8 +26,9 @@ openAIQueue.process(async (job) => {
     const PromptResultModel = getPromptResultModel();
     const ideaModel = getIdeaModel();
     try {
-        const {user, ideaID, promptName, feedback, reqUUID} = job.data;
-        if (user.subscription !== "tokens") {
+        const {taskID, ideaID, promptName, feedback, reqUUID} = job.data;
+        const user = await (getUserModel()).findById(((await getAITaskModel().findById(taskID))?.userID));
+        if (user?.subscription !== "tokens") {
             return;
         }
         const idea = await ideaModel.findById(ideaID);
@@ -156,6 +154,10 @@ openAIQueue.on("error", (error) => {
     console.error(`A queue error happened: ${error}`);
 });
 
+openAIQueue.on("completed", () => {
+
+})
+
 export const addJobsToQueue = async (
     user: WhiteModels.Auth.WhiteUser,
     ideaID: string,
@@ -163,6 +165,7 @@ export const addJobsToQueue = async (
     feedback: API.Data.RunAndGetPromptResult.Req["feedback"],
     req: any
 ) => {
+
     const addJobToQueue = async (
         user: WhiteModels.Auth.WhiteUser,
         ideaID: string,
@@ -170,8 +173,12 @@ export const addJobsToQueue = async (
         feedback: API.Data.RunAndGetPromptResult.Req["feedback"],
         req: ExpressRequest
     ) => {
+        const {_id: taskID} = await (new (getAITaskModel())({
+            startTime: new Date()
+            , status: "running", userID: user._id
+        })).save();
         await openAIQueue
-            .add({user, ideaID, promptName, feedback, reqUUID: req.uuid})
+            .add({taskID, ideaID, promptName, feedback, reqUUID: req.uuid})
             .then((job) => {
                 job.finished().then(() => {
                     promptNames.shift();

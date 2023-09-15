@@ -1,18 +1,15 @@
 import express from "express";
 import {getPromptResultModel} from "../../../mongo-models/data/prompts/promptResultModel";
-import {PromptName} from "@failean/shared-types";
+import {API, OpenAIJob, PromptName} from "@failean/shared-types";
 import openAIQueue, {addJobsToQueue} from "../../../jobs/openAIQueue";
-import {
-    convertMaptoDeckGraph,
-    convertMaptoDepGraph,
-} from "../../../util/data/prompts/promptUtil";
+import {convertMaptoDeckGraph, convertMaptoDepGraph,} from "../../../util/data/prompts/promptUtil";
 import aideatorPromptMap from "../../../../content/prompts/aideatorPromptMap";
 import {authUser} from "../../../util/authUtil";
-import {API} from "@failean/shared-types";
 import {estimateOpenAI} from "../../../util/data/prompts/openAIUtil";
 import {tokenCount} from "../../../util/accounts/tokensUtil";
 import {axiosInstance} from "@failean/oc-server-axiosinstance";
-import {JobStatus} from "bull";
+import {Job, JobStatus} from "bull";
+import {getAITaskModel} from "../../../mongo-models/tasks/openAITaskModel";
 
 const router = express.Router();
 
@@ -197,26 +194,21 @@ router.get("/tasks", async (req, res) => {
         }
 
         const statuses: JobStatus[] = ['completed', 'waiting', 'active', 'delayed', 'failed', 'paused'];
-        const allJobs = [];
+
+        const jobs: Job<OpenAIJob>[] = [];
 
         for (const status of statuses) {
             const jobs = await openAIQueue.getJobs([status]);
-            const filteredJobs = jobs.filter(job => job.data.user._id === user._id.toString());
-
-            // Transform the data
-            const transformedJobs = filteredJobs.map((job) => {
-                return {
-                    data: job.data.promptName,
-                    id: job.id,
-                    status,
-                    timestamp: job.timestamp
-                };
-            });
-
-            allJobs.push(...transformedJobs);
+            const taskModel = getAITaskModel();
+            const filteredJobs = await Promise.all(jobs.map(async (job) => {
+                const task = await taskModel.findById(job.data.taskID);
+                return task?.userID === user._id.toString() ? job : null;
+            })).then((results) => results.filter(job => job !== null));
+            const finalJobs = filteredJobs.filter(filteredJob => filteredJob !== null) as Job<OpenAIJob>[]
+            jobs.push(...finalJobs);
         }
 
-        return res.status(200).json({data: allJobs});
+        return res.status(200).json({data: jobs});
 
     } catch (error) {
         console.error('Error:', error);
