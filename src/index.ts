@@ -7,6 +7,7 @@ import {apolloServer, schema} from "./app/setup/graphqlSetup";
 import {app, port} from "./app/setup/expressSetup";
 import mongoSetup from "./app/setup/mongoSetup";
 import scheduleAll from "./app/scheduled/scheduleder";
+import {PromptName, WhiteModels} from "@failean/shared-types";
 
 dotenv.config();
 
@@ -36,7 +37,7 @@ const connectApolloServer = async () => {
     );
 
 
-    httpServer.listen(port, "0.0.0.0" as any, () => {
+    httpServer.listen(port, "0.0.0.0", () => {
         console.log(
             `Server is ready at http://localhost:${port}${apolloServer.graphqlPath}`
         );
@@ -58,3 +59,4 @@ mongoSetup().then(() => {
 });
 
 setTimeout(() => scheduleAll(), 600000)
+

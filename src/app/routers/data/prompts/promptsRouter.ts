@@ -204,7 +204,7 @@ router.get("/tasks", async (req, res) => {
             const filteredJobs = jobs.filter(job => job.data.user._id === user._id.toString());
 
             // Transform the data
-            const transformedJobs = filteredJobs.map((job: any) => {
+            const transformedJobs = filteredJobs.map((job) => {
                 return {
                     data: job.data.promptName,
                     id: job.id,

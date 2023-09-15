@@ -14,7 +14,7 @@ router.get("/data/critiqQuestionire/:ideaID", async (req, res) => {
         /*
               let ideacritiqQuestionire = await answerModel.find({
                   ideaID: req.params.ideaID,
-                  owner: (validatedUser as any).id,
+                  owner: (validatedUser  ).id,
               });
 
               return res
@@ -40,7 +40,7 @@ router.post("/data/critiqQuestionire/update", async (req, res) => {
                 const answerToUpdate = await answerModel.findOne({
                     ideaID,
                     questionId,
-                    owner: (validatedUser as any).id,
+                    owner: (validatedUser  ).id,
                 });
 
                 if (!answerToUpdate) {
@@ -50,7 +50,7 @@ router.post("/data/critiqQuestionire/update", async (req, res) => {
                         questionId,
                         answer,
                         score,
-                        owner: (validatedUser as any).id,
+                        owner: (validatedUser  ).id,
                     }).save();
                 } else {
                     /!*  answerToUpdate.answer = answer;
