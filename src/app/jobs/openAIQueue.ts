@@ -148,6 +148,13 @@ openAIQueue.process(async (job) => {
             status: "error",
             message: error,
         });
+        const task = await getAITaskModel().findById(job.data.taskID);
+        if (task) {
+            task.status = "failed"
+            task.promptResIDOrReason = "exeption"
+            task.finishTime = new Date();
+        }
+        await task?.save()
     }
 });
 openAIQueue.on("error", (error) => {
@@ -180,12 +187,19 @@ export const addJobsToQueue = async (
         await openAIQueue
             .add({taskID, ideaID, promptName, feedback, reqUUID: req.uuid})
             .then((job) => {
-                job.finished().then(() => {
+                job.finished().then(async () => {
                     promptNames.shift();
                     if (promptNames[0] === "idea") promptNames.shift();
                     if (promptNames.length > 0) {
                         addJobToQueue(user, ideaID, promptNames[0], feedback, req);
                     }
+                    const task = await getAITaskModel().findById(taskID);
+                    if (task) {
+                        task.status = "successful"
+                        task.promptResIDOrReason = "successful but unknown"
+                        task.finishTime = new Date();
+                    }
+                    await task?.save()
                 });
             });
     };
