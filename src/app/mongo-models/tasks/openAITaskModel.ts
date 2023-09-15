@@ -4,5 +4,5 @@ import {openAITask} from "@failean/mongo-models";
 
 export const getAITaskModel = () => {
     if (!safeDB) throw new Error("Database not initialized");
-    return safeDB.model<WhiteModels.Tasks.OpenAITaskModel>("token", openAITask);
+    return safeDB.model<WhiteModels.Tasks.OpenAITaskModel>("openAITask", openAITask);
 };

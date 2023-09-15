@@ -10,6 +10,8 @@ import {tokenCount} from "../../../util/accounts/tokensUtil";
 import {axiosInstance} from "@failean/oc-server-axiosinstance";
 import {Job, JobStatus} from "bull";
 import {getAITaskModel} from "../../../mongo-models/tasks/openAITaskModel";
+import {taskModel} from "@failean/mongo-models";
+import {getTaskModel} from "../../../mongo-models/data/prompts/taskModel";
 
 const router = express.Router();
 
@@ -192,24 +194,7 @@ router.get("/tasks", async (req, res) => {
         if (!user) {
             return res.status(401).json({message: 'Unauthorized'});
         }
-
-        const statuses: JobStatus[] = ['completed', 'waiting', 'active', 'delayed', 'failed', 'paused'];
-
-        const jobs: Job<OpenAIJob>[] = [];
-
-        for (const status of statuses) {
-            const jobs = await openAIQueue.getJobs([status]);
-            const taskModel = getAITaskModel();
-            const filteredJobs = await Promise.all(jobs.map(async (job) => {
-                const task = await taskModel.findById(job.data.taskID);
-                return task?.userID === user._id.toString() ? job : null;
-            })).then((results) => results.filter(job => job !== null));
-            const finalJobs = filteredJobs.filter(filteredJob => filteredJob !== null) as Job<OpenAIJob>[]
-            jobs.push(...finalJobs);
-        }
-
-        return res.status(200).json({data: jobs});
-
+        return res.status(200).json({data: (await getAITaskModel().find()).filter(({userID}) => userID === user._id.toString())});
     } catch (error) {
         console.error('Error:', error);
         return res.status(500).json({message: 'An error occurred'});
