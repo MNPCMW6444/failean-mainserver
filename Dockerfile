@@ -1,5 +1,9 @@
 FROM node:lts as BUILDER
 ARG NPMTOKEN
+ENV NEW_RELIC_NO_CONFIG_FILE=true
+ENV NEW_RELIC_DISTRIBUTED_TRACING_ENABLED=true \
+    NEW_RELIC_LOG=stdout
+# etc.
 WORKDIR /app
 COPY package.json /app/package.json
 COPY tsconfig.json /app/tsconfig.json
