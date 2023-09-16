@@ -77,6 +77,7 @@ openAIQueue.process(async (job) => {
                 );
 
                 if (missing) throw new Error("Missing dependencies");
+                console.log("goooodddddd3")
 
                 const promptResult =
                     feedback?.length &&
@@ -115,6 +116,7 @@ openAIQueue.process(async (job) => {
                 if (completion === -1) throw new Error("Acoount error");
                 else if (completion === -2) throw new Error("No Tokens");
                 else {
+                    console.log("goooodddddd2")
 
 
                     const savedResult = new PromptResultModel({
@@ -149,6 +151,8 @@ openAIQueue.process(async (job) => {
                             .catch((err) => console.error(err));
                         console.log("result was: ", similarToInvalidGood, similarToInvalidBad, similarToInvalidBad2)
                         throw new Error("invalid");
+                        console.log("goooodddddd")
+
                     } else {
                         const task = await getAITaskModel().findById(taskID);
                         if (task) {

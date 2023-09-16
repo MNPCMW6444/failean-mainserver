@@ -120,7 +120,7 @@ export const callOpenAI = async (
         });
         if ((await tokenCount(user._id)) > 0) {
             try {
-
+                console.log("calling aiiiii")
                 const completion = await openai.chat.completions.create({
                     model: "gpt-3.5-turbo",
                     messages: [
@@ -131,6 +131,7 @@ export const callOpenAI = async (
                         ...chat,
                     ],
                 });
+                console.log("finishedd aiiiii")
 
 
                 if (completion.usage) {
@@ -147,11 +148,17 @@ export const callOpenAI = async (
                             promptName,
                             forAVGPriceInOpenAITokens: forThem,
                         })
-                        .catch((err) => console.error(err));
+                        .catch((err) => {
+                            console.error("error logging to oc:")
+                            console.error(err)
+                        });
                 }
 
                 return completion;
             } catch (err) {
+                console.error("error from ai supplier:")
+                console.log(err);
+                console.log(err.response);
                 console.log(err.response.data);
                 return -1;
             }

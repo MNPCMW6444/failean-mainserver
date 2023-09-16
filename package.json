@@ -62,7 +62,7 @@
     "@types/bcrypt": "^5.0.0",
     "@types/cookie-parser": "^1.4.4",
     "@types/fs-extra": "^11.0.2",
-    "@types/jsonwebtoken": "^9.0.2",
+    "@types/jsonwebtoken": "^9.0.3",
     "@types/uuid": "^9.0.4",
     "@types/ws": "^8.5.5",
     "@types/zxcvbn": "^4.4.2",
