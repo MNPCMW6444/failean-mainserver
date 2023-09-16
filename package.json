@@ -37,7 +37,7 @@
     "@bull-board/api": "^5.8.3",
     "@bull-board/express": "^5.8.3",
     "@failean/mongo-models": "^1.6.129",
-    "@failean/oc-server-axiosinstance": "^5.5.60",
+    "@failean/oc-server-axiosinstance": "^5.5.62",
     "@sendgrid/mail": "^7.7.0",
     "apollo-server-express": "^3.12.0",
     "axios": "^1.5.0",
