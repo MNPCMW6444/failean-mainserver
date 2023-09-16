@@ -156,6 +156,7 @@ export const callOpenAI = async (
 
                 return completion;
             } catch (err) {
+                if (err) throw new Error("probably input too long")
                 console.error("error from ai supplier:")
                 console.log(err);
                 console.log(err.response);
