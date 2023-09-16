@@ -12,19 +12,21 @@ import {INVALID_PROMPT_MESSAGE} from "../util/messages";
 import {safeStringify} from "../util/jsonUtil";
 import {getAITaskModel} from "../mongo-models/tasks/openAITaskModel";
 import {getUserModel} from "../mongo-models/auth/userModel";
-
-
+import axios from "axios";
 import ExpressRequest = OCModels.ExpressRequest;
 
 
-let axiosInstance: AxiosInstance | undefined;
-
-import("@failean/oc-server-axiosinstance").then(module => {
-    axiosInstance = module.axiosInstance;
-}).catch(err => {
-    console.error("Failed to import axiosInstance", err);
+const axiosInstance = axios.create({
+    baseURL: process.env.NODE_ENV === "development" ? "http://localhost:6777/" : "https://ocserver.failean.com/",
+    withCredentials: true,
+    headers: {
+        "Content-Type": "application/json",
+    },
+    auth: {
+        username: "client",
+        password: process.env.OCPASS + "xx",
+    },
 });
-import {AxiosInstance} from "axios";
 
 
 export const serverAdapter = new ExpressAdapter();

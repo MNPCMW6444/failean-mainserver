@@ -1,14 +1,18 @@
 import express from "express";
+import axios from "axios";
 
 
-let axiosInstance: AxiosInstance | undefined;
-
-import("@failean/oc-server-axiosinstance").then(module => {
-    axiosInstance = module.axiosInstance;
-}).catch(err => {
-    console.error("Failed to import axiosInstance", err);
+const axiosInstance = axios.create({
+    baseURL: process.env.NODE_ENV === "development" ? "http://localhost:6777/" : "https://ocserver.failean.com/",
+    withCredentials: true,
+    headers: {
+        "Content-Type": "application/json",
+    },
+    auth: {
+        username: "client",
+        password: process.env.OCPASS + "xx",
+    },
 });
-import {AxiosInstance} from "axios";
 
 const router = express.Router();
 
