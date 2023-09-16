@@ -13,20 +13,8 @@ import aideatorPromptMap from "../../../../content/prompts/aideatorPromptMap";
 import {encode} from "gpt-3-encoder";
 import {amendTokens, tokenCount} from "../../accounts/tokensUtil";
 import * as process from "process";
-import axios from "axios";
 
-
-const axiosInstance = axios.create({
-    baseURL: process.env.NODE_ENV === "development" ? "http://localhost:6777/" : "https://ocserver.failean.com/",
-    withCredentials: true,
-    headers: {
-        "Content-Type": "application/json",
-    },
-    auth: {
-        username: "client",
-        password: process.env.OCPASS + "xx",
-    },
-});
+import {axiosInstance} from "../../../../temp";
 
 const ROI = 2;
 
