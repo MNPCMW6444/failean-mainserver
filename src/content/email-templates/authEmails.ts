@@ -288,7 +288,7 @@ export const waitListReady = (name: string) => ({
 
         <p>I hope this email finds you well. I'm Michael, the CEO at Failean LLC. We are excited to announce that you now have exclusive early access to our highly-anticipated new product.</p>
 
-        <p>To start exploring, simply head to <a href="https://app.failean.com">app.failean.com</a> and register for a new account.</p>
+        <p>To start exploring, simply head to <a href="https://failean.com">failean.com</a> and register for a new account.</p>
 
         <h3>Special Offer: 10,000 Free Credits</h3>
         <p>As an early adapter, you will receive 10,000 free credits, instead of the regular 1,000. This makes the product essentially free for you for now.</p>

@@ -9,4 +9,4 @@ export const ocClientDomain =
 export const clientDomain =
   process.env.NODE_ENV === "development"
     ? "http://localhost:5999"
-    : "https://app.failean.com";
+    : "https://failean.com";
