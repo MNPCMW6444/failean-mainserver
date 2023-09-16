@@ -29,7 +29,7 @@ const scheduleWaitingListReadyEmail = () => {
     } catch (error) {
       console.error("An error occurred:", error);
     }
-  }, TEN_MINUTES_IN_MS);
+  }, TEN_MINUTES_IN_MS * 2);
 };
 
 const cleanOldTasks = () => {
@@ -38,7 +38,7 @@ const cleanOldTasks = () => {
       (await getAITaskModel().find()).forEach((task) => {
         if (
           new Date().getTime() - task.startTime.getTime() >
-          TEN_MINUTES_IN_MS
+          TEN_MINUTES_IN_MS / 2
         ) {
           task.status = "failed";
           task.promptResIDOrReason = "timeout";
@@ -49,7 +49,7 @@ const cleanOldTasks = () => {
     } catch (error) {
       console.error("An error occurred:", error);
     }
-  }, TEN_MINUTES_IN_MS);
+  }, TEN_MINUTES_IN_MS / 3);
 };
 
 const redirectLive = () => {
