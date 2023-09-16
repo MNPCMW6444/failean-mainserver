@@ -12,7 +12,7 @@ const scheduleWaitingListReadyEmail = () => {
         try {
             const emailDocs = await getEmailModel().find();
             for (const doc of emailDocs) {
-                if (!doc.emailSent && doc.email && (new Date().getTime() - doc.createdAt.getTime()) > ONE_WEEK_IN_MS) {
+                if (!doc.emailSent && doc.product === "failean" && doc.email && (new Date().getTime() - doc.createdAt.getTime()) > ONE_WEEK_IN_MS) {
                     const {subject, body} = waitListReady("Unknown");
                     const [res] = await sendEmail(doc.email, subject, body);
                     if (res.statusCode < 299 && res.statusCode >= 200) {
