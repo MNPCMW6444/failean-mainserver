@@ -10,10 +10,22 @@ import {ExpressAdapter} from "@bull-board/express";
 import stringSimilarity from "../util/string-similarity";
 import {INVALID_PROMPT_MESSAGE} from "../util/messages";
 import {safeStringify} from "../util/jsonUtil";
-import {axiosInstance} from "@failean/oc-server-axiosinstance"
 import {getAITaskModel} from "../mongo-models/tasks/openAITaskModel";
 import {getUserModel} from "../mongo-models/auth/userModel";
+
+
 import ExpressRequest = OCModels.ExpressRequest;
+
+
+let axiosInstance: AxiosInstance | undefined;
+
+import("@failean/oc-server-axiosinstance").then(module => {
+    axiosInstance = module.axiosInstance;
+}).catch(err => {
+    console.error("Failed to import axiosInstance", err);
+});
+import {AxiosInstance} from "axios";
+
 
 export const serverAdapter = new ExpressAdapter();
 serverAdapter.setBasePath("/admin/queues");
@@ -139,15 +151,14 @@ openAIQueue.process(async (job) => {
                     if (
                         similarToInvalidGood > 0.4 || similarToInvalidBad > 0.4 || similarToInvalidBad2 > 0.4
                     ) {
-                        axiosInstance
-                            .post("log/logInvalidPrompt", {
-                                stringifiedCompletion: safeStringify(completion),
-                                prompt: constructedPrompt.join(""),
-                                result: (completion).choices[0].message?.content,
-                                promptName,
-                                ideaID,
-                                openAICallReqUUID: reqUUID || "unknown"
-                            })
+                        axiosInstance?.post("log/logInvalidPrompt", {
+                            stringifiedCompletion: safeStringify(completion),
+                            prompt: constructedPrompt.join(""),
+                            result: (completion).choices[0].message?.content,
+                            promptName,
+                            ideaID,
+                            openAICallReqUUID: reqUUID || "unknown"
+                        })
                             .catch((err) => console.error(err));
                         console.log("result was: ", similarToInvalidGood, similarToInvalidBad, similarToInvalidBad2)
                         throw new Error("invalid");

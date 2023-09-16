@@ -1,17 +1,23 @@
 import express from "express";
 import {getPromptResultModel} from "../../../mongo-models/data/prompts/promptResultModel";
-import {API, OpenAIJob, PromptName} from "@failean/shared-types";
-import openAIQueue, {addJobsToQueue} from "../../../jobs/openAIQueue";
+import {API, PromptName} from "@failean/shared-types";
+import {addJobsToQueue} from "../../../jobs/openAIQueue";
 import {convertMaptoDeckGraph, convertMaptoDepGraph,} from "../../../util/data/prompts/promptUtil";
 import aideatorPromptMap from "../../../../content/prompts/aideatorPromptMap";
 import {authUser} from "../../../util/authUtil";
 import {estimateOpenAI} from "../../../util/data/prompts/openAIUtil";
 import {tokenCount} from "../../../util/accounts/tokensUtil";
-import {axiosInstance} from "@failean/oc-server-axiosinstance";
-import {Job, JobStatus} from "bull";
 import {getAITaskModel} from "../../../mongo-models/tasks/openAITaskModel";
-import {taskModel} from "@failean/mongo-models";
-import {getTaskModel} from "../../../mongo-models/data/prompts/taskModel";
+
+
+let axiosInstance: AxiosInstance | undefined;
+
+import("@failean/oc-server-axiosinstance").then(module => {
+    axiosInstance = module.axiosInstance;
+}).catch(err => {
+    console.error("Failed to import axiosInstance", err);
+});
+import {AxiosInstance} from "axios";
 
 const router = express.Router();
 
@@ -95,11 +101,13 @@ router.post("/preRunPrompt", async (req, res) => {
         let avgx: number | undefined;
 
         try {
-            const avg = (await axiosInstance.post("read/avgPriceForPrompt", {
-                promptName: promptNames,
-            })).data.avg;
-            console.log()
-            if (avg !== "no") avgx = avg; else throw new Error("kakiii")
+            if (axiosInstance) {
+                const avg = (await axiosInstance.post("read/avgPriceForPrompt", {
+                    promptName: promptNames,
+                })).data.avg;
+                console.log()
+                if (avg !== "no") avgx = avg; else throw new Error("kakiii")
+            }
 
         } catch (e) {
             console.log("estimated kaki - " + e);

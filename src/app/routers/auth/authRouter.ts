@@ -13,11 +13,21 @@ import {sendEmail} from "../../util/emailUtil";
 import {v4 as keyv4} from "uuid";
 import {getIdeaModel} from "../../mongo-models/data/ideas/ideaModel";
 import {clientDomain} from "../../setup/config";
-import {axiosInstance} from "@failean/oc-server-axiosinstance";
 import {authUser} from "../../util/authUtil";
 import {safeStringify} from "../../util/jsonUtil";
 import {amendTokens} from "../../util/accounts/tokensUtil";
 import * as process from "process";
+
+
+let axiosInstance: AxiosInstance | undefined;
+
+import("@failean/oc-server-axiosinstance").then(module => {
+    axiosInstance = module.axiosInstance;
+}).catch(err => {
+    console.error("Failed to import axiosInstance", err);
+});
+import {AxiosInstance} from "axios";
+
 
 const router = express.Router();
 const MIN_PASSWORD_STRENGTH = 3;
@@ -167,14 +177,13 @@ router.post<any, any>("/signin", async (req, res) => {
             time: Date,
             reason: string | undefined = undefined
         ) =>
-            axiosInstance
-                .post("/log/logSignin", {
-                    reqUUID: safeStringify(req),
-                    successfull,
-                    userEmail,
-                    time,
-                    reason,
-                },)
+            axiosInstance?.post("/log/logSignin", {
+                reqUUID: safeStringify(req),
+                successfull,
+                userEmail,
+                time,
+                reason,
+            },)
                 .catch((err) => console.error(err));
         try {
             const {email, password} = req.body;

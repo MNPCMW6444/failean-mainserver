@@ -12,9 +12,17 @@ import {getPromptResultModel} from "../../../mongo-models/data/prompts/promptRes
 import aideatorPromptMap from "../../../../content/prompts/aideatorPromptMap";
 import {encode} from "gpt-3-encoder";
 import {amendTokens, tokenCount} from "../../accounts/tokensUtil";
-import {AxiosResponse} from "axios";
-import {axiosInstance} from "@failean/oc-server-axiosinstance";
 import * as process from "process";
+
+
+let axiosInstance: AxiosInstance | undefined;
+
+import("@failean/oc-server-axiosinstance").then(module => {
+    axiosInstance = module.axiosInstance;
+}).catch(err => {
+    console.error("Failed to import axiosInstance", err);
+});
+import {AxiosInstance} from "axios";
 
 const ROI = 2;
 
@@ -139,15 +147,14 @@ export const callOpenAI = async (
                         completion.usage?.prompt_tokens * 0.003 +
                         completion.usage?.completion_tokens * 0.004;
                     const forThem = priceForUsInCents * ROI;
-                    amendTokens(user, 0 - forThem, "callopenai");
+                    await amendTokens(user, 0 - forThem, "callopenai");
 
 
-                    axiosInstance
-                        .post("/log/logPromptPrice", {
-                            openAICallReqUUID,
-                            promptName,
-                            forAVGPriceInOpenAITokens: forThem,
-                        })
+                    axiosInstance?.post("/log/logPromptPrice", {
+                        openAICallReqUUID,
+                        promptName,
+                        forAVGPriceInOpenAITokens: forThem,
+                    })
                         .catch((err) => {
                             console.error("error logging to oc:")
                             console.error(err)
