@@ -105,7 +105,7 @@ openAIQueue.process(async (job) => {
 
                 if (!chat) throw new Error("asd")
 
-                const completion = await callOpenAI(
+                const res = await callOpenAI(
                     user as unknown as WhiteModels.Auth.WhiteUser,
                     prompt.role,
                     chat as any,
@@ -114,9 +114,11 @@ openAIQueue.process(async (job) => {
                 );
 
 
-                if (completion === -1) throw new Error("Acoount error");
-                else if (completion === -2) throw new Error("No Tokens");
+                if (res === -1) throw new Error("Acoount error");
+                else if (res === -2) throw new Error("No Tokens");
                 else {
+                    const {completion, price} = res
+
                     console.log("goooodddddd2")
 
 
@@ -157,7 +159,7 @@ openAIQueue.process(async (job) => {
                         const task = await getAITaskModel().findById(taskID);
                         if (task) {
                             task.status = "successful"
-                            task.promptResIDOrReason = "successful but unknown"
+                            task.promptResIDOrReason = price ? price + "" : "unknown"
                             task.finishTime = new Date();
                         }
                         await task?.save()

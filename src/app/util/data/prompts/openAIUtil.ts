@@ -133,6 +133,7 @@ export const callOpenAI = async (
                 });
                 console.log("finishedd aiiiii")
 
+                let price = 0;
 
                 if (completion.usage) {
                     const priceForUsInCents =
@@ -141,6 +142,7 @@ export const callOpenAI = async (
                     const forThem = priceForUsInCents * ROI;
                     await amendTokens(user, 0 - forThem, "callopenai");
 
+                    price = forThem
 
                     axiosInstance?.post("/log/logPromptPrice", {
                         openAICallReqUUID,
@@ -153,7 +155,7 @@ export const callOpenAI = async (
                         });
                 }
 
-                return completion;
+                return {completion, price};
             } catch (err) {
                 if (err) throw new Error("probably input too long")
                 console.error("error from ai supplier:")
