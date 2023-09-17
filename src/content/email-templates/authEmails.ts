@@ -78,13 +78,13 @@ export const signupreq = (url: string) => ({
 });
 
 export const passreset = (url: string) => ({
-    subject: "Failean Password Reset Request",
+    subject: "Reset Your Password - Failean",
     body: `<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Reset Your Failean Password</title>
+    <title>Reset Your Password - Failean</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -110,7 +110,7 @@ export const passreset = (url: string) => ({
             padding: 20px;
         }
         a.button {
-            background-color: #32CD32;
+            background-color: #8A307F; /* Updated to match brand color */
             color: white;
             text-decoration: none;
             padding: 15px 30px;
@@ -132,20 +132,23 @@ export const passreset = (url: string) => ({
 
 <div class="container">
     <div class="header">
-        <h2>Reset Your Password</h2>
+        <h2>Password Reset Instructions</h2>
     </div>
 
     <div class="content">
-        <p>We received a request to reset your password. Click the button below to set a new password:</p>
-        <a href="${url}" class="button">Reset My Password</a>
+        <p>Hello,</p>
 
-        <p>If you did not request a password reset, please ignore this email.</p>
+        <p>We've received a request to reset your Failean account password. If this was you, please click the button below to set up a new password:</p>
 
-        <p>Best regards,<br><strong>The Failean Team</strong></p>
+        <a href="${url}" class="button">Reset Password</a>
+
+        <p>If you didn't initiate this request, you can safely ignore this email or contact our support.</p>
+
+        <p>Warm regards,<br><strong>The Failean Team</strong></p>
     </div>
 
     <div class="footer">
-        <p>&copy; 2023 Failean LLC, All rights reserved.</p>
+        <p>Unsubscribe | &copy; 2023 Failean LLC, All rights reserved.</p>
     </div>
 </div>
 
