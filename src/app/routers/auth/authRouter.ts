@@ -20,6 +20,7 @@ import * as process from "process";
 
 
 import {axiosInstance} from "../../../temp";
+import {getEmailModel} from "../../mongo-models/abtest/emailModel";
 
 
 const router = express.Router();
@@ -131,7 +132,7 @@ router.post<any, any>("/signupfin", async (req, res) => {
             const userCount = (await userModel.find()).length;
 
             if (userCount < 50)
-                amendTokens(savedUser, 10000, `freeforfirst50-the${userCount}`);
+                amendTokens(savedUser, (await (await getEmailModel()).find()).some(({email}) => email === savedUser.email) ? 10000 : 1000, `freeforfirst50-the${userCount}`);
 
             const token = jsonwebtoken.sign(
                 {
