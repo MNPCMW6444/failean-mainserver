@@ -1,8 +1,10 @@
 export const signupreq = (url: string) => ({
-    subject: "Activate your Failean Account",
+    subject: "Complete Your Failean Account Setup",
     body: `<!DOCTYPE html>
 <html>
 <head>
+    <meta charset="UTF-8">
+    <title>Complete Your Failean Account Setup</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -28,7 +30,7 @@ export const signupreq = (url: string) => ({
             padding: 20px;
         }
         a.activate-button {
-            background-color: #ff6600;
+            background-color: #8A307F;  /* Changed to match your brand color */
             color: #ffffff;
             text-decoration: none;
             padding: 15px 30px;
@@ -47,29 +49,29 @@ export const signupreq = (url: string) => ({
     </style>
 </head>
 <body>
-
 <div class="container">
     <div class="header">
-        <h2>Welcome to Failean!</h2>
+        <h2>Welcome to Failean</h2>
     </div>
 
     <div class="content">
-        <p>At Failean, we celebrate the learning journey inherent in failures. Our platform empowers entrepreneurs to fail fast, learn faster, and move closer to success. We're delighted that you've joined our community of innovative thinkers and doers.</p>
+        <p>Hello,</p>
+        <p>We're excited that you've chosen to join Failean, the platform that supports a smarter approach to entrepreneurship. Before you dive in, please complete your account setup.</p>
         
-        <p>Activate your account by clicking on the button below:</p>
+        <a href="${url}" class="activate-button">Complete Setup</a>
 
-        <a href="${url}" class="activate-button">Activate My Account</a>
+        <p>If this wasn't you, please ignore this email.</p>
 
-        <p>If you did not sign up for our platform, please disregard this email.</p>
-
-        <p>Best regards,<br><strong>The Failean Team</strong></p>
+        <h3>Your Thoughts Matter</h3>
+        <p>We value your insights as we continually strive to improve. Once you've had a chance to use our platform, we'd appreciate your feedback. Feel free to reply to this email with your thoughts.</p>
+        
+        <p>Best wishes,<br><strong>The Failean Team</strong></p>
     </div>
 
     <div class="footer">
-        <p>&copy; 2023 Failean LLC, All rights reserved.</p>
+        <p>Unsubscribe | &copy; 2023 Failean LLC, All rights reserved.</p>
     </div>
 </div>
-
 </body>
 </html>
   `,
@@ -153,13 +155,13 @@ export const passreset = (url: string) => ({
 });
 
 export const websiteSignup = (url: string) => ({
-    subject: "Activate your Failean Account",
+    subject: "Complete Your Registration at Failean",
     body: `<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Activate Your Failean Account</title>
+    <title>Complete Your Registration at Failean</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -188,7 +190,7 @@ export const websiteSignup = (url: string) => ({
             color: blue;
         }
         a.button {
-            background-color: #ff6600;
+            background-color: #8A307F; /* Changed to match your brand color */
             color: white;
             text-decoration: none;
             padding: 15px 30px;
@@ -207,28 +209,29 @@ export const websiteSignup = (url: string) => ({
     </style>
 </head>
 <body>
-
 <div class="container">
     <div class="header">
-        <h2>Welcome to Failean!</h2>
+        <h2>Thank You for Choosing Failean</h2>
     </div>
 
     <div class="content">
-        <p>At Failean, we celebrate the learning journey inherent in failures. Our platform empowers entrepreneurs to fail fast, learn faster, and move closer to success. We're delighted that you've joined our community of innovative thinkers and doers.</p>
+        <p>Hello,</p>
+        <p>Welcome to Failean, the platform designed to support innovative thinkers and entrepreneurs like you. To get started, please complete your registration by clicking the button below:</p>
 
-        <p>Activate your account by clicking on the button below:</p>
-        <a href="${url}" class="button">Activate My Account</a>
+        <a href="${url}" class="button">Complete Registration</a>
 
-        <p>If you did not sign up for our platform, please disregard this email.</p>
+        <p>If you didn't intend to join us, you can safely ignore this email.</p>
 
-        <p>Best regards,<br><strong>The Failean Team</strong></p>
+        <h3>We'd Love Your Input</h3>
+        <p>Once you've had a chance to use Failean, we'd appreciate hearing your thoughts. Feel free to reply to this email with your feedback.</p>
+
+        <p>Warm regards,<br><strong>The Failean Team</strong></p>
     </div>
 
     <div class="footer">
-        <p>&copy; 2023 Failean LLC, All rights reserved.</p>
+        <p>Unsubscribe | &copy; 2023 Failean LLC, All rights reserved.</p>
     </div>
 </div>
-
 </body>
 </html>
   `,
