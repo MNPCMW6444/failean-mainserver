@@ -43,7 +43,7 @@ middlewares.forEach((middleware) => app.use(middleware));
 app.use("/accounts", accountsRouter);
 app.use("/auth", authRouter);
 app.use("/website", websiteRouter);
-app.use("/analytics", analyticsRouter);
+app.use("/analytics", process.env.NODE_ENV === "production" && process.env.WHITE_ENV === "prod" ? analyticsRouter : (_, res) => res.status(200).send());
 app.use("/data", dataRouter);
 app.use("/gql", gqlRouter);
 app.use("/stripe", stripeRouter);
