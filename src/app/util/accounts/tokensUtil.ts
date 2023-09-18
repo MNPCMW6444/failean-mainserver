@@ -18,14 +18,14 @@ export const tokenCount = async (userID: string) => {
 
 export const amendTokens = async (
     user: WhiteUser,
-    ammount: number,
+    amount: number,
     reason: string
 ): Promise<"yes" | "no"> => {
     const tokenModal = getTokenModel();
     try {
         const add = new tokenModal({
             owner: user._id,
-            transaction: ammount,
+            transaction: amount,
             description: reason,
         });
         const saved = await add.save();

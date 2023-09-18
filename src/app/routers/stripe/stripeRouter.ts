@@ -1,4 +1,6 @@
 import express from "express";
+import {getUserModel} from "../../mongo-models/auth/userModel";
+import {amendTokens} from "../../util/accounts/tokensUtil";
 
 const router = express.Router();
 
@@ -10,6 +12,7 @@ router.post("/paymentMade", async (req, res) => {
         case "charge.succeeded":
             const charge = event.data.object;
             console.log(charge)
+            handle(charge.object.amount, charge.email)
             break;
         //// case "payment_method.attached":
         ////    const payment_method = event.data.object;
@@ -72,6 +75,16 @@ router.post("/paymentMade", async (req, res) => {
     res.json({received: true});
 });
 
+const handle = async (amountPaid: number, email: string) => {
+    const user = (await (getUserModel()).find({email}))?.[0]
+    const subscription = amountPaid === 4999 ? "basic" : amountPaid === 7999 ? "premium" : amountPaid === 0 ? "free" : "unchanged";
+    let amount = (subscription === "basic" ? 5000 : subscription === "premium" ? 100000 : 0);
+    if (user && subscription !== "unchanged") {
+        user.subscription = subscription
+        await user.save();
+    } else amount = (amountPaid === 3999 ? 5000 : amountPaid === 2299 ? 2000 : amountPaid === 499 ? 400 : 0);
+    amount && await amendTokens(user, amount, "subscribed to " + subscription)
+}
 
 export default router;
 
