@@ -29,9 +29,6 @@ openAIQueue.process(async (job) => {
     try {
         const {taskID, ideaID, promptName, feedback, reqUUID} = job.data;
         const user = await (getUserModel()).findById(((await getAITaskModel().findById(taskID))?.userID));
-        if (user?.subscription !== "tokens") {
-            return;
-        }
         const idea = await ideaModel.findById(ideaID);
         let dependencies;
         const prompt = aideatorPromptMap[promptName];
@@ -39,7 +36,7 @@ openAIQueue.process(async (job) => {
             let promises = prompt.prompt.map(async (promptPart: PromptPart) => {
                 if (promptPart.type === "variable" && promptPart.content !== "idea") {
                     let promptRes = await PromptResultModel.find({
-                        owner: user._id,
+                        owner: user?._id,
                         ideaID,
                         promptName: promptPart.content,
                     });
@@ -84,7 +81,7 @@ openAIQueue.process(async (job) => {
                     feedback?.length &&
                     feedback?.length > 1 &&
                     (await PromptResultModel.find({
-                        owner: user._id,
+                        owner: user?._id,
                         ideaID,
                         promptName,
                     }));
@@ -123,7 +120,7 @@ openAIQueue.process(async (job) => {
 
 
                     const savedResult = new PromptResultModel({
-                        owner: user._id,
+                        owner: user?._id,
                         ideaID,
                         promptName,
                         data: (completion).choices[0].message?.content,

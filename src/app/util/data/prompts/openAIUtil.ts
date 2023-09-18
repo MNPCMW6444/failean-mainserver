@@ -104,67 +104,57 @@ export const callOpenAI = async (
     openAICallReqUUID: string
 ) => {
     const role = roleMap[roleName];
-    if (user.subscription === "free") {
-        return -1;
-    }
-
-    if (user.subscription === "premium") {
-        return -1;
-    }
-
-    if (user.subscription === "tokens") {
 
 
-        const openai = new OpenAI({
-            apiKey: process.env.OPENAIAPI
-        });
-        if ((await tokenCount(user._id)) > 0) {
-            try {
-                console.log("calling aiiiii")
-                const completion = await openai.chat.completions.create({
-                    model: "gpt-3.5-turbo",
-                    messages: [
-                        {
-                            role: "system",
-                            content: role,
-                        },
-                        ...chat,
-                    ],
-                });
-                console.log("finishedd aiiiii")
+    const openai = new OpenAI({
+        apiKey: process.env.OPENAIAPI
+    });
+    if ((await tokenCount(user._id)) > 0) {
+        try {
+            console.log("calling aiiiii")
+            const completion = await openai.chat.completions.create({
+                model: "gpt-3.5-turbo",
+                messages: [
+                    {
+                        role: "system",
+                        content: role,
+                    },
+                    ...chat,
+                ],
+            });
+            console.log("finishedd aiiiii")
 
-                let price = 0;
+            let price = 0;
 
-                if (completion.usage) {
-                    const priceForUsInCents =
-                        completion.usage?.prompt_tokens * 0.003 +
-                        completion.usage?.completion_tokens * 0.004;
-                    const forThem = priceForUsInCents * ROI;
-                    await amendTokens(user, 0 - forThem, "callopenai");
+            if (completion.usage) {
+                const priceForUsInCents =
+                    completion.usage?.prompt_tokens * 0.003 +
+                    completion.usage?.completion_tokens * 0.004;
+                const forThem = priceForUsInCents * ROI;
+                await amendTokens(user, 0 - forThem, "callopenai");
 
-                    price = forThem
+                price = forThem
 
-                    axiosInstance?.post("/log/logPromptPrice", {
-                        openAICallReqUUID,
-                        promptName,
-                        forAVGPriceInOpenAITokens: forThem,
-                    })
-                        .catch((err) => {
-                            console.error("error logging to oc:")
-                            console.error(err)
-                        });
-                }
-
-                return {completion, price};
-            } catch (err) {
-                if (err) throw new Error("probably input too long")
-                console.error("error from ai supplier:")
-                console.log(err);
-                console.log(err.response);
-                console.log(err.response.data);
-                return -1;
+                axiosInstance?.post("/log/logPromptPrice", {
+                    openAICallReqUUID,
+                    promptName,
+                    forAVGPriceInOpenAITokens: forThem,
+                })
+                    .catch((err) => {
+                        console.error("error logging to oc:")
+                        console.error(err)
+                    });
             }
-        } else return -2;
-    }
-    return -1;
+
+            return {completion, price};
+        } catch (err) {
+            if (err) throw new Error("probably input too long")
+            console.error("error from ai supplier:")
+            console.log(err);
+            console.log(err.response);
+            console.log(err.response.data);
+            return -1;
+        }
+    } else return -2;
+
 };

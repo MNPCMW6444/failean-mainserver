@@ -23,7 +23,6 @@ export const amendTokens = async (
 ): Promise<"yes" | "no"> => {
     const tokenModal = getTokenModel();
     try {
-        if (user.subscription !== "tokens") return "no";
         const add = new tokenModal({
             owner: user._id,
             transaction: ammount,
