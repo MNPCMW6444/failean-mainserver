@@ -1,8 +1,8 @@
 import express from "express";
 import {getPromptResultModel} from "../../../mongo-models/data/prompts/promptResultModel";
-import {API, PromptName} from "@failean/shared-types";
+import {API, PromptName, PromptWireframe} from "@failean/shared-types";
 import {addJobsToQueue} from "../../../jobs/openAIQueue";
-import {convertMaptoDeckGraph, convertMaptoDepGraph,} from "../../../util/data/prompts/promptUtil";
+import {convertMaptoDeckGraph, convertMaptoDepGraph} from "../../../util/data/prompts/promptUtil";
 import aideatorPromptMap from "../../../../content/prompts/aideatorPromptMap";
 import {authUser} from "../../../util/authUtil";
 import {estimateOpenAI} from "../../../util/data/prompts/openAIUtil";
@@ -16,7 +16,7 @@ const router = express.Router();
 
 router.get("/getPromptGraph", async (_, res) => {
     try {
-        const graph = convertMaptoDepGraph(aideatorPromptMap);
+        const graph: PromptWireframe[] = convertMaptoDepGraph(aideatorPromptMap);
         return res.status(200).json({
             graph,
         });
