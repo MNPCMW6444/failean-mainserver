@@ -62,6 +62,7 @@ const redirectLive = () => {
     setInterval(async () => {
         try {
             axios.get("https://app.failean.com/");
+            axios.get("https://www.failean.com/");
         } catch (error) {
             console.error("An error occurred:", error);
         }
